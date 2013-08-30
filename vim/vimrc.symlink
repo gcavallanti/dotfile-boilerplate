@@ -1,3 +1,328 @@
-execute pathogen#infect()
-syntax on
+" based on https://bitbucket.org/sjl/dotfiles/src/10f4bf76eddda27da7e273fc26a31a96aef97b9d/vim/vimrc
+
+" Computers are bullshit.
+
+filetype off
+call pathogen#infect()
 filetype plugin indent on
+set nocompatible
+
+runtime! plugin/sensible.vim
+
+
+" }}}
+" Basic options ----------------------------------------------------------- {{{
+
+set encoding=utf-8
+set modelines=0
+set autoindent
+set showmode
+set showcmd
+set hidden
+set visualbell
+" set ttyfast
+set ruler
+set backspace=indent,eol,start
+"set nonumber
+"set norelativenumber
+set laststatus=2
+set history=1000
+set undofile
+set undoreload=10000
+set list
+set listchars=tab:▸\ ,eol:¬,extends:❯,precedes:❮
+set lazyredraw
+set matchtime=3
+set showbreak=↪
+set splitbelow
+set splitright
+set autowrite
+set autoread
+set shiftround
+set title
+set linebreak
+set dictionary=/usr/share/dict/words
+set spellfile=~/.vim/custom-dictionary.utf-8.add
+set colorcolumn=+1
+
+" iTerm2 is currently slow as ball at rendering the nice unicode lines, so for
+" now I'll just use ascii pipes.  They're ugly but at least I won't want to kill
+" myself when trying to move around a file.
+set fillchars=diff:⣿,vert:│
+set fillchars=diff:⣿,vert:\|
+
+" Don't try to highlight lines longer than 800 characters.
+set synmaxcol=800
+
+" Time out on key codes but not mappings.
+" Basically this makes terminal Vim work sanely.
+set notimeout
+set ttimeout
+set ttimeoutlen=10
+
+" Make Vim able to edit crontab files again.
+set backupskip=/tmp/*,/private/tmp/*"
+
+" Better Completion
+set complete=.,w,b,u,t
+set completeopt=longest,menuone,preview
+
+" Save when losing focus
+au FocusLost * :silent! wall
+
+" Resize splits when the window is resized
+au VimResized * :wincmd =
+
+" Leader
+let mapleader = ","
+let maplocalleader = "\\"
+
+" Cursorline {{{
+" Only show cursorline in the current window and in normal mode.
+augroup cline
+    au!
+    au WinLeave,InsertEnter * set nocursorline
+    au WinEnter,InsertLeave * set cursorline
+augroup END
+
+" }}}
+" cpoptions+=J, dammit {{{
+
+" Something occasionally removes this.  If I manage to find it I'm going to
+" comment out the line and replace all its characters with 'FUCK'.
+augroup twospace
+    au!
+    au BufRead * :set cpoptions+=J
+augroup END
+
+" }}}
+" Trailing whitespace {{{
+" Only shown when not in insert mode so I don't go insane.
+augroup trailing
+    au!
+    au InsertEnter * :set listchars-=trail:⌴
+augroup END
+
+" }}}
+" Wildmenu completion {{{
+set wildmenu
+set wildmode=list:longest
+
+set wildignore+=.hg,.git,.svn                    " Version control
+set wildignore+=*.aux,*.out,*.toc                " LaTeX intermediate files
+set wildignore+=*.jpg,*.bmp,*.gif,*.png,*.jpeg   " binary images
+set wildignore+=*.o,*.obj,*.exe,*.dll,*.manifest " compiled object files
+set wildignore+=*.spl                            " compiled spelling word lists
+set wildignore+=*.sw?                            " Vim swap files
+set wildignore+=*.DS_Store                       " OSX bullshit
+
+set wildignore+=*.luac                           " Lua byte code
+
+set wildignore+=migrations                       " Django migrations
+set wildignore+=*.pyc                            " Python byte code
+
+set wildignore+=*.orig                           " Merge resolution files
+" }}}
+" Line Return {{{
+
+" Make sure Vim returns to the same line when you reopen a file.
+" Thanks, Amit
+augroup line_return
+    au!
+    au BufReadPost *
+        \ if line("'\"") > 0 && line("'\"") <= line("$") |
+        \     execute 'normal! g`"zvzz' |
+        \ endif
+augroup END
+" }}}
+" Tabs, spaces, wrapping {{{
+
+set tabstop=8
+set shiftwidth=4
+set softtabstop=4
+set expandtab
+set wrap
+set textwidth=80
+set formatoptions=qrn1
+set colorcolumn=+1
+
+" }}}
+" Backups {{{
+
+set backup                        " enable backups
+set noswapfile                    " it's 2013, Vim.
+
+set undodir=~/.vim/tmp/undo//     " undo files
+set backupdir=~/.vim/tmp/backup// " backups
+set directory=~/.vim/tmp/swap//   " swap files
+
+" Make those folders automatically if they don't already exist.
+if !isdirectory(expand(&undodir))
+    call mkdir(expand(&undodir), "p")
+endif
+if !isdirectory(expand(&backupdir))
+    call mkdir(expand(&backupdir), "p")
+endif
+if !isdirectory(expand(&directory))
+    call mkdir(expand(&directory), "p")
+endif
+
+" }}}
+" Color scheme {{{
+
+syntax on
+set background=dark
+let g:badwolf_tabline = 2
+let g:badwolf_html_link_underline = 0
+colorscheme badwolf
+
+" Reload the colorscheme whenever we write the file.
+augroup color_badwolf_dev
+    au!
+    au BufWritePost badwolf.vim color badwolf
+augroup END
+
+" Highlight VCS conflict markers
+match ErrorMsg '^\(<\|=\|>\)\{7\}\([^=].\+\)\?$'
+
+" }}}
+" Abbreviations ----------------------------------------------------------- {{{
+function! EatChar(pat)
+    let c = nr2char(getchar(0))
+    return (c =~ a:pat) ? '' : c
+endfunction
+
+function! MakeSpacelessIabbrev(from, to)
+    execute "iabbrev <silent> ".a:from." ".a:to."<C-R>=EatChar('\\s')<CR>"
+endfunction
+function! MakeSpacelessBufferIabbrev(from, to)
+    execute "iabbrev <silent> <buffer> ".a:from." ".a:to."<C-R>=EatChar('\\s')<CR>"
+endfunction
+
+call MakeSpacelessIabbrev('gc/',  'http://gcavallanti.com/')
+call MakeSpacelessIabbrev('gh/',  'http://github.com/')
+call MakeSpacelessIabbrev('ghgc/', 'http://github.com/gcavn/')
+
+iabbrev gc@ gcavn@gcavallanti.com
+iabbrev vrcf `~/.vimrc` file
+
+" }}}
+" Convenience mappings ---------------------------------------------------- {{{
+" Sort lines
+nnoremap <leader>s vip:!sort<cr>
+vnoremap <leader>s :!sort<cr>
+
+" Clean trailing whitespace
+nnoremap <leader>w mz:%s/\s\+$//<cr>:let @/=''<cr>`z
+
+" Select entire buffer
+nnoremap vaa ggvGg_
+nnoremap Vaa ggVG
+
+" "Uppercase word" mapping.
+"
+" This mapping allows you to press <c-u> in insert mode to convert the current
+" word to uppercase.  It's handy when you're writing names of constants and
+" don't want to use Capslock.
+"
+" To use it you type the name of the constant in lowercase.  While your
+" cursor is at the end of the word, press <c-u> to uppercase it, and then
+" continue happily on your way:
+"
+"                            cursor
+"                            v
+"     max_connections_allowed|
+"     <c-u>
+"     MAX_CONNECTIONS_ALLOWED|
+"                            ^
+"                            cursor
+"
+" It works by exiting out of insert mode, recording the current cursor location
+" in the z mark, using gUiw to uppercase inside the current word, moving back to
+" the z mark, and entering insert mode again.
+"
+" Note that this will overwrite the contents of the z mark.  I never use it, but
+" if you do you'll probably want to use another mark.
+inoremap <C-u> <esc>mzgUiw`za
+
+" Panic Button (rot13 encoding of the whole buffer)
+nnoremap <f9> mzggg?G`z
+
+" }}}
+" Searching and movement -------------------------------------------------- {{{
+
+" Use sane regexes.
+nnoremap / /\v
+vnoremap / /\v
+
+set ignorecase
+set smartcase
+set incsearch
+set showmatch
+set hlsearch
+set gdefault
+
+set scrolloff=3
+set sidescroll=1
+set sidescrolloff=10
+
+" }}}
+" Environments (GUI/Console) ---------------------------------------------- {{{
+
+if has('gui_running')
+    " GUI Vim
+
+    set guifont=Menlo\ Regular\ for\ Powerline:h12
+
+    " Remove all the UI cruft
+    set go-=T
+    set go-=l
+    set go-=L
+    set go-=r
+    set go-=R
+
+    highlight SpellBad term=underline gui=undercurl guisp=Orange
+
+    " Different cursors for different modes.
+    set guicursor=n-c:block-Cursor-blinkon0
+    set guicursor+=v:block-vCursor-blinkon0
+    set guicursor+=i-ci:ver20-iCursor
+
+    if has("gui_macvim")
+        " Full screen means FULL screen
+        set fuoptions=maxvert,maxhorz
+
+        " Use the normal HIG movements, except for M-Up/Down
+        let macvim_skip_cmd_opt_movement = 1
+        no   <D-Left>       <Home>
+        no!  <D-Left>       <Home>
+        no   <M-Left>       <C-Left>
+        no!  <M-Left>       <C-Left>
+
+        no   <D-Right>      <End>
+        no!  <D-Right>      <End>
+        no   <M-Right>      <C-Right>
+        no!  <M-Right>      <C-Right>
+
+        no   <D-Up>         <C-Home>
+        ino  <D-Up>         <C-Home>
+        imap <M-Up>         <C-o>{
+
+        no   <D-Down>       <C-End>
+        ino  <D-Down>       <C-End>
+        imap <M-Down>       <C-o>}
+
+        imap <M-BS>         <C-w>
+        inoremap <D-BS>     <esc>my0c`y
+    else
+        " Non-MacVim GUI, like Gvim
+    end
+else
+    " Console Vim
+    " For me, this means iTerm2, possibly through tmux
+
+    " Mouse support
+    set mouse=a
+endif
+
+" }}}
