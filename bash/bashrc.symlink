@@ -1,1 +1,4 @@
-[ -n "$PS1" ] && source ~/.bash_profile
+# Add any system specifics to /etc/bashrc
+#if [ -r "/etc/bashrc" ]; then
+#    source "/etc/bashrc"
+#fi
