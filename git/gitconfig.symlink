@@ -57,3 +57,6 @@
 
 [push]
 	default = matching
+[user]
+	name = Giovanni Cavallanti
+	email = gcavallanti@gmail.com

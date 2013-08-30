@@ -1,2 +1,5 @@
 .DS_Store
 .*~
+vim/vim.symlink/tmp/
+vim/vim.symlink/plugin/
+vim/vim.symlink/eclim/
