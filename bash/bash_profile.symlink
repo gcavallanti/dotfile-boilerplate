@@ -17,17 +17,20 @@ for option in autocd globstar; do
     shopt -s "$option" 2> /dev/null
 done
 
-if [ -r ~/.bash_prompt ]; then
-    source ~/.bash_prompt
-fi
-
 # Load ~/.exports, ~/.aliases, ~/.functions, ~/.fun, and ~/.extra
 for file in ~/.{exports,aliases,functions,fun,extra}; do
     [ -r "$file" ] && source "$file"
 done
 unset file
 
-# Add any system specifics to /etc/bashrc
-if [ -r "/etc/bashrc" ]; then
-    source "/etc/bashrc"
+if [ -r ~/.profile ]; then
+    source ~/.profile
+fi
+
+if [ -r ~/.bashrc ]; then
+    source ~/.bashrc
+fi
+
+if [ -r ~/.bash_prompt ]; then
+    source ~/.bash_prompt
 fi
