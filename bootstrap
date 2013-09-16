@@ -5,22 +5,6 @@ DOTFILES_ROOT="$HOME/.dotfiles"
 
 set -e
 
-show_help () { cat <<HELP
-Usage: $(basename "$0") [--new-setup]
-
-  --new-setup       Optional. Will prompt you to install various frameworks
-                    Janus, Oh-My-Zsh and/or Bash-It
-
-See the Getting Started for documentation:
-https://github.com/thcipriani/dotfile-boilerplate/blob/master/docs/getting_started.md
-
-Copyright (c) 2013 Tyler H.T. Cipriani
-Licensed under the MIT license.
-https://github.com/thcipriani/dotfile-boilerplate/blob/master/LICENSE
-HELP
-exit;
-}
-
 info () {
     printf "\r[ \033[00;34m..\033[0m ] $1\n"
 }
@@ -39,199 +23,28 @@ fail () {
     exit
 }
 
-restart_shell () {
-    info "Restart your shell to see you changes take effect"
-}
-
 link_files () {
     ln -s "$1" "$2"
     success "linked $1 to $2"
 }
 
-prompt_shell () {
-    user "Could not detect shell type (or shell type wasn't bash or zsh). What do you want to do? [S]kip shell dotfiles, assume [b]ash dotfiles, assume [z]sh dotfiles?"
-    read shelltype
-    case "$shelltype" in
-        b )
-            SHELL='bash';;
-        z )
-            SHELL='zsh';;
-        * )
-            SHELL='';;
-    esac
-}
-
-
-check_shell () {
-    if [[ -n "$SHELL" ]]; then
-        SHELL=$(basename "$SHELL");
-        if [[ "$SHELL" != "bash" && "$SHELL" != "zsh" ]]; then
-            prompt_shell
-        fi
-    elif [[ -n "$MYSHELL" ]]; then
-        SHELL=$(basename "$MYSHELL");
-        if [[ "$SHELL" != "bash" && "$SHELL" != "zsh" ]]; then
-            prompt_shell
-        fi
-    else 
-        SHELL_PATH=$(grep `whoami` /etc/passwd | cut -d ':' -f 7)
-        SHELL=$(basename "$SHELL_PATH")
-        if [[ -z "$SHELL" ]] || [[ "$SHELL" != "zsh" && "$SHELL" != "bash" ]]; then
-            prompt_shell
-        fi
-    fi
-
-    if ${NEW_SETUP:-false}; then
-        framework_check
-    else
-        install_dotfiles
-    fi
-}
-
-check_vimrc () {
-    if [[ $(cat "$DOTFILES_ROOT/vim/vimrc.symlink" | wc -l) -lt 20 ]]; then
-        INSTALL_JANUS=false
-        if [ type curl >/dev/null 2>&1 ] && [ type ack >/dev/null 2>&1 ] && [ type ctags >/dev/null 2>&1 ] && [ type git>/dev/null 2>&1 ] && [ type ruby>/dev/null 2>&1 ] && [ type rake >/dev/null 2>&1]; then
-            user "Your .vimrc is a bit bare. Would you like to install Janus for Vim? [y/N]"
-            read installit
-
-            case "$installit" in
-                Y*|y*) INSTALL_JANUS=true ;;
-                N*|n*) INSTALL_JANUS=false ;;
-                *) INSTALL_JANUS=false ;;
-            esac
-
-            if $INSTALL_JANUS ; then
-                curl -Lo- https://bit.ly/janus-bootstrap | bash
-            fi
-        else
-            info "You'll need to install curl, ack, ctags, git, ruby and rake to install JANUS"
-            return
-        fi
-    fi
-}
-
-oh_my_zsh_check () {
-    # check already installed
-    if [ -d "$HOME/.oh-my-zsh" ]; then
-        INSTALL_OH_MY=true
-        return
-    fi
-
-    user "You are using zshell. Would you like to install Oh-My-Zsh? [y/N]"
-    read installit
-
-    case "$installit" in
-        Y*|y*) INSTALL_OH_MY=true ;;
-        N*|n*) INSTALL_OH_MY=false ;;
-        *) INSTALL_OH_MY=false ;;
-    esac
-
-    if $INSTALL_OH_MY; then
-        if type git >/dev/null 2>&1; then
-            git clone git://github.com/sjl/oh-my-zsh.git "$HOME/.oh-my-zsh"
-        else
-            info 'git not found—skipping .oh-my-zsh install'
-        fi
-    fi
-}
-
-bash_it_check () {
-    # check already installed
-    if [ -d "$HOME/.bash_it" ]; then
-        INSTALL_BASH_IT=true
-        return
-    fi
-
-    user "You are using bash. Would you like to install Bash-It? [y/N]"
-    read installit
-
-    case "$installit" in
-        Y*|y*) INSTALL_BASH_IT=true ;;
-        N*|n*) INSTALL_BASH_IT=false ;;
-        *) INSTALL_BASH_IT=false ;;
-    esac
-
-    if $INSTALL_BASH_IT; then
-        if type git >/dev/null 2>&1; then
-            git clone http://github.com/revans/bash-it.git "$HOME/.bash_it"
-            "$HOME/.bash_it/install.sh"
-        else
-            info 'git not found—skipping .bash-it install'
-        fi
-    fi
-}
-
-check_bash_suffix () {
-    if ${INSTALL_BASH_IT:-false}; then
-        info 'Appending to ~/.bash_profile'
-        cat "$DOTFILES_ROOT/.config/bash.it.bash_profile.suffix" >> "$HOME/.bash_profile"
-    fi
-}
-
 install_dotfiles () {
     info 'Installing dotfiles'
 
-    case "$SHELL" in
-        zsh )
-            if [[ $(uname -s) == "Linux" ]]; then
-                files=$(find "$DOTFILES_ROOT" -maxdepth 2 -name \*.symlink -print | grep -v "bash" | grep -v "osx")
-            elif [[ $(uname -s) == "Darwin" ]]; then
-                files=$(find "$DOTFILES_ROOT" -maxdepth 2 -name \*.symlink -print | grep -v "bash" | grep -v "linux")
-            else
-                files=$(find "$DOTFILES_ROOT" -maxdepth 2 -name \*.symlink -print | grep -v "bash" | grep -v "linux" | grep -v "osx")
-            fi
-
-            if ${INSTALL_OH_MY:-false} ; then
-                echo 'Uncomment .zshrc'
-                # Uncomment the OH-MY-ZSH section if it exists
-                sed -i '.backup' '/^##~OH-MY-ZSH~#$/,/^##~\/OH-MY-ZSH~#$/s/^#//' "$DOTFILES_ROOT/zsh/zshrc.symlink"
-            fi
-            ;;
-        bash )
-            if [[ $(uname -s) == "Linux" ]]; then
-                if ${INSTALL_BASH_IT:-false}; then
-                    files=$(find "$DOTFILES_ROOT" -maxdepth 2 -name \*.symlink -print | grep -v "bash" | grep -v "osx" | grep -v "zsh")
-                else
-                    files=$(find "$DOTFILES_ROOT" -maxdepth 2 -name \*.symlink -print | grep -v "osx" | grep -v "zsh")
-                fi
-            elif [[ $(uname -s) == "Darwin" ]]; then
-                if ${INSTALL_BASH_IT:-false}; then
-                    files=$(find "$DOTFILES_ROOT" -maxdepth 2 -name \*.symlink -print | grep -v "bash" | grep -v "linux" | grep -v "zsh")
-                else
-                    files=$(find "$DOTFILES_ROOT" -maxdepth 2 -name \*.symlink -print | grep -v "linux" | grep -v "zsh")
-                fi
-            else
-                if ${INSTALL_BASH_IT:-false}; then
-                    files=$(find "$DOTFILES_ROOT" -maxdepth 2 -name \*.symlink -print | grep -v "bash" | grep -v "linux" | grep -v "osx" | grep -v "zsh")
-                else
-                    files=$(find "$DOTFILES_ROOT" -maxdepth 2 -name \*.symlink -print | grep -v "linux" | grep -v "osx" | grep -v "zsh")
-                fi
-            fi
-            ;;
-        * )
-            if [[ $(uname -s) == "Linux" ]]; then
-                files=$(find "$DOTFILES_ROOT" -maxdepth 2 -name \*.symlink -print | grep -v "bash" | grep -v "osx" | grep -v "zsh")
-            elif [[ $(uname -s) == "Darwin" ]]; then
-                files=$(find "$DOTFILES_ROOT" -maxdepth 2 -name \*.symlink -print | grep -v "bash" | grep -v "linux" | grep -v "zsh")
-            else 
-                files=$(find "$DOTFILES_ROOT" -maxdepth 2 -name \*.symlink -print | grep -v "bash" | grep -v "linux" | grep -v "osx" | grep -v "zsh")
-            fi
-            ;;
-    esac
+    if [[ $(uname -s) == "Linux" ]]; then
+        files=$(find "$DOTFILES_ROOT" -maxdepth 2 -name \*.symlink\* -print | grep -v "osx")
+    elif [[ $(uname -s) == "Darwin" ]]; then
+        files=$(find "$DOTFILES_ROOT" -maxdepth 2 -name \*.symlink\* -print | grep -v "linux")
+    else
+        files=$(find "$DOTFILES_ROOT" -maxdepth 2 -name \*.symlink\* -print | grep -v "linux" | grep -v "osx")
+    fi
 
     overwrite_all=false
     backup_all=false
     skip_all=false
 
     for source in $files; do
-        file_base=$(basename "${source%.*}")
-
-        if ${INSTALL_JANUS:-false} ; then
-            if [[ "$file_base" =~ ^vim ]]; then
-                continue;
-            fi
-        fi
+        file_base=$(basename "${source%.symlink*}")
 
         dest="$HOME/.$file_base"
 
@@ -245,11 +58,8 @@ install_dotfiles () {
             backup=false
             skip=false
 
-            if [[ ${INSTALL_OH_MY:-false} && "$file_base" =~ ^zshrc ]]; then
-                overwrite=true;
-            fi
-
-            if [ "$overwrite_all" == "false" ] && [ "$backup_all" == "false" ] && [ "$skip_all" == "false" ] && [ "$overwrite" == "false" ]; then
+            if [ "$overwrite_all" == "false" ] && [ "$backup_all" == "false" ] && [ "$skip_all" == "false" ]
+            then
                 user "File already exists: $(basename "$dest"), what do you want to do? [s]kip, [S]kip all, [o]verwrite, [O]verwrite all, [b]ackup, [B]ackup all?"
                 read action
 
@@ -292,48 +102,7 @@ install_dotfiles () {
         fi
 
     done
-
-    check_bash_suffix
-
-    restart_shell
 }
 
-framework_check () {
-    if [[ $SHELL == 'zsh' ]]; then
-        oh_my_zsh_check
-    elif [[ $SHELL == 'bash' ]]; then
-        bash_it_check
-    fi
+install_dotfiles
 
-    # Check for Janus install
-    check_vimrc
-
-    install_dotfiles
-}
-
-if [[ "$1" != '' ]]; then
-    case "$1" in
-        "--new-setup" ) 
-            NEW_SETUP=true
-            ;;
-        "--help"|"-h" )
-            show_help
-            ;;
-        * )
-            echo -e "Unknown option: $1\n"
-            show_help
-            ;;
-    esac
-
-fi
-
-echo
-
-unset $INSTALL_OH_MY
-unset $INSTALL_BASH_IT
-unset $INSTALL_JANUS
-# Initialize
-check_shell
-
-echo
-echo 'All installed!'

@@ -1,0 +1,5 @@
+# hehe
+alias ny='telnet miku.acm.uiuc.edu'
+alias rr='curl -L http://bit.ly/10hA8iC | bash'
+alias sw='telnet towel.blinkenlights.nl'
+

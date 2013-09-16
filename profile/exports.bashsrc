@@ -28,8 +28,3 @@ export GREP_OPTIONS='--color=auto'
 # Customize to your needs...
 export PATH=$HOME/.dotfiles/bin:/usr/local/bin:/usr/local/sbin:$PATH
 
-if [[ $(uname -s) == "Darwin" ]]; then
-    source ~/.profile.osx.d/exports
-elif [[ $(uname -s) == "Linux" ]]; then
-    source ~/.profile.linux.d/exports
-fi

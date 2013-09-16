@@ -1,6 +1,8 @@
 # Modified/Stolen from:
 # http://mths.be/dotfiles
 
+DOTFILES_ROOT="$HOME/.dotfiles"
+
 # Case-insensitive globbing (used in pathname expansion)
 shopt -s nocaseglob
 
@@ -17,11 +19,37 @@ for option in autocd globstar; do
     shopt -s "$option" 2> /dev/null
 done
 
-# Load ~/.exports, ~/.aliases, ~/.functions, ~/.fun, and ~/.extra
-for file in ~/.{exports,aliases,functions,fun,extra}; do
+source_files=($DOTFILES_ROOT/**/*.bashsrc)
+for file in ${source_files[@]}; do
     [ -r "$file" ] && source "$file"
 done
 unset file
+
+source_files=($DOTFILES_ROOT/**/*.bashsrc.local)
+for file in ${source_files[@]}; do
+    [ -r "$file" ] && source "$file"
+done
+unset file
+
+if [[ $(uname -s) == "Darwin" ]]; then 
+    source_files=($DOTFILES_ROOT/**/*.bashsrc.osx)
+    for file in ${source_files[@]}; do
+        [ -r "$file" ] && source "$file"
+    done
+    unset file
+elif [[ $(uname -s) == "Linux" ]]; then
+    source_files=($DOTFILES_ROOT/**/*.bashsrc.linux)
+    for file in ${source_files[@]}; do
+        [ -r "$file" ] && source "$file"
+    done
+    unset file
+fi  
+
+# Load ~/.exports, ~/.aliases, ~/.functions, ~/.fun, and ~/.extra
+#for file in ~/.{exports,aliases,functions,fun,extra}; do
+#    [ -r "$file" ] && source "$file"V
+#done
+#unset file
 
 if [ -r ~/.profile ]; then
     source ~/.profile
