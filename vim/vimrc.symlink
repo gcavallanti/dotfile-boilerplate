@@ -2,10 +2,17 @@
 
 filetype off
 call pathogen#infect()
+"set rtp+=~/.vim/bundle/vundle/
+"call vundle#rc()
+" let Vundle manage Vundle
+"  required! 
+"Bundle 'gmarik/vundle'
 filetype plugin indent on
 set nocompatible
 
-
+"Bundle 'tpope/vim-fugitive'
+"Bundle 'noahfrederick/vim-hemisu'
+"Bundle 'tomasr/molokai'
 " Basic options ----------------------------------------------------------- {{{
 
 "set encoding=utf-8
