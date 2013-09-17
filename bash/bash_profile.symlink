@@ -45,12 +45,6 @@ elif [[ $(uname -s) == "Linux" ]]; then
     unset file
 fi  
 
-# Load ~/.exports, ~/.aliases, ~/.functions, ~/.fun, and ~/.extra
-#for file in ~/.{exports,aliases,functions,fun,extra}; do
-#    [ -r "$file" ] && source "$file"V
-#done
-#unset file
-
 if [ -r ~/.profile ]; then
     source ~/.profile
 fi
