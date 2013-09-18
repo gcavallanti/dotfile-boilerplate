@@ -13,7 +13,7 @@ if tput setaf 1 &> /dev/null; then
         ORANGE=$(tput setaf 172)
         GREEN=$(tput setaf 190)
         PURPLE=$(tput setaf 141)
-        WHITE=$(tput setaf 0)
+        WHITE=$(tput setaf 255)
     else
         MAGENTA=$(tput setaf 5)
         ORANGE=$(tput setaf 4)
@@ -34,15 +34,15 @@ else
 fi
 
 if [[ -n $(type -t __git_ps1) ]]; then
-
+    
     export GIT_PS1_SHOWDIRTYSTATE=1
     export GIT_PS1_SHOWSTASHSTATE=1
     export GIT_PS1_SHOWUNTRACKEDFILES=1
     export GIT_PS1_SHOWUPSTREAM="auto"
-
-    PROMPT_COMMAND=' __git_ps1 "\[${BOLD}${MAGENTA}\]\u \[$WHITE\]at \[$ORANGE\]\h \[$WHITE\]in \[$GREEN\]\w\[$WHITE\]\[$PURPLE\]" "\[$WHITE\]\n\$ \[$RESET\]"'
+    
+    PS1="\[${BOLD}${MAGENTA}\]\u \[$RESET\]at \[$ORANGE\]\h \[$RESET\]in \[$GREEN\]\w\$(__git_ps1 \"\[$RESET\] on \[$PURPLE\]%s\"  )\[$RESET\]\n\$ "
 else
-
+    
     parse_git_dirty () {
         [[ $(git status 2> /dev/null | tail -n1 | cut -c 1-17) != "nothing to commit" ]] && echo "*"
     }
