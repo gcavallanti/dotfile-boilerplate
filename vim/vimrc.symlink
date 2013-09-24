@@ -15,6 +15,7 @@ set nocompatible
 "Bundle 'tomasr/molokai'
 " Basic options ----------------------------------------------------------- {{{
 
+set mouse=a
 "set encoding=utf-8
 "set modelines=0
 "set autoindent
@@ -23,12 +24,12 @@ set nocompatible
 " buffer becomes hidden when it is abandoned
 "set hidden
 " use visual bell instead of beeping.
-"set visualbell
+set visualbell
 " set ttyfast
 "set ruler
 "set backspace=indent,eol,start
-"set nonumber
-"set norelativenumber
+set number
+set relativenumber
 "set laststatus=2
 "set history=1000
 "set undofile
@@ -83,11 +84,11 @@ set nocompatible
 
 " Cursorline {{{
 " Only show cursorline in the current window and in normal mode.
-"augroup cline
-"    au!
-"    au WinLeave,InsertEnter * set nocursorline
-"    au WinEnter,InsertLeave * set cursorline
-"augroup END
+augroup cline
+    au!
+    au WinLeave,InsertEnter * set nocursorline
+    au WinEnter,InsertLeave * set cursorline
+augroup END
 
 " }}}
 " cpoptions+=J, dammit {{{
@@ -175,10 +176,10 @@ endif
 " Color scheme {{{
 
 syntax on
-"set background=dark
-"let g:badwolf_tabline = 2
-"let g:badwolf_html_link_underline = 0
-"colorscheme badwolf
+set background=dark
+let g:badwolf_tabline = 2
+let g:badwolf_html_link_underline = 0
+colorscheme badwolf
 
 " Reload the colorscheme whenever we write the file.
 "augroup color_badwolf_dev

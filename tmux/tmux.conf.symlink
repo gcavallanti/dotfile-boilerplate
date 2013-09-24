@@ -1,9 +1,9 @@
 # https://bitbucket.org/sjl/dotfiles/raw/ea3fd4a6795ae2c5b27006f03201805a2454158e/tmux/tmux.conf
 
 # Use something easier to type as the prefix.
-set -g prefix C-f
+set -g prefix C-a
 unbind C-b
-bind C-f send-prefix
+bind C-a send-prefix
 
 # Relax!
 set -sg escape-time 0
@@ -14,13 +14,8 @@ set -g quiet on
 
 # Mouse
 set -g mode-mouse on
-setw -g mouse-select-window on
-setw -g mouse-select-pane on
-
-# This is hilariously absurd.  How many nerds use tmux on OS X every day and
-# it's still fundamentally broken?
-set -g default-command "reattach-to-user-namespace -l zsh"
-set -g default-command "reattach-to-user-namespace -l fish"
+set -g mouse-select-window on
+set -g mouse-select-pane on
 
 # Less stretching to get to the first item.
 set -g base-index 1
@@ -83,17 +78,17 @@ set -g message-bg colour221
 set -g message-attr bold
 
 # Custom status bar
-# Powerline symbols: â®‚ â®ƒ â®€ â® â­¤
+# Powerline symbols: ⮂ ⮃ ⮀ ⮁ ⭤
 set -g status-left-length 32
 set -g status-right-length 150
 set -g status-interval 5
 
-set -g status-left '#[fg=colour16,bg=colour254,bold] #S #[fg=colour254,bg=colour238,nobold]â®€#[fg=colour15,bg=colour238,bold] #(ls ~/.mail/steve-stevelosh.com/INBOX/cur  ~/.mail/steve-stevelosh.com/INBOX/new | wc -l | tr -d " ") #[fg=colour238,bg=colour234,nobold]â®€'
+set -g status-left '#[fg=colour16,bg=colour254,bold] #S #[fg=colour254,bg=colour238,nobold]⮀#[fg=colour15,bg=colour238,bold] #(ls ~/.mail/steve-stevelosh.com/INBOX/cur  ~/.mail/steve-stevelosh.com/INBOX/new | wc -l | tr -d " ") #[fg=colour238,bg=colour234,nobold]⮀'
 
-set -g status-right '#[fg=colour245]â®ƒ %R â®ƒ %d %b #[fg=colour254,bg=colour234,nobold]#(rdio-current-track-tmux)â®‚#[fg=colour16,bg=colour254,bold] #h '
+set -g status-right '#[fg=colour245]⮃ %R ⮃ %d %b #[fg=colour254,bg=colour234,nobold]#(rdio-current-track-tmux)⮂#[fg=colour16,bg=colour254,bold] #h '
 
 set -g window-status-format "#[fg=white,bg=colour234] #I #W "
-set -g window-status-current-format "#[fg=colour234,bg=colour39]â®€#[fg=colour16,bg=colour39,noreverse,bold] #I â® #W #[fg=colour39,bg=colour234,nobold]â®€"
+set -g window-status-current-format "#[fg=colour234,bg=colour39]⮀#[fg=colour16,bg=colour39,noreverse,bold] #I ⮁ #W #[fg=colour39,bg=colour234,nobold]⮀"
 
 # Activity
 setw -g monitor-activity on
@@ -114,7 +109,10 @@ unbind p
 bind p paste-buffer
 bind -t vi-copy H start-of-line
 bind -t vi-copy L end-of-line
-bind -t vi-copy v begin-selection
-bind -t vi-copy y copy-selection
+# Setup 'v' to begin selection as in Vim
+bind-key -t vi-copy v begin-selection
+bind-key -t vi-copy y copy-pipe "reattach-to-user-namespace pbcopy"
+# Update default binding of `Enter` to also use copy-pipe
+unbind -t vi-copy Enter
+bind-key -t vi-copy Enter copy-pipe "reattach-to-user-namespace pbcopy"
 bind -t vi-copy Escape cancel
-bind y run "tmux save-buffer - | reattach-to-user-namespace pbcopy"

@@ -1,0 +1,24 @@
+# Sexy Bash Prompt, inspired by "Extravagant Zsh Prompt"
+# Screenshot: http://cloud.gf3.ca/M5rG
+# A big thanks to \amethyst on Freenode
+
+if [[ -n $(type -t __git_ps1) ]]; then
+    
+    export GIT_PS1_SHOWDIRTYSTATE=1
+    export GIT_PS1_SHOWSTASHSTATE=1
+    export GIT_PS1_SHOWUNTRACKEDFILES=1
+    export GIT_PS1_SHOWUPSTREAM="verbose"
+    
+    PS1="\[${BOLD}${MAGENTA}\]\u \[$RESET\]at \[$YELLOW\]\h \[$RESET\]in \[$GREEN\]\w\$(__git_ps1 \"\[$RESET\] on \[$CYAN\]%s\"  )\[$RESET\]\n\$ "
+    #PS1="\[${BOLD}${GREEN}\]\u \[$RESET\]at \[$CYAN\]\h \[$RESET\]in \[$BLUE\]\w\$(__git_ps1 \"\[$RESET\] on \[$MAGENTA\]%s\"  )\[$RESET\]\n\$ "
+else
+    
+    parse_git_dirty () {
+        [[ $(git status 2> /dev/null | tail -n1 | cut -c 1-17) != "nothing to commit" ]] && echo "*"
+    }
+    parse_git_branch () {
+        git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e "s/* \(.*\)/\1$(parse_git_dirty)/"
+    }
+
+    PS1="\[${BOLD}${MAGENTA}\]\u \[$WHITE\]at \[$ORANGE\]\h \[$WHITE\]in \[$GREEN\]\w\[$WHITE\]\$([[ -n \$(git branch 2> /dev/null) ]] && echo \" on \")\[$PURPLE\]\$(parse_git_branch)\[$WHITE\]\n\$ \[$RESET\]"
+fi
