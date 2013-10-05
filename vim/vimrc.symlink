@@ -2,36 +2,37 @@
 
 filetype off
 call pathogen#infect()
-"set rtp+=~/.vim/bundle/vundle/
-"call vundle#rc()
-" let Vundle manage Vundle
-"  required! 
-"Bundle 'gmarik/vundle'
 filetype plugin indent on
 set nocompatible
 
-"Bundle 'tpope/vim-fugitive'
-"Bundle 'noahfrederick/vim-hemisu'
-"Bundle 'tomasr/molokai'
 " Basic options ----------------------------------------------------------- {{{
 
 set mouse=a
-"set encoding=utf-8
+set encoding=utf-8
+" Modelines allow you to set variables specific to a file. For example /* vim: tw=60 ts=2: */
 "set modelines=0
+
 "set autoindent
-"set showmode
-"set showcmd
-" buffer becomes hidden when it is abandoned
+
+" If in Insert, Replace or Visual mode put a message on the last line.
+set showmode
+" Show (partial) command in the last line of the screen. e
+set showcmd
+
+" Buffer becomes hidden when it is abandoned
 "set hidden
-" use visual bell instead of beeping.
+
+" Use visual bell instead of beeping.
 set visualbell
-" set ttyfast
-"set ruler
+
+" Show the line and column number of the cursor position, separated by a comma. 
+set ruler
+
 "set backspace=indent,eol,start
 set number
 set relativenumber
 "set laststatus=2
-"set history=1000
+set history=1000
 "set undofile
 "set undoreload=10000
 "set list
@@ -39,8 +40,8 @@ set relativenumber
 "set lazyredraw
 "set matchtime=3
 "set showbreak=↪
-"set splitbelow
-"set splitright
+set splitbelow
+set splitright
 "set autowrite
 "set autoread
 "set shiftround
@@ -57,7 +58,7 @@ set relativenumber
 "set fillchars=diff:⣿,vert:\|
 
 " Don't try to highlight lines longer than 800 characters.
-"set synmaxcol=800
+set synmaxcol=800
 
 " Time out on key codes but not mappings.
 " Basically this makes terminal Vim work sanely.
@@ -90,23 +91,26 @@ augroup cline
     au WinEnter,InsertLeave * set cursorline
 augroup END
 
-" }}}
+" }}
+" }
 " cpoptions+=J, dammit {{{
 
-" Something occasionally removes this.  If I manage to find it I'm going to
-" comment out the line and replace all its characters with 'FUCK'.
-"augroup twospace
-"    au!
-"    au BufRead * :set cpoptions+=J
-"augroup END
+" A |sentence| has to be followed by two spaces after the '.', '!' or '?'.  A <Tab> is not recognized as white space.
+
+" Something occasionally removes this.
+augroup twospace
+    au!
+    au BufRead * :set cpoptions+=J
+augroup END
 
 " }}}
+
 " Trailing whitespace {{{
 " Only shown when not in insert mode so I don't go insane.
-"augroup trailing
-"    au!
-"    au InsertEnter * :set listchars-=trail:⌴
-"augroup END
+augroup trailing
+    au!
+    au InsertEnter * :set listchars-=trail:⌴
+augroup END
 
 " }}}
 " Wildmenu completion {{{
@@ -177,14 +181,14 @@ endif
 
 syntax on
 set background=dark
-let g:badwolf_tabline = 2
-let g:badwolf_html_link_underline = 0
-colorscheme badwolf
+let g:trafficlights_tabline = 2
+let g:trafficlights_html_link_underline = 0
+colorscheme trafficlights
 
 " Reload the colorscheme whenever we write the file.
-"augroup color_badwolf_dev
+"augroup color_trafficlights_dev
 "    au!
-"    au BufWritePost badwolf.vim color badwolf
+"    au BufWritePost trafficlights.vim color trafficlights
 "augroup END
 
 " Highlight VCS conflict markers

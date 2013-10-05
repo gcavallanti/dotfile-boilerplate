@@ -85,10 +85,10 @@ case "$1" in
         fi
       fi
       dest="$bundledir/$(basename $url | sed -e 's/\.git$//')"
-      rm -rf $dest
-      echo "Cloning $url into $dest"
-      git clone $url $dest
-      rm -rf $dest/.git
+      #rm -rf $dest
+      #echo "Cloning $url into $dest"
+      #git clone $url $dest
+      #rm -rf $dest/.git
     done
     ;;
 
@@ -117,8 +117,8 @@ case "$1" in
         $curl -L $url >$f
         unzip $f -d $name
         mkdir -p $dest
-        mv $name/*/* $dest
-        rm -rf $name $f
+        #mv $name/*/* $dest
+        #rm -rf $name $f
 
       else
         # Assume single files. Create the destination directory and download
@@ -126,9 +126,9 @@ case "$1" in
         mkdir -p $dest
         pushd $dest
         if [ -n "$filename" ]; then
-          $curl -L $url >$filename
+          #$curl -L $url >$filename
         else
-          $curl -OL $url
+          #$curl -OL $url
         fi
         popd
 
