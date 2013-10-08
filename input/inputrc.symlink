@@ -9,7 +9,7 @@ set completion-ignore-case on
 # named files and you are not sure how far the completion has gone when you 
 # press TAB. The first part that has been completed will be replaced by "...", 
 # and it is simple to see what you need to type to finish the completion.
-set completion-prefix-display-length 2
+#set completion-prefix-display-length 2
 
 # List all matches in case multiple possible completions are possible
 

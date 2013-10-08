@@ -76,106 +76,6 @@ set -g default-terminal "screen-256color"
 bind o set-option -g status
 set-option -g status-position top
 
-# Bad Wolf
-set -g status-fg white
-set -g status-bg colour234
-set -g window-status-activity-attr bold
-set -g pane-border-fg colour245
-set -g pane-active-border-fg colour39
-set -g message-fg colour16
-set -g message-bg colour221
-set -g message-attr bold
-
-# Custom status bar
-# Powerline symbols: ⮂ ⮃ ⮀ ⮁ ⭤
-set -g status-left-length 32
-set -g status-right-length 150
-set -g status-interval 5
-
-#set -g status-left '#[fg=colour16,bg=colour254,bold] #S #[fg=colour254,bg=colour238,nobold]#[fg=colour15,bg=colour238,bold] '
-
-#set -g status-right '#[fg=colour245] %R  %d %b #[fg=colour254,bg=colour234,nobold] #[fg=colour16,bg=colour254,bold] #h '
-
-#set -g window-status-format "#[fg=white,bg=colour234] #I #W "
-#set -g window-status-current-format "#[fg=colour234,bg=colour39]#[fg=colour16,bg=colour39,noreverse,bold] #I #W #[fg=colour39,bg=colour234,nobold] "
-
-############
-
-set-window-option -g status-bg colour234 # Gray
-
-# Status bar left side
-#
-set-window-option -g status-left ""
-
-# Show session name
-#set-window-option -g status-left "#[bg=colour240,fg=white] #S
-#[fg=colour236,reverse]${TMUX_POWERLINE_SYMBOL_RIGHT_FULL}"
-#set-window-option -g status-left-length 40
-
-#
-# Status bar right side
-#
-set-window-option -g status-right "#[fg=colour244]#S:#I:#P #[fg=colour240]#[fg=colour231,bg=colour240] #H #[fg=colour252]#[fg=black,bg=colour252,nobold] %b %d %a #[bold]%H:%M "
-set-window-option -g status-right-length 80
-
-#
-# Status bar window without activity
-#
-set-window-option -g window-status-format "#[fg=colour236,nounderscore]#[default,bold,nounderscore] #I #[fg=colour236,reverse]"
-set-window-option -g window-status-format "#[fg=colour236,nounderscore]#[default,bold,nounderscore] #I #[fg=colour240,reverse]#[default]#[bg=colour240]#[nounderscore]#[default]#[fg=colour245,bg=colour236] #W #[nounderscore]#[fg=colour236,reverse]"
-
-# Black on green
-set-window-option -g window-status-attr none
-set-window-option -g window-status-bg colour76
-set-window-option -g window-status-fg black
-
-# Black on white
-set-window-option -g window-status-bg colour240
-set-window-option -g window-status-fg black
-
-# Green more alike non-256color
-#set-window-option -g window-status-bg colour40
-
-#
-# Status bar window currently active
-#
-set-window-option -g window-status-current-format "#[fg=colour236]#[default,fg=colour231,bold] #I #[default,fg=colour236,reverse]"
-set-window-option -g window-status-current-format "#[fg=colour236]#[default,bold] #I #[fg=colour117,reverse]#[default]#[bg=colour117] #W #[fg=colour236,reverse]"
-
-set-window-option -g window-status-current-attr none
-set-window-option -g window-status-current-bg colour33 # Green
-set-window-option -g window-status-current-fg black
-
-#
-# Status bar window last active (Tmux 1.8+)
-#
-set-window-option -g window-status-last-attr none
-set-window-option -g window-status-last-bg cyan
-#set-window-option -g window-status-last-bg colour246
-set-window-option -g window-status-last-fg black
-
-#
-# Status bar window with activity/silence (monitor-activity,
-#                monitor-silen
-set-window-option -g window-status-activity-attr bold
-set-window-option -g window-status-activity-bg colour127 # Pink
-set-window-option -g window-status-activity-fg black
-
-#
-# Status bar window with bell triggered
-#
-set-window-option -g window-status-bell-attr bold
-set-window-option -g window-status-bell-bg red
-set-window-option -g window-status-bell-fg black
-
-#
-# Status bar window with content found (monitor-content)
-#
-set-window-option -g window-status-content-attr bold
-set-window-option -g window-status-content-bg colour226 
-set-window-option -g window-status-content-fg black
-
-###########
 # Activity
 setw -g monitor-activity on
 set -g visual-activity off
@@ -206,3 +106,72 @@ unbind -t vi-copy Enter
 bind -t vi-copy Enter copy-pipe "reattach-to-user-namespace pbcopy"
 
 bind -t vi-copy Escape cancel
+
+# Appearance
+set -g status-fg white
+set -g status-bg colour234
+set -g window-status-activity-attr bold
+set -g pane-border-fg colour245
+set -g pane-active-border-fg colour39
+set -g message-fg colour16
+set -g message-bg colour221
+set -g message-attr bold
+
+# Custom status bar
+# set -g status-left-length 32
+# set -g status-right-length 150
+set -g status-interval 5
+
+set-window-option -g status-bg colour234 # Gray
+
+# Status bar left side
+set-window-option -g status-left ""
+
+#set-window-option -g status-left-length 40
+
+# Status bar right side
+set-window-option -g status-right "#[fg=colour244]#S:#I:#P #[fg=colour240]#[fg=colour231,bg=colour240] #H #[fg=colour252]#[fg=black,bg=colour252,nobold] %b %d %a #[bold]%H:%M "
+set-window-option -g status-right-length 80
+
+# Status bar window without activity
+set-window-option -g window-status-format "#[fg=colour236,nounderscore]#[default,bold,nounderscore] #I #[fg=colour236,reverse]"
+set-window-option -g window-status-format "#[fg=colour236,nounderscore]#[default,bold,nounderscore] #I #[fg=colour240,reverse]#[default]#[bg=colour240]#[nounderscore]#[default]#[fg=colour245,bg=colour236] #W #[nounderscore]#[fg=colour236,reverse]"
+
+# Black on green
+# set-window-option -g window-status-attr none
+# set-window-option -g window-status-bg colour76
+# set-window-option -g window-status-fg black
+
+# Black on white
+set-window-option -g window-status-bg colour240
+set-window-option -g window-status-fg black
+
+# Status bar window currently active
+set-window-option -g window-status-current-format "#[fg=colour236]#[default,fg=colour231,bold] #I #[default,fg=colour236,reverse]"
+set-window-option -g window-status-current-format "#[fg=colour236]#[default,bold] #I #[fg=colour117,reverse]#[default]#[bg=colour117] #W #[fg=colour236,reverse]"
+
+set-window-option -g window-status-current-attr none
+set-window-option -g window-status-current-bg colour33 # Green
+set-window-option -g window-status-current-fg black
+
+# Status bar window last active (Tmux 1.8+)
+set-window-option -g window-status-last-attr none
+set-window-option -g window-status-last-bg cyan
+#set-window-option -g window-status-last-bg colour246
+set-window-option -g window-status-last-fg black
+
+# Status bar window with activity/silence (monitor-activity, monitor-silent)
+set-window-option -g window-status-activity-attr bold
+set-window-option -g window-status-activity-bg colour127 # Pink
+set-window-option -g window-status-activity-fg black
+
+# Status bar window with bell triggered
+set-window-option -g window-status-bell-attr bold
+set-window-option -g window-status-bell-bg red
+set-window-option -g window-status-bell-fg black
+
+# Status bar window with content found (monitor-content)
+set-window-option -g window-status-content-attr bold
+set-window-option -g window-status-content-bg colour226 
+set-window-option -g window-status-content-fg black
+

@@ -56,5 +56,3 @@ fi
 if [ -r $DOTFILES_ROOT/bash/bash_prompt ]; then
     source $DOTFILES_ROOT/bash/bash_prompt
 fi
-
-#[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
