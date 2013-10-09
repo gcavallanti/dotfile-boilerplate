@@ -36,24 +36,10 @@ bind j select-pane -D
 bind k select-pane -U
 bind l select-pane -R
 
-# DVTM style pane selection
-#bind 1 select-pane -t 1
-#bind 2 select-pane -t 2
-#bind 3 select-pane -t 3
-#bind 4 select-pane -t 4
-#bind 5 select-pane -t 5
-#bind 6 select-pane -t 6
-#bind 7 select-pane -t 7
-#bind 8 select-pane -t 8
-#bind 9 select-pane -t 9
-
 # Layouts
 set -g main-pane-width 260
 bind M select-layout main-vertical
 bind E select-layout even-horizontal
-
-bind-key C-a last-window
-#bind C-m last-window
 
 # Pane resizing
 bind -r H resize-pane -L 5
@@ -62,17 +48,14 @@ bind -r K resize-pane -U 5
 bind -r L resize-pane -R 5
 
 # Window movement
-# Only really makes sense if you have your parens bound to shifts like me.
 bind -r C-h select-window -t :- 
 bind -r C-l select-window -t :+
-#bind -r ( select-window -t :-
-#bind -r ) select-window -t :+
-#bind-key -r H swap-window -t -1
-#bind-key -r L swap-window -t +1
+bind-key C-q last-window
 
 # 256 colors please
 set -g default-terminal "screen-256color"
 
+# Status line
 bind o set-option -g status
 set-option -g status-position top
 
@@ -87,8 +70,6 @@ setw -g automatic-rename on
 bind c new-window
 bind , command-prompt "rename-window '%%'"
 
-set-option -g default-command "reattach-to-user-namespace -l bash"
-
 # Copy mode
 setw -g mode-keys vi
 bind ` copy-mode
@@ -97,81 +78,61 @@ unbind p
 bind p paste-buffer
 bind -t vi-copy H start-of-line
 bind -t vi-copy L end-of-line
-# Setup 'v' to begin selection as in Vim
 bind -t vi-copy v begin-selection
-bind -t vi-copy y copy-pipe "reattach-to-user-namespace pbcopy"
-#bind y run "tmux save-buffer - | reattach-to-user-namespace pbcopy"
-# Update default binding of `Enter` to also use copy-pipe
-unbind -t vi-copy Enter
-bind -t vi-copy Enter copy-pipe "reattach-to-user-namespace pbcopy"
-
+#bind -t vi-copy y copy-pipe "reattach-to-user-namespace pbcopy"
+bind -t vi-copy y copy-selection
+bind y run "tmux save-buffer - | xclip -i -selection clipboard"
 bind -t vi-copy Escape cancel
 
-# Appearance
-set -g status-fg white
-set -g status-bg colour234
-set -g window-status-activity-attr bold
+# Panes
 set -g pane-border-fg colour245
 set -g pane-active-border-fg colour39
+
+# Message
 set -g message-fg colour16
 set -g message-bg colour221
 set -g message-attr bold
 
-# Custom status bar
-# set -g status-left-length 32
-# set -g status-right-length 150
+# status bar
+set -g status-fg white
+set -g status-bg colour234
 set -g status-interval 5
-
-set-window-option -g status-bg colour234 # Gray
 
 # Status bar left side
 set-window-option -g status-left ""
-
-#set-window-option -g status-left-length 40
+set-window-option -g status-left-length 40
 
 # Status bar right side
-set-window-option -g status-right "#[fg=colour244]#S:#I:#P #[fg=colour240]#[fg=colour231,bg=colour240] #H #[fg=colour252]#[fg=black,bg=colour252,nobold] %b %d %a #[bold]%H:%M "
+set-window-option -g status-right "#[fg=colour244]#S:#I:#P #[fg=colour231,bg=colour240] #H #[fg=black,bg=colour252] %b %d %a %H:%M "
 set-window-option -g status-right-length 80
 
+# Status bar window currently active
+set-window-option -g window-status-current-format "#[default] #I #[fg=black,bg=colour117] #W "
+set-window-option -g window-status-current-attr none
+set-window-option -g window-status-current-bg colour33
+set-window-option -g window-status-current-fg black
+
 # Status bar window without activity
-set-window-option -g window-status-format "#[fg=colour236,nounderscore]#[default,bold,nounderscore] #I #[fg=colour236,reverse]"
-set-window-option -g window-status-format "#[fg=colour236,nounderscore]#[default,bold,nounderscore] #I #[fg=colour240,reverse]#[default]#[bg=colour240]#[nounderscore]#[default]#[fg=colour245,bg=colour236] #W #[nounderscore]#[fg=colour236,reverse]"
-
-# Black on green
-# set-window-option -g window-status-attr none
-# set-window-option -g window-status-bg colour76
-# set-window-option -g window-status-fg black
-
-# Black on white
+set-window-option -g window-status-format "#[default] #I #[fg=colour245,bg=colour236] #W "
 set-window-option -g window-status-bg colour240
 set-window-option -g window-status-fg black
-
-# Status bar window currently active
-set-window-option -g window-status-current-format "#[fg=colour236]#[default,fg=colour231,bold] #I #[default,fg=colour236,reverse]"
-set-window-option -g window-status-current-format "#[fg=colour236]#[default,bold] #I #[fg=colour117,reverse]#[default]#[bg=colour117] #W #[fg=colour236,reverse]"
-
-set-window-option -g window-status-current-attr none
-set-window-option -g window-status-current-bg colour33 # Green
-set-window-option -g window-status-current-fg black
 
 # Status bar window last active (Tmux 1.8+)
 set-window-option -g window-status-last-attr none
 set-window-option -g window-status-last-bg cyan
-#set-window-option -g window-status-last-bg colour246
 set-window-option -g window-status-last-fg black
 
 # Status bar window with activity/silence (monitor-activity, monitor-silent)
-set-window-option -g window-status-activity-attr bold
-set-window-option -g window-status-activity-bg colour127 # Pink
+set-window-option -g window-status-activity-attr none
+set-window-option -g window-status-activity-bg colour127
 set-window-option -g window-status-activity-fg black
 
 # Status bar window with bell triggered
-set-window-option -g window-status-bell-attr bold
+set-window-option -g window-status-bell-attr none
 set-window-option -g window-status-bell-bg red
 set-window-option -g window-status-bell-fg black
 
 # Status bar window with content found (monitor-content)
-set-window-option -g window-status-content-attr bold
+set-window-option -g window-status-content-attr none
 set-window-option -g window-status-content-bg colour226 
 set-window-option -g window-status-content-fg black
-
