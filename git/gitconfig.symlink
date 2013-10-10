@@ -30,6 +30,7 @@
 	reb = "!r() { git rebase -i HEAD~$1; }; r"
         # Remove all deleted files
         rma = !git rm $(git ls-files -d)
+	g = grep --break --heading --line-number
 
 [apply]
 	# Detect whitespace errors when applying a patch
@@ -69,3 +70,6 @@
 	email = gcavallanti@gmail.com
 [credential]
 	helper = cache --timeout=3600
+[grep]
+	lineNumber = true
+	extendRegexp = true
