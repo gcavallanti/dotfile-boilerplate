@@ -40,11 +40,13 @@ let s:bwc.snow = ['ffffff', 15]
 let s:bwc.coal = ['000000', 16]
 
 " All of the Gravel colors are based on a brown from Clouds Midnight.
+let s:bwc.brightestgravel   = ['d9cec3', 255]
 let s:bwc.brightgravel   = ['d9cec3', 252]
 let s:bwc.lightgravel    = ['998f84', 245]
 let s:bwc.gravel         = ['857f78', 243]
 let s:bwc.mediumgravel   = ['666462', 241]
-let s:bwc.deepgravel     = ['45413b', 238]
+let s:bwc.deepgravel     = ['45413b', 240]
+let s:bwc.deepestgravel     = ['45413b', 237]
 let s:bwc.deepergravel   = ['35322d', 236]
 let s:bwc.darkgravel     = ['242321', 235]
 let s:bwc.blackgravel    = ['1c1b1a', 233]
@@ -157,11 +159,12 @@ call s:HL('Normal', 'plain', 'blackgravel')
 
 call s:HL('Folded', 'mediumgravel', 'bg', 'none')
 
-call s:HL('VertSplit', 'lightgravel', 'bg', 'none')
+call s:HL('VertSplit', 'darkgravel', 'bg', 'none')
+" call s:HL('VertSplit', 'lightgravel', 'bg', 'none')
 
-call s:HL('CursorLine',   '', 'darkgravel', 'none')
-call s:HL('CursorColumn', '', 'darkgravel')
-call s:HL('ColorColumn',  '', 'darkgravel')
+call s:HL('CursorLine',   '', 'blackestgravel', 'none')
+call s:HL('CursorColumn', '', 'blackestgravel')
+call s:HL('ColorColumn',  '', 'blackestgravel')
 
 call s:HL('TabLine', 'plain', s:tabline, 'none')
 call s:HL('TabLineFill', 'plain', s:tabline, 'none')
@@ -175,13 +178,23 @@ call s:HL('SpecialKey', 'deepgravel', 'bg')
 call s:HL('Visual',    '',  'deepergravel')
 call s:HL('VisualNOS', '',  'deepergravel')
 
-call s:HL('Search',    'coal', 'dalespale', 'bold')
-call s:HL('IncSearch', 'coal', 'tardis',    'bold')
+call s:HL('Search',    'snow', 'darkroast', 'bold')
+call s:HL('IncSearch', 'snow', 'taffy',    'bold')
 
 call s:HL('Underlined', 'fg', '', 'underline')
 
-call s:HL('StatusLine',   'coal', 'tardis',     'bold')
-call s:HL('StatusLineNC', 'snow', 'deepgravel', 'bold')
+call s:HL('StatusLine',   'brightestgravel', 'darkgravel',     'bold')
+call s:HL('StatusLineNC', 'deepgravel', 'blackestgravel', 'bold')
+call s:HL('User1', 'brightestgravel', 'darkgravel', 'bold')
+call s:HL('User2', 'snow', 'orange', 'bold')
+call s:HL('User3', 'gravel', 'darkgravel', 'bold')
+call s:HL('User4', 'brightestgravel', 'darkgravel', 'bold')
+call s:HL('User5', 'brightestgravel', 'deepergravel', 'bold')
+call s:HL('User6', 'snow', 'deepgravel', 'bold')
+call s:HL('User7', 'snow', 'taffy', 'bold')
+call s:HL('User8', 'snow', 'tardis', 'bold')
+call s:HL('User9', 'snow', 'toffee', 'bold')
+call s:HL('User0', 'snow', 'deepgravel', 'bold')
 
 call s:HL('Directory', 'dirtyblonde', '', 'bold')
 
@@ -202,7 +215,7 @@ call s:HL('Tag', '', '', 'bold')
 " }}}
 " Gutter {{{
 
-call s:HL('LineNr',     'deepgravel', s:gutter)
+call s:HL('LineNr',     'deepestgravel', s:gutter)
 call s:HL('SignColumn', '',             s:gutter)
 call s:HL('FoldColumn', 'mediumgravel', s:gutter)
 
@@ -487,7 +500,7 @@ else
     call s:HL('htmlLink', 'lightgravel', '', 'none')
 endif
 
-" }}}
+" }}} 
 " Java {{{
 
 call s:HL('javaClassDecl', 'taffy', '', 'bold')
