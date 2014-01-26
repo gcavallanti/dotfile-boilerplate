@@ -61,17 +61,7 @@ fi
 # Modified/Stolen from:
 # http://mths.be/dotfiles
 
-# Easier navigation: .., ..., ...., ....., ~ and -
-alias ..="cd .."
-alias ...="cd ../.."
-alias ....="cd ../../.."
-alias .....="cd ../../../.."
-alias -- -="cd -"
-
 # Shortcuts
-alias h="history"
-alias j="jobs"
-alias v="vim"
 alias ll="ls -AlFh"
 
 # Detect which `ls` flavor is in use
@@ -201,18 +191,15 @@ if [[ $(uname -s) == "Darwin" ]]; then
 elif [[ $(uname -s) == "Linux" ]]; then
     :
 fi
-
 # Prompt ----------------------------------------------------------------------
 if [[ -n $(type -t __git_ps1) ]]; then
-    
     export GIT_PS1_SHOWDIRTYSTATE=1
     export GIT_PS1_SHOWSTASHSTATE=1
     export GIT_PS1_SHOWUNTRACKEDFILES=1
-    export GIT_PS1_SHOWUPSTREAM="verbose,vim"
+    export GIT_PS1_SHOWUPSTREAM="verbose"
+    export GIT_PS1_SHOWCOLORHINTS=1
    
     PS1="\[${BOLD}${RED}\]\u \[$RESET\]at \[$YELLOW\]\h \[$RESET\]in \[$BLUE\]\w\$(__git_ps1 \"\[$RESET\] on \[$CYAN\]%s\"  )\[$RESET\]\n\$ "
-    #PS1="\[${BOLD}${RED}\]\u \[$RESET\]at \[$YELLOW\]\h \[$RESET\]in \[$GREEN\]\w\$(__git_ps1 \"\[$RESET\] on \[$CYAN\]%s\"  )\[$RESET\]\n\$ "
-    #PS1="\[${BOLD}${GREEN}\]\u \[$RESET\]at \[$CYAN\]\h \[$RESET\]in \[$BLUE\]\w\$(__git_ps1 \"\[$RESET\] on \[$MAGENTA\]%s\"  )\[$RESET\]\n\$ "
 else
     
     parse_git_dirty () {
