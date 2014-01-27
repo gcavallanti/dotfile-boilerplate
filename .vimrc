@@ -207,13 +207,14 @@ endfunction
  " hi User3 ctermfg=242 ctermbg=235
  " hi User4 ctermfg=255 ctermbg=235
 " "
-set statusline=\ \ %1*%t%3*
+set statusline=\ \ %4*%t%3*
 set statusline+=%4*%m%3*
 set statusline+=%4*%h%3*
 set statusline+=%4*%r%3*
 set statusline+=%4*%w%3*
 set statusline+=%4*%q%3*
 set statusline+=%3*%4*%{&bomb?'[bomb]':''}%3*
+"set statusline+=%4*%{exists('g:loaded_fugitive')?fugitive#statusline():''}%3*
 "set statusline+=%4*%{fugitive#statusline()}%3*
 set statusline+=\ \ %3*fenc:%4*%{(&fenc!='')?&fenc:'none'}%3*\ \ 
 set statusline+=%3*ff:%4*%{&ff}%3*\ \ 
@@ -228,28 +229,13 @@ set statusline+=%0*%=
 "set statusline+=%{SyntasticStatuslineFlag()}
 set statusline+=%4*%{&paste?'[paste]':''}%3*
 set statusline+=\ \ %3*mode:%4*%{mode()}%3*\ \ 
-set statusline+=%5*%{ProgressBar(20)}%3*\ \ 
+"set statusline+=%5*%{ScrollBar(20)}%3*\ \ 
+set statusline+=%5*%{exists('g:scrollbar_loaded')?ScrollBar(20):''}%3*
 "set statusline+=%3*pos:%4*%3P%3*\ \ 
 set statusline+=%3*col:%4*%2c\ \ 
 set statusline+=%3*line:%4*%3l/%3L\ \ 
 
-function! ProgressBar(...)
-    let top_line = line("w0")
-    let bottom_line = line("w$")
-    let current_line = line('.')
-    let lines_count = line('$')
-
-    if a:1 
-        let size = str2nr(a:1)
-    else
-        let size = 10
-    endif
-    let pos = float2nr((current_line * 1.0) / (lines_count * 1.0) * size)
-    let progress_bar = repeat(' ', pos) . '::' . repeat(' ',size-pos)
-    return progress_bar
-endfunction
-
-function! Mode()
+ function! Mode()
     redraw
     let l:mode = mode()
     
