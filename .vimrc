@@ -828,7 +828,7 @@ else
             " tmux knows the extended mouse mode
             set ttymouse=xterm2
         endif
-    set clipboard=unnamed
+    set clipboard=unnamed,unnamedplus
 endif
 
 " }}}
