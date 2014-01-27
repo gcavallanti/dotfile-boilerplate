@@ -4,6 +4,7 @@ curl -Sso ~/.vim/autoload/pathogen.vim https://raw.github.com/tpope/vim-pathogen
 cd ~/.vim/bundle
 git clone https://github.com/tpope/vim-sensible.git
 git clone https://github.com/gcavn/trafficlights.git
+git clone https://github.com/gcavn/scrollbar.vim.git
 git clone https://github.com/kien/ctrlp.vim.git
 git clone https://github.com/jamessan/vim-gnupg.git
 git clone https://github.com/AndrewRadev/linediff.vim.git
