@@ -214,7 +214,7 @@ set statusline+=%4*%r%3*
 set statusline+=%4*%w%3*
 set statusline+=%4*%q%3*
 set statusline+=%3*%4*%{&bomb?'[bomb]':''}%3*
-"set statusline+=%4*%{exists('g:loaded_fugitive')?fugitive#statusline():''}%3*
+set statusline+=%4*%{exists('g:loaded_fugitive')?fugitive#statusline():''}%3*
 "set statusline+=%4*%{fugitive#statusline()}%3*
 set statusline+=\ \ %3*fenc:%4*%{(&fenc!='')?&fenc:'none'}%3*\ \ 
 set statusline+=%3*ff:%4*%{&ff}%3*\ \ 
@@ -227,10 +227,11 @@ set statusline+=%3*ft:%4*%{(&ft!='')?&ft:'<none>'}\ \
 set statusline+=%<%3*cwd:%4*%{getcwd()}\ \ 
 set statusline+=%0*%=
 "set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%5*%{exists('g:loaded_syntastic_plugin')?SyntasticStatuslineFlag():''}%3*\ \ 
 set statusline+=%4*%{&paste?'[paste]':''}%3*
 set statusline+=\ \ %3*mode:%4*%{mode()}%3*\ \ 
 "set statusline+=%5*%{ScrollBar(20)}%3*\ \ 
-set statusline+=%5*%{exists('g:scrollbar_loaded')?ScrollBar(20):''}%3*
+set statusline+=%5*%{exists('g:scrollbar_loaded')?ScrollBar(20):''}%3*\ \ 
 "set statusline+=%3*pos:%4*%3P%3*\ \ 
 set statusline+=%3*col:%4*%2c\ \ 
 set statusline+=%3*line:%4*%3l/%3L\ \ 
