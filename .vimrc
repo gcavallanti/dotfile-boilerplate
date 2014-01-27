@@ -176,6 +176,7 @@ endif
 syntax on
 set background=dark
 let g:trafficlights_tabline = 2
+let g:trafficlights_darkgutter = 1 
 let g:trafficlights_html_link_underline = 0
 colorscheme trafficlights
 
