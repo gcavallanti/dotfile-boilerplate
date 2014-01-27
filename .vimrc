@@ -210,8 +210,10 @@ set statusline=\ \ %1*%t%3*
 set statusline+=%4*%m%3*
 set statusline+=%4*%h%3*
 set statusline+=%4*%r%3*
+set statusline+=%4*%w%3*
+set statusline+=%4*%q%3*
 set statusline+=%3*%4*%{&bomb?'[bomb]':''}%3*
-set statusline+=%4*%{fugitive#statusline()}%3*
+"set statusline+=%4*%{fugitive#statusline()}%3*
 set statusline+=\ \ %3*fenc:%4*%{(&fenc!='')?&fenc:'none'}%3*\ \ 
 set statusline+=%3*ff:%4*%{&ff}%3*\ \ 
 set statusline+=%3*ft:%4*%{(&ft!='')?&ft:'<none>'}\ \ 
@@ -222,7 +224,7 @@ set statusline+=%3*ft:%4*%{(&ft!='')?&ft:'<none>'}\ \
 " set statusline+=%3*,%4*%{&et?'et':'noet'}\ \ 
 set statusline+=%<%3*cwd:%4*%{getcwd()}\ \ 
 set statusline+=%0*%=
-set statusline+=%{SyntasticStatuslineFlag()}
+"set statusline+=%{SyntasticStatuslineFlag()}
 set statusline+=%4*%{&paste?'[paste]':''}%3*
 set statusline+=\ \ %3*mode:%4*%{mode()}%3*\ \ 
 set statusline+=%5*%{ProgressBar(20)}%3*\ \ 
@@ -242,7 +244,7 @@ function! ProgressBar(...)
         let size = 10
     endif
     let pos = float2nr((current_line * 1.0) / (lines_count * 1.0) * size)
-    let progress_bar = repeat(' ', pos) . '==' . repeat(' ',size-pos)
+    let progress_bar = repeat(' ', pos) . '::' . repeat(' ',size-pos)
     return progress_bar
 endfunction
 
@@ -826,7 +828,7 @@ else
             " tmux knows the extended mouse mode
             set ttymouse=xterm2
         endif
-    set clipboard=unnamedplus
+    set clipboard=unnamed
 endif
 
 " }}}
