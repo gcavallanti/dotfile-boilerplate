@@ -42,6 +42,7 @@ set autowrite
 set autoread
 set shiftround
 set title
+set cursorline
 "set linebreak
 "set dictionary=/usr/share/dict/words
 "set spellfile=~/.vim/custom-dictionary.utf-8.add
