@@ -104,8 +104,8 @@ augroup END
 " Only shown when not in insert mode so I don't go insane.
 augroup trailing
     au!
-    au InsertEnter * :set listchars-=trail:␣
-    au InsertLeave * :set listchars+=trail:␣
+    au InsertEnter * :set listchars-=trail:⋅
+    au InsertLeave * :set listchars+=trail:⋅
 augroup END
 " }}}
 
@@ -177,7 +177,7 @@ endif
 syntax on
 set background=dark
 let g:trafficlights_tabline = 2
-let g:trafficlights_darkgutter = 1 
+let g:trafficlights_darkgutter = 0 
 let g:trafficlights_html_link_underline = 0
 colorscheme trafficlights
 
@@ -191,24 +191,7 @@ function! GetCWD()
   return expand(":pwd")
 endfunction
 
-function! IsHelp()
-  return &bu:ftype=='help'?' (help) ':''
-endfunction
-
-function! GetName()
-  return expand("%:t")==''?'<none>':expand("%:t")
-endfunction
-
- " hi User1 ctermfg=250 ctermbg=33
- " hi User3 ctermfg=242 
- " hi User4 ctermfg=255
-" " hi User5 ctermfg=242 ctermbg=236
-" hi User6 ctermfg=250 ctermbg=235
- " hi User1 ctermfg=250 ctermbg=235
- " hi User3 ctermfg=242 ctermbg=235
- " hi User4 ctermfg=255 ctermbg=235
-" "
-set statusline=\ \ %4*%t%3*
+set statusline=\ \ %4*%F%3*\ \ 
 set statusline+=%4*%m%3*
 set statusline+=%4*%h%3*
 set statusline+=%4*%r%3*
@@ -220,187 +203,41 @@ set statusline+=%4*%{exists('g:loaded_fugitive')?fugitive#statusline():''}%3*
 set statusline+=\ \ %3*fenc:%4*%{(&fenc!='')?&fenc:'none'}%3*\ \ 
 set statusline+=%3*ff:%4*%{&ff}%3*\ \ 
 set statusline+=%3*ft:%4*%{(&ft!='')?&ft:'<none>'}\ \ 
+" set statusline+=%3*ft:%4*%{(&ft!='')?((&ft!='vim')?&ft:''):'<none>'}\ \ 
 " set statusline+=%5*%{v:register}%3*\ \ 
 " set statusline+=%3*tab:%4*%{&ts}
 " set statusline+=%3*,%4*%{&sts}
 " set statusline+=%3*,%4*%{&sw}
 " set statusline+=%3*,%4*%{&et?'et':'noet'}\ \ 
-set statusline+=%<%3*cwd:%4*%{getcwd()}\ \ 
 set statusline+=%0*%=
 "set statusline+=%{SyntasticStatuslineFlag()}
 set statusline+=%5*%{exists('g:loaded_syntastic_plugin')?SyntasticStatuslineFlag():''}%3*\ \ 
 set statusline+=%4*%{&paste?'[paste]':''}%3*
-set statusline+=\ \ %3*mode:%4*%{mode()}%3*\ \ 
+set statusline+=\ \ %3*mode:%1*%{Mode()}%3*\ \ 
 "set statusline+=%5*%{ScrollBar(20)}%3*\ \ 
 set statusline+=%5*%{exists('g:scrollbar_loaded')?ScrollBar(20):''}%3*\ \ 
 "set statusline+=%3*pos:%4*%3P%3*\ \ 
-set statusline+=%3*col:%4*%2c\ \ 
+set statusline+=%3*col:%4*%3c\ \ 
 set statusline+=%3*line:%4*%3l/%3L\ \ 
 
- function! Mode()
+function! Mode()
     redraw
     let l:mode = mode()
-    
-    if mode ==# "n" | exec 'hi User1 ' . 'ctermfg=250 ctermbg=235' | return "NORMAL"
-    elseif mode ==# "i" | exec 'hi User1 ' . 'ctermfg=250 ctermbg=235' | return "INSERT"
-    elseif mode ==# "R" | exec 'hi User1 ' . 'ctermfg=250 ctermbg=235' | return "REPLACE"
-    elseif mode ==# "v" | exec 'hi User1 ' . 'ctermfg=250 ctermbg=235' | return "VISUAL"
-    elseif mode ==# "V" | exec 'hi User1 ' . 'ctermfg=250 ctermbg=235' | return "V-LINE"
-    elseif mode ==# "" | exec 'hi User1 ' . 'ctermfg=250 ctermbg=235' | return "V-BLOCK"
+
+    if mode ==# "n" | exec 'hi User1 ' . 'ctermfg=255 ctermbg=236' | return "NORMAL"
+    elseif mode ==# "i" | exec 'hi User1 ' . 'ctermfg=243 ctermbg=236' | return "INSERT"
+    elseif mode ==# "R" | exec 'hi User1 ' . 'ctermfg=134 ctermbg=236' | return "REPLACE"
+    elseif mode ==# "v" | exec 'hi User1 ' . 'ctermfg=250 ctermbg=236' | return "VISUAL"
+    elseif mode ==# "V" | exec 'hi User1 ' . 'ctermfg=250 ctermbg=236' | return "V-LINE"
+    elseif mode ==# "" | exec 'hi User1 ' . 'ctermfg=250 ctermbg=236' | return "V-BLOCK"
     else | return l:mode
     endif
 endfunc 
-
-"recalculate the trailing whitespace warning when idle, and after saving
-autocmd cursorhold,bufwritepost * unlet! b:statusline_trailing_space_warning
-
-"return '[\s]' if trailing white space is detected
-"return '' otherwise
-function! StatuslineTrailingSpaceWarning()
-    if !exists("b:statusline_trailing_space_warning")
-
-        if !&modifiable
-            let b:statusline_trailing_space_warning = ''
-            return b:statusline_trailing_space_warning
-        endif
-
-        if search('\s\+$', 'nw') != 0
-            let b:statusline_trailing_space_warning = '[\s]'
-        else
-            let b:statusline_trailing_space_warning = ''
-        endif
-    endif
-    return b:statusline_trailing_space_warning
-endfunction
-
-
-"return the syntax highlight group under the cursor ''
-function! StatuslineCurrentHighlight()
-    let name = synIDattr(synID(line('.'),col('.'),1),'name')
-    if name == ''
-        return ''
-    else
-        return '[' . name . ']'
-    endif
-endfunction
-
-"recalculate the tab warning flag when idle and after writing
-autocmd cursorhold,bufwritepost * unlet! b:statusline_tab_warning
-
-"return '[&et]' if &et is set wrong
-"return '[mixed-indenting]' if spaces and tabs are used to indent
-"return an empty string if everything is fine
-function! StatuslineTabWarning()
-    if !exists("b:statusline_tab_warning")
-        let b:statusline_tab_warning = ''
-
-        if !&modifiable
-            return b:statusline_tab_warning
-        endif
-
-        let tabs = search('^\t', 'nw') != 0
-
-"find spaces that arent used as alignment in the first indent column
-        let spaces = search('^ \{' . &ts . ',}[^\t]', 'nw') != 0
-
-        if tabs && spaces
-            let b:statusline_tab_warning = '[mixed-indenting]'
-        elseif (spaces && !&et) || (tabs && &et)
-            let b:statusline_tab_warning = '[&et]'
-        endif
-    endif
-    return b:statusline_tab_warning
-endfunction
-
-"recalculate the long line warning when idle and after saving
-autocmd cursorhold,bufwritepost * unlet! b:statusline_long_line_warning
-
-"return a warning for "long lines" where "long" is either &textwidth or 80 (if
-"no &textwidth is set)
-"
-"return '' if no long lines
-"return '[#x,my,$z] if long lines are found, were x is the number of long
-"lines, y is the median length of the long lines and z is the length of the
-"longest line
-function! StatuslineLongLineWarning()
-    if !exists("b:statusline_long_line_warning")
-
-        if !&modifiable
-            let b:statusline_long_line_warning = ''
-            return b:statusline_long_line_warning
-        endif
-
-        let long_line_lens = s:LongLines()
-
-        if len(long_line_lens) > 0
-            let b:statusline_long_line_warning = "[" .
-                        \ '#' . len(long_line_lens) . "," .
-                        \ 'm' . s:Median(long_line_lens) . "," .
-                        \ '$' . max(long_line_lens) . "]"
-        else
-            let b:statusline_long_line_warning = ""
-        endif
-    endif
-    return b:statusline_long_line_warning
-endfunction
-
-"return a list containing the lengths of the long lines in this buffer
-function! s:LongLines()
-    let threshold = (&tw ? &tw : 80)
-    let spaces = repeat(" ", &ts)
-    let line_lens = map(getline(1,'$'), 'len(substitute(v:val, "\\t", spaces, "g"))')
-    return filter(line_lens, 'v:val > threshold')
-endfunction
-
-"find the median of the given array of numbers
-function! s:Median(nums)
-    let nums = sort(a:nums)
-    let l = len(nums)
-
-    if l % 2 == 1
-        let i = (l-1) / 2
-        return nums[i]
-    else
-        return (nums[l/2] + nums[(l/2)-1]) / 2
-    endif
-endfunction
-
-" set statusline=
-" set statusline+=%7*\[%n]                                  "buffernr
-" set statusline+=%1*\ %<%F\                                "File+path
-" set statusline+=%2*\ %y\                                  "FileType
-" set statusline+=%3*\ %{''.(&fenc!=''?&fenc:&enc).''}      "Encoding
-" set statusline+=%3*\ %{(&bomb?\",BOM\":\"\")}\            "Encoding2
-" set statusline+=%4*\ %{&ff}\                              "FileFormat (dos/unix..) 
-" set statusline+=%5*\ %{&spelllang}\%{HighlightSearch()}\  "Spellanguage & Highlight on?
-" set statusline+=%8*\ %=\ row:%l/%L\ (%03p%%)\             "Rownumber/total (%)
-" set statusline+=%9*\ col:%03c\                            "Colnr
-" set statusline+=%0*\ \ %m%r%w\ %{v:register}\ C%P\ \                      "Modified? Readonly? Top/bot.
-
-" function! HighlightSearch()
-"   if &hls
-"     return 'H'
-"   else
-"     return ''
-"   endif
-" endfunction
-
-" hi User1 guifg=#ffdad8  guibg=#880c0e
-" hi User2 guifg=#000000  guibg=#F4905C
-" hi User3 guifg=#292b00  guibg=#f4f597
-" hi User4 guifg=#112605  guibg=#aefe7B
-" hi User5 guifg=#051d00  guibg=#7dcc7d
-" hi User7 guifg=#ffffff  guibg=#880c0e gui=bold
-" hi User8 guifg=#ffffff  guibg=#5b7fbb
-" hi User9 guifg=#ffffff  guibg=#810085
-" hi User0 guifg=#ffffff  guibg=#094afe
 
 " Highlight VCS conflict markers
 match ErrorMsg '^\(<\|=\|>\)\{7\}\([^=].\+\)\?$'
 
 " }}}
-
-
 
 
 " Abbreviations ----------------------------------------------------------- {{{
@@ -413,9 +250,11 @@ iabbrev gcavn@ gcavn@gcavn.com
 
 " Convenience mappings ---------------------------------------------------- {{{
 
+" Kill window
+nnoremap <leader>q :q<cr>
 
-" Toggle line numbers
-" nnoremap <leader>n :setlocal number!<cr>
+" Write buffer to file
+nnoremap <leader>w :w<cr>
 
 " Sort lines
 nnoremap <leader>s vip:!sort<cr>
@@ -428,70 +267,64 @@ vnoremap <leader>s :!sort<cr>
 " Rebuild Ctags (mnemonic RC -> CR -> <cr>)
 " nnoremap <leader><cr> :silent !myctags<cr>:redraw!<cr>
 
-" Highlight Group(s)
-"nnoremap <F8> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
-"                        \ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
-"                        \ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
-
 " Clean trailing whitespace
 " nnoremap <leader>w mz:%s/\s\+$//<cr>:let @/=''<cr>`z
 
-" Send visual selection to paste.stevelosh.com
-"vnoremap <c-p> :w !curl -sF 'sprunge=<-' 'http://paste.stevelosh.com' \| tr -d '\n ' \| pbcopy && open `pbpaste`<cr>
+nnoremap <F8> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<' . synIDattr(synID(line("."),col("."),0),"name") . "> lo<" . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
 
-" Select entire buffer
-nnoremap vaa ggvGg_
-nnoremap Vaa ggVG
+" Easier linewise reselection of what you just pasted.
+nnoremap <leader>V V`]
 
-" "Uppercase word" mapping.
-"
-" This mapping allows you to press <c-u> in insert mode to convert the current
-" word to uppercase.  It's handy when you're writing names of constants and
-" don't want to use Capslock.
-"
-" To use it you type the name of the constant in lowercase.  While your
-" cursor is at the end of the word, press <c-u> to uppercase it, and then
-" continue happily on your way:
-"
-"                            cursor
-"                            v
-"     max_connections_allowed|
-"     <c-u>
-"     MAX_CONNECTIONS_ALLOWED|
-"                            ^
-"                            cursor
-"
-" It works by exiting out of insert mode, recording the current cursor location
-" in the z mark, using gUiw to uppercase inside the current word, moving back to
-" the z mark, and entering insert mode again.
-"
-" Note that this will overwrite the contents of the z mark.  I never use it, but
-" if you do you'll probably want to use another mark.
-inoremap <C-u> <esc>mzgUiw`za
+" Indent/dedent/autoindent what you just pasted.
+nnoremap <lt>> V`]<
+nnoremap ><lt> V`]>
+nnoremap =- V`]=
+
 
 " Source
 vnoremap <leader>S y:execute @@<cr>:echo 'Sourced selection.'<cr>
 nnoremap <leader>S ^vg_y:execute @@<cr>:echo 'Sourced line.'<cr>
 
-" Press F4 to toggle highlighting on/off, and show current value.
-:noremap <F4> :set hlsearch! hlsearch?<CR>
+" Easier to type, and I never use the default behavior.
+noremap H ^
+noremap L $
+noremap ^ H
+noremap $ L
+"
+" }}}
 
-" Press F8 to search the word under the cursor without jumping to the next match
-nnoremap <F8> :let @/='\<<C-R>=expand("<cword>")<CR>\>'<CR>:set hls<CR>
+" Directional Keys {{{
+"
+" " It's 2013.
+noremap j gj
+noremap k gk
+noremap gj j
+noremap gk k
+"
+" Easy buffer navigation
+noremap <C-h> <C-w>h
+noremap <C-j> <C-w>j
+noremap <C-k> <C-w>k
+noremap <C-l> <C-w>l
+"
 " }}}
 
 
 
-
+" }}}
 " Quick editing ----------------------------------------------------------- {{{
-"
-" nnoremap <leader>ev :vsplit $MYVIMRC<cr>
-"
+
+nnoremap <leader>ev :e ~/.vimrc<cr>
+"nnoremap <leader>eV :vsplit scp://vagrant//<cr>
+"nnoremap <leader>ed :vsplit ~/.vim/custom-dictionary.utf-8.add<cr>
+nnoremap <leader>en :e ~/notes/<cr>
+nnoremap <leader>et :e ~/.tmux.conf<cr>
+nnoremap <leader>eh :e ~/.<cr>
+nnoremap <leader>ef :e %:p:h<cr>
+nnoremap <leader>e. :e .<cr>
+
+
 " }}}
-
-
-
-
 " Searching and movement -------------------------------------------------- {{{
 
 " Use sane regexes.
@@ -526,6 +359,16 @@ set foldlevelstart=99
 
 " Filetype-specific ------------------------------------------------------- {{{
 
+" C {{{
+
+augroup ft_bash
+    au!
+    au BufNewFile,BufRead *.sh setlocal filetype=zsh
+    au FileType sh let b:is_bash=1
+augroup END
+
+" }}}
+"
 " C {{{
 
 augroup ft_c
@@ -671,24 +514,11 @@ augroup END
 " Plugin settings --------------------------------------------------------- {{{
 
 " Ctrl-P {{{
-" let g:ctrlp_dont_split = 'NERD_tree_2'
-" let g:ctrlp_jump_to_buffer = 0
-" let g:ctrlp_working_path_mode = 0
-" let g:ctrlp_match_window_reversed = 1
-" let g:ctrlp_split_window = 0
-" let g:ctrlp_max_height = 20
+let g:ctrlp_reuse_window = 'netrw\|help\|quickfix'
+let g:ctrlp_cmd = 'CtrlPBuffer'
+let g:ctrlp_switch_buffer = 0
+let g:ctrlp_match_window = 'order:ttb,max:20'
 " let g:ctrlp_extensions = ['tag']
-
-" let g:ctrlp_map = '<leader>,'
-" nnoremap <leader>. :CtrlPTag<cr>
-
-" let g:ctrlp_prompt_mappings = {
-" \ 'PrtSelectMove("j")':   ['<c-j>', '<down>', '<s-tab>'],
-" \ 'PrtSelectMove("k")':   ['<c-k>', '<up>', '<tab>'],
-" \ 'PrtHistory(-1)':       ['<c-n>'],
-" \ 'PrtHistory(1)':        ['<c-p>'],
-" \ 'ToggleFocus()':        ['<c-tab>'],
-" \ }
 
 " let ctrlp_filter_greps = "".
 "     \ "egrep -iv '\\.(" .
@@ -761,26 +591,33 @@ nnoremap <leader>C :SyntasticCheck<cr>
 
 " vim-unimpaired {{{
 
-nnoremap <silent> <Plug>unimpairedTabLeft   :tabNext<CR>
-nnoremap <silent> <Plug>unimpairedTabRight  :tabnext<CR>
-xnoremap <silent> <Plug>unimpairedTabLeft   :tabNext<CR>
-xnoremap <silent> <Plug>unimpairedTabRight  :tabnext<CR>
+" nnoremap <silent> <Plug>unimpairedTabLeft   :tabNext<CR>
+" nnoremap <silent> <Plug>unimpairedTabRight  :tabnext<CR>
+" xnoremap <silent> <Plug>unimpairedTabLeft   :tabNext<CR>
+" xnoremap <silent> <Plug>unimpairedTabRight  :tabnext<CR>
 
-nmap [g <Plug>unimpairedTabLeft
-nmap ]g <Plug>unimpairedTabRight
-xmap [g <Plug>unimpairedTabLeft
-xmap ]g <Plug>unimpairedTabRight
+" nmap [g <Plug>unimpairedTabLeft
+" nmap ]g <Plug>unimpairedTabRight
+" xmap [g <Plug>unimpairedTabLeft
+" xmap ]g <Plug>unimpairedTabRight
 
-nnoremap <silent> <Plug>unimpairedTabFirst   :tabfirst<CR>
-nnoremap <silent> <Plug>unimpairedTabLast    :tablast<CR>
-xnoremap <silent> <Plug>unimpairedTabFirst   :tabfirst<CR>
-xnoremap <silent> <Plug>unimpairedTabLast    :tablast<CR>
+" nnoremap <silent> <Plug>unimpairedTabFirst   :tabfirst<CR>
+" nnoremap <silent> <Plug>unimpairedTabLast    :tablast<CR>
+" xnoremap <silent> <Plug>unimpairedTabFirst   :tabfirst<CR>
+" xnoremap <silent> <Plug>unimpairedTabLast    :tablast<CR>
 
-nmap [G <Plug>unimpairedTabFirst
-nmap ]G <Plug>unimpairedTabLast
-xmap [G <Plug>unimpairedTabFirst
-xmap ]G <plug>unimpairedTabLast
+" nmap [G <Plug>unimpairedTabFirst
+" nmap ]G <Plug>unimpairedTabLast
+" xmap [G <Plug>unimpairedTabFirst
+" xmap ]G <plug>unimpairedTabLast
+
 " }}}
+" undotree ---------------------------------------------------------------- {{{
+nnoremap <F5> :UndotreeToggle<cr>
+
+" }}}
+
+
 
 " }}}
 
@@ -800,6 +637,17 @@ nnoremap <Leader>do :DiffOrig<cr>
 nnoremap <leader>dc :q<cr>:diffoff<cr>:exe "norm! ".g:diffline."G"<cr>
 " }}}
 
+" Synstack {{{
+
+" Show the stack of syntax hilighting classes affecting whatever is under the
+" cursor.
+function! SynStack()
+  echo join(map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")'), " > ")
+endfunc
+
+nnoremap <F7> :call SynStack()<CR>
+
+" }}}
 
 
 

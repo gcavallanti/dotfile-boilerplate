@@ -1,4 +1,4 @@
-# bash ------------------------------------------------------------------------
+# zsh ------------------------------------------------------------------------
 # Case-insensitive globbing (used in pathname expansion)
 shopt -s nocaseglob
 
@@ -43,6 +43,7 @@ if tput setaf 1 &> /dev/null; then
         GREEN=$(tput setaf 2)
         BLUE=$(tput setaf 4)
         WHITE=$(tput setaf 7)
+        BLACK=$(tput setaf 0)
     fi
     BOLD=$(tput bold)
     RESET=$(tput sgr0)
@@ -188,6 +189,9 @@ if [[ $(uname -s) == "Darwin" ]]; then
         . $(brew --prefix)/etc/bash_completion.d/git-prompt.sh 
     fi
 
+export PATH=$HOME/.rvm/bin:$PATH
+    [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" 
+
 elif [[ $(uname -s) == "Linux" ]]; then
     :
 fi
@@ -199,7 +203,7 @@ if [[ -n $(type -t __git_ps1) ]]; then
     export GIT_PS1_SHOWUPSTREAM="verbose"
     export GIT_PS1_SHOWCOLORHINTS=1
    
-    PS1="\[${RED}\]\u \[$RESET\]at \[$YELLOW\]\h \[$RESET\]in \[$BLUE\]\w\$(__git_ps1 \"\[$RESET\] on \[$CYAN\]%s\"  )\[$RESET\]\n\$ "
+     PS1="\[${BLACK}\]\u \[$RESET\]at \[$YELLOW\]\h \[$RESET\]in \[$BLUE\]\w\$(__git_ps1 \"\[$RESET\] on \[$MAGENTA\]%s\"  )\[$RESET\]\n\$ "
 else
     
     parse_git_dirty () {
