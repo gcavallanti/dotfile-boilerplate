@@ -213,7 +213,7 @@ set statusline+=%0*%=
 "set statusline+=%{SyntasticStatuslineFlag()}
 set statusline+=%5*%{exists('g:loaded_syntastic_plugin')?SyntasticStatuslineFlag():''}%3*\ \ 
 set statusline+=%4*%{&paste?'[paste]':''}%3*
-set statusline+=\ \ %3*mode:%1*%{Mode()}%3*\ \ 
+set statusline+=\ \ %3*mode:%4*%{mode()}%3*\ \ 
 "set statusline+=%5*%{ScrollBar(20)}%3*\ \ 
 set statusline+=%5*%{exists('g:scrollbar_loaded')?ScrollBar(20):''}%3*\ \ 
 "set statusline+=%3*pos:%4*%3P%3*\ \ 
