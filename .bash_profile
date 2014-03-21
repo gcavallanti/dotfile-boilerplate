@@ -63,7 +63,7 @@ fi
 # http://mths.be/dotfiles
 
 # Shortcuts
-alias ll="ls -AlFh"
+alias ll="ls -lFArt"
 
 # Detect which `ls` flavor is in use
 if ls --color > /dev/null 2>&1; then # GNU `ls`
@@ -76,10 +76,10 @@ fi
 alias l="ls -lF ${colorflag}"
 
 # List all files colorized in long format, including dot files
-alias la="ls -laF ${colorflag}"
+# alias la="ls -laF ${colorflag}"
 
 # List only directories
-alias lsd='ls -lF ${colorflag} | grep "^d"'
+# alias lsd='ls -lF ${colorflag} | grep "^d"'
 
 # Always use color output for `ls`
 alias ls="command ls ${colorflag}"
@@ -195,6 +195,7 @@ export PATH=$HOME/.rvm/bin:$PATH
 elif [[ $(uname -s) == "Linux" ]]; then
     :
 fi
+
 # Prompt ----------------------------------------------------------------------
 if [[ -n $(type -t __git_ps1) ]]; then
     export GIT_PS1_SHOWDIRTYSTATE=1
@@ -203,7 +204,7 @@ if [[ -n $(type -t __git_ps1) ]]; then
     export GIT_PS1_SHOWUPSTREAM="verbose"
     export GIT_PS1_SHOWCOLORHINTS=1
    
-     PS1="\[${BLACK}\]\u \[$RESET\]at \[$YELLOW\]\h \[$RESET\]in \[$BLUE\]\w\$(__git_ps1 \"\[$RESET\] on \[$MAGENTA\]%s\"  )\[$RESET\]\n\$ "
+     PS1="\[${RED}\]\u \[$RESET\]at \[$YELLOW\]\h \[$RESET\]in \[$BLUE\]\w\$(__git_ps1 \"\[$RESET\] on \[$MAGENTA\]%s\"  )\[$RESET\]\n\$ "
 else
     
     parse_git_dirty () {

@@ -1,9 +1,4 @@
-" based on https://bitbucket.org/sjl/dotfiles/src/10f4bf76eddda27da7e273fc26a31a96aef97b9d/vim/vimrc
-
-
-
-
-
+ " based on https://bitbucket.org/sjl/dotfiles/src/10f4bf76eddda27da7e273fc26a31a96aef97b9d/vim/vimrc
 
 " Preamble ---------------------------------------------------------------- {{{
 
@@ -15,6 +10,7 @@ set nocompatible
 " }}}
 
 " Basic options ----------------------------------------------------------- {{{
+"
 
 set encoding=utf-8
 set modelines=0
@@ -47,7 +43,7 @@ set cursorline
 "set dictionary=/usr/share/dict/words
 "set spellfile=~/.vim/custom-dictionary.utf-8.add
 "set colorcolumn=+1
-
+"
 " iTerm2 is currently slow as ball at rendering the nice unicode lines, so for
 " now I'll just use ascii pipes.  They're ugly but at least I won't want to kill
 " myself when trying to move around a file.
@@ -83,11 +79,11 @@ au VimResized * :wincmd =
 
 " Cursorline {{{
 " Only show cursorline in the current window and in normal mode.
-augroup cline
-    au!
-    au WinLeave,InsertEnter * set nocursorline
-    au WinEnter,InsertLeave * set cursorline
-augroup END
+" augroup cline
+"     au!
+"     au WinLeave,InsertEnter * set nocursorline
+"     au WinEnter,InsertLeave * set cursorline
+" augroup END
 
 " }}}
 
@@ -151,6 +147,7 @@ set textwidth=80
 "set colorcolumn=+1
 
 " }}}
+
 " Backups {{{
 
 set backup                        " enable backups
@@ -172,6 +169,7 @@ if !isdirectory(expand(&directory))
 endif
 
 " }}}
+
 " Color scheme {{{
 
 syntax on
@@ -186,69 +184,232 @@ augroup color_trafficlights_dev
     au!
     au BufWritePost trafficlights.vim color trafficlights
 augroup END
+" }}}
 
+" Statusline {{{
 function! GetCWD()
   return expand(":pwd")
 endfunction
 
-set statusline=\ \ %4*%F%3*\ \ 
-set statusline+=%4*%m%3*
-set statusline+=%4*%h%3*
-set statusline+=%4*%r%3*
-set statusline+=%4*%w%3*
-set statusline+=%4*%q%3*
-set statusline+=%3*%4*%{&bomb?'[bomb]':''}%3*
-set statusline+=%4*%{exists('g:loaded_fugitive')?fugitive#statusline():''}%3*
-"set statusline+=%4*%{fugitive#statusline()}%3*
-set statusline+=\ \ %3*fenc:%4*%{(&fenc!='')?&fenc:'none'}%3*\ \ 
-set statusline+=%3*ff:%4*%{&ff}%3*\ \ 
-set statusline+=%3*ft:%4*%{(&ft!='')?&ft:'<none>'}\ \ 
-" set statusline+=%3*ft:%4*%{(&ft!='')?((&ft!='vim')?&ft:''):'<none>'}\ \ 
-" set statusline+=%5*%{v:register}%3*\ \ 
-" set statusline+=%3*tab:%4*%{&ts}
-" set statusline+=%3*,%4*%{&sts}
-" set statusline+=%3*,%4*%{&sw}
-" set statusline+=%3*,%4*%{&et?'et':'noet'}\ \ 
-set statusline+=%0*%=
-"set statusline+=%{SyntasticStatuslineFlag()}
-set statusline+=%5*%{exists('g:loaded_syntastic_plugin')?SyntasticStatuslineFlag():''}%3*\ \ 
-set statusline+=%4*%{&paste?'[paste]':''}%3*
-set statusline+=\ \ %3*mode:%4*%{mode()}%3*\ \ 
-"set statusline+=%5*%{ScrollBar(20)}%3*\ \ 
-set statusline+=%5*%{exists('g:scrollbar_loaded')?ScrollBar(20):''}%3*\ \ 
-"set statusline+=%3*pos:%4*%3P%3*\ \ 
-set statusline+=%3*col:%4*%3c\ \ 
-set statusline+=%3*line:%4*%3l/%3L\ \ 
+" set statusline=\ \ %4*%F%3*\ \ 
+" set statusline+=%4*%m%3*
+" set statusline+=%4*%h%3*
+" set statusline+=%4*%r%3*
+" set statusline+=%4*%w%3*
+" set statusline+=%4*%q%3*
+" set statusline+=%3*%4*%{&bomb?'[bomb]':''}%3*
+" set statusline+=%4*%{exists('g:loaded_fugitive')?fugitive#statusline():''}%3*
+" "set statusline+=%4*%{fugitive#statusline()}%3*
+" set statusline+=\ \ %3*fenc:%4*%{(&fenc!='')?&fenc:'none'}%3*\ \ 
+" set statusline+=%3*ff:%4*%{&ff}%3*\ \ 
+" set statusline+=%3*ft:%4*%{(&ft!='')?&ft:'<none>'}\ \ 
+" " set statusline+=%3*ft:%4*%{(&ft!='')?((&ft!='vim')?&ft:''):'<none>'}\ \ 
+" " set statusline+=%5*%{v:register}%3*\ \ 
+" " set statusline+=%3*tab:%4*%{&ts}
+" " set statusline+=%3*,%4*%{&sts}
+" " set statusline+=%3*,%4*%{&sw}
+" " set statusline+=%3*,%4*%{&et?'et':'noet'}\ \ 
+" set statusline+=%0*%=
+" "set statusline+=%{SyntasticStatuslineFlag()}
+" set statusline+=%5*%{exists('g:loaded_syntastic_plugin')?SyntasticStatuslineFlag():''}%3*\ \ 
+" set statusline+=%4*%{&paste?'[paste]':''}%3*
+" " set statusline+=\ \ %3*mode:%4*%{mode()}%3*\ \ 
+" "set statusline+=%5*%{ScrollBar(20)}%3*\ \ 
+" " set statusline+=%5*%{exists('g:scrollbar_loaded')?ScrollBar(20," ","#"):''}%3*\ \ 
+" "set statusline+=%3*pos:%4*%3P%3*\ \ 
+" set statusline+=%3*col:%4*%3c\ \ 
+" set statusline+=%3*line:%4*%3l/%3L\ \ 
 
-function! Mode()
-    redraw
-    let l:mode = mode()
+" function! Mode()
+"     redraw
+"     let l:mode = mode()
 
-    if mode ==# "n" | exec 'hi User1 ' . 'ctermfg=255 ctermbg=236' | return "NORMAL"
-    elseif mode ==# "i" | exec 'hi User1 ' . 'ctermfg=243 ctermbg=236' | return "INSERT"
-    elseif mode ==# "R" | exec 'hi User1 ' . 'ctermfg=134 ctermbg=236' | return "REPLACE"
-    elseif mode ==# "v" | exec 'hi User1 ' . 'ctermfg=250 ctermbg=236' | return "VISUAL"
-    elseif mode ==# "V" | exec 'hi User1 ' . 'ctermfg=250 ctermbg=236' | return "V-LINE"
-    elseif mode ==# "" | exec 'hi User1 ' . 'ctermfg=250 ctermbg=236' | return "V-BLOCK"
-    else | return l:mode
+"     if mode ==# "n" | exec 'hi User1 ' . 'ctermfg=255 ctermbg=236' | return "NORMAL"
+"     elseif mode ==# "i" | exec 'hi User1 ' . 'ctermfg=243 ctermbg=236' | return "INSERT"
+"     elseif mode ==# "R" | exec 'hi User1 ' . 'ctermfg=134 ctermbg=236' | return "REPLACE"
+"     elseif mode ==# "v" | exec 'hi User1 ' . 'ctermfg=250 ctermbg=236' | return "VISUAL"
+"     elseif mode ==# "V" | exec 'hi User1 ' . 'ctermfg=250 ctermbg=236' | return "V-LINE"
+"     elseif mode ==# "" | exec 'hi User1 ' . 'ctermfg=250 ctermbg=236' | return "V-BLOCK"
+"     else | return l:mode
+"     endif
+" endfunc 
+
+" function! Mode()
+"     redraw
+"     let l:mode = mode()
+
+"     if mode ==# "n" | return "NORMAL"
+"     elseif mode ==# "i" | return "INSERT"
+"     elseif mode ==# "R" | return "REPLACE"
+"     elseif mode ==# "v" | return "%2*VISUAL%*"
+"     elseif mode ==# "V" | return "V-LINE"
+"     elseif mode ==# "" | return "V-BLOCK"
+"     else | return l:mode
+"     endif
+" endfunc 
+
+function! Status(focused)
+  let stat = ''
+
+  " this function just outputs the content colored by the
+  " supplied colorgroup number, e.g. num = 2 -> User2
+  " it only colors the input if the window is the currently
+  " focused one
+
+  function! Color(active, num, content)
+    if a:active
+      return '%' . a:num . '*' . a:content . '%*'
+    else
+      return a:content
     endif
-endfunc 
+  endfunction
+
+  " column
+  " this might seem a bit complicated but all it amounts to is
+  " a calculation to see how much padding should be used for the
+  " column number, so that it lines up nicely with the line numbers
+
+  " an expression is needed because expressions are evaluated within
+  " the context of the window for which the statusline is being prepared
+  " this is crucial because the line and virtcol functions otherwise
+  " operate on the currently focused window
+
+  function! ColPad()
+    let ruler_width = max([strlen(line('$')), (&numberwidth - 1)])
+    let column_width = strlen(virtcol('.'))
+    let padding = ruler_width - column_width
+
+    redir =>a|exe "sil sign place buffer=".bufnr('')|redir end
+    let signs = split(a, "\n")[1:]
+    if !empty(signs)
+        let padding = padding + 2
+    endif
+
+    if &foldcolumn!=''
+        let padding = padding + &foldcolumn
+    endif
+
+    if padding <= 0
+      return ''
+    else
+      " + 1 becuase for some reason vim eats one of the spaces
+      return repeat(' ', padding + 1)
+  endfunction
+
+  " let stat .= '%1*'
+  let stat .= '%{ColPad()}'
+  let stat .= '%1*%v%*'
+
+  " file
+  " let stat .= Color(a:focused, 4, a:focused ? ' »' : ' «')
+  let stat .= ' %<'
+
+  " function! Name()
+  "   let fname = expand('%')
+
+  "   if fname == ''
+  "     return 'New'
+  "   elseif fname == '__Gundo__'
+  "     return 'Gundo'
+  "   elseif fname == '__Gundo_Preview__'
+  "     return 'Gundo Preview'
+  "   else
+  "     return fname
+  "   endif
+  " endfunction
+
+  " let stat .= ' ' . Mode()
+  " let stat .= ' %{Name()}'
+  let stat .= ' %F'
+
+  " let stat .= ' ' . Color(a:focused, 4, a:focused ? '«' : '»')
+
+
+  " let stat .= Color(a:focused, 2, "%{Mode()}")
+
+  " file modified
+  " let stat .= Color(a:focused, 2, "%{&modified ? '+' : ''}")
+  " let stat .= "%{&modified ? ' [+]' : ''}"
+  " let stat .= Color(a:focused, 2, "%m")
+  let stat .= "     "
+  let stat .= "%1*%m"
+  let stat .= "%r"
+  let stat .= "%w"
+  let stat .= "%q"
+  let stat .= "%y"
+  let stat .= "%{&diff ? '[diff]' : ''}"
+
+  " read only
+  " let stat .= Color(a:focused, 2, "%{&readonly ? ' ‼' : ''}")
+  " let stat .= "%{&readonly ? ' [-]' : ''}"
+
+  " paste
+
+  " right side
+  let stat .= '%='
+
+  " git branch
+  " if exists('*fugitive#head')
+  "   let head = fugitive#head()
+
+  "   if empty(head) && exists('*fugitive#detect') && !exists('b:git_dir')
+  "     call fugitive#detect(getcwd())
+  "     let head = fugitive#head()
+  "   endif
+  " endif
+ 
+  " if a:focused && &paste
+  "   let stat .= ' ' . '[paste]' . ''
+  " end
+  if &paste
+    let stat .= '[paste]' 
+  endif
+  let stat .= "%{exists('g:loaded_syntastic_plugin')?SyntasticStatuslineFlag():''}" 
+  let stat .= "%{exists('g:loaded_fugitive')?fugitive#statusline():''}"
+  let stat .= "     %1*[%{exists('g:scrollbar_loaded')?ScrollBar(20,' ','='):''}]%*"
+  " if !empty(head)
+  "   " let stat .= Color(a:focused, 3, ' ← ') . head . ' '
+  "   let stat .= ' ' . head . ' '
+  " endif
+
+  return stat
+endfunction
+
+augroup status
+  autocmd!
+  autocmd VimEnter,WinEnter,BufWinEnter * setl statusline=%!Status(1)
+  autocmd WinLeave * setl statusline=%!Status(0)
+augroup END
+
+autocmd VimEnter,WinEnter,BufWinEnter * set statusline=%!Status(1)
+" }}}
 
 " Highlight VCS conflict markers
 match ErrorMsg '^\(<\|=\|>\)\{7\}\([^=].\+\)\?$'
 
 " }}}
 
-
 " Abbreviations ----------------------------------------------------------- {{{
 iabbrev gcavn@ gcavn@gcavn.com
 
 " }}}
 
-
-
-
 " Convenience mappings ---------------------------------------------------- {{{
+
+nmap \x :call GetFoo()<CR>:exe "/" . Foo<CR>
+function GetFoo()
+  call inputsave()
+  let g:Foo = input("enter search pattern: ")
+  call inputrestore()
+endfunction
+
+let mapleader=' ' 
+
+nnoremap <c-z> mzzMzvzz15<c-e>`z:Pulse<cr>
+
+nnoremap <leader>d "_d
+vnoremap <leader>d "_d
+vnoremap <leader>p "_dP
 
 " Kill window
 nnoremap <leader>q :q<cr>
@@ -256,9 +417,15 @@ nnoremap <leader>q :q<cr>
 " Write buffer to file
 nnoremap <leader>w :w<cr>
 
+" inoremap <C-j> <esc>
+" inoremap jk <esc>
+" cnoremap jk <c-c>
+
 " Sort lines
-nnoremap <leader>s vip:!sort<cr>
+" nnoremap <leader>s vip:!sort<cr>
 vnoremap <leader>s :!sort<cr>
+
+" set pastetoggle=cop
 
 " Tabs
 " nnoremap <leader>( :tabprev<cr>
@@ -270,11 +437,10 @@ vnoremap <leader>s :!sort<cr>
 " Clean trailing whitespace
 " nnoremap <leader>w mz:%s/\s\+$//<cr>:let @/=''<cr>`z
 
-nnoremap <F8> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<' . synIDattr(synID(line("."),col("."),0),"name") . "> lo<" . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
+nnoremap <F3> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<' . synIDattr(synID(line("."),col("."),0),"name") . "> lo<" . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
 
 " Easier linewise reselection of what you just pasted.
 nnoremap <leader>V V`]
-
 " Indent/dedent/autoindent what you just pasted.
 nnoremap <lt>> V`]<
 nnoremap ><lt> V`]>
@@ -286,43 +452,40 @@ vnoremap <leader>S y:execute @@<cr>:echo 'Sourced selection.'<cr>
 nnoremap <leader>S ^vg_y:execute @@<cr>:echo 'Sourced line.'<cr>
 
 " Easier to type, and I never use the default behavior.
-noremap H ^
-noremap L $
-noremap ^ H
-noremap $ L
+noremap <C-h> ^
+noremap <C-l> $
+noremap ^ <C-h>
+noremap $ <C-l>
 "
-" }}}
 
-" Directional Keys {{{
+" Directional Keys 
 "
-" " It's 2013.
 noremap j gj
 noremap k gk
 noremap gj j
 noremap gk k
 "
 " Easy buffer navigation
-noremap <C-h> <C-w>h
-noremap <C-j> <C-w>j
-noremap <C-k> <C-w>k
-noremap <C-l> <C-w>l
-"
+" noremap <C-h> <C-w>h
+" noremap <C-j> <C-w>j
+" noremap <C-k> <C-w>k
+" noremap <C-l> <C-w>l
+" "
+
+" imap <F8> <Esc>g~iwea
+inoremap <C-j> <esc>mzgUiw`za
 " }}}
 
-
-
-" }}}
 " Quick editing ----------------------------------------------------------- {{{
 
-nnoremap <leader>ev :e ~/.vimrc<cr>
+" nnoremap <leader>ev :e ~/.vimrc<cr>
 "nnoremap <leader>eV :vsplit scp://vagrant//<cr>
 "nnoremap <leader>ed :vsplit ~/.vim/custom-dictionary.utf-8.add<cr>
-nnoremap <leader>en :e ~/notes/<cr>
-nnoremap <leader>et :e ~/.tmux.conf<cr>
+" nnoremap <leader>en :e ~/notes/<cr>
+" nnoremap <leader>et :e ~/.tmux.conf<cr>
 nnoremap <leader>eh :e ~/.<cr>
 nnoremap <leader>ef :e %:p:h<cr>
 nnoremap <leader>e. :e .<cr>
-
 
 " }}}
 " Searching and movement -------------------------------------------------- {{{
@@ -344,18 +507,10 @@ set sidescrolloff=10
 
 " }}}
 
-
-
-
-
 " Folding ----------------------------------------------------------------- {{{
 
 set foldlevelstart=99
-
 " }}}
-
-
-
 
 " Filetype-specific ------------------------------------------------------- {{{
 
@@ -413,7 +568,7 @@ augroup ft_css
 
     " Make {<cr> insert a pair of brackets in such a way that the cursor is correctly
     " positioned inside of them AND the following code doesn't get unfolded.
-"    au BufNewFile,BufRead *.less,*.css inoremap <buffer> {<cr> {}<left><cr><space><space><space><space>.<cr><esc>kA<bs>
+    "    au BufNewFile,BufRead *.less,*.css inoremap <buffer> {<cr> {}<left><cr><space><space><space><space>.<cr><esc>kA<bs>
 augroup END
 
 " }}}
@@ -441,7 +596,6 @@ augroup ft_javascript
 "    au Filetype javascript inoremap <buffer> {<cr> {}<left><cr><space><space><space><space>.<cr><esc>kA<bs>
 augroup END
 " }}}
-
 
 " Markdown {{{
 augroup ft_markdown
@@ -485,6 +639,8 @@ augroup END
 augroup ft_python
     au!
 
+    au FileType python set foldmethod=expr
+    au FileType python set foldexpr=g:pymodefoldingexpr(v:lnum)
     au FileType python set omnifunc=pythoncomplete#Complete
 augroup END
 
@@ -507,9 +663,6 @@ augroup END
 " }}}
 
 " }}}
-
-
-
 
 " Plugin settings --------------------------------------------------------- {{{
 
@@ -539,8 +692,55 @@ let g:ctrlp_match_window = 'order:ttb,max:20'
 " let my_ctrlp_ffind_command = "ffind --semi-restricted --dir %s --type e -B -f"
 
 " let g:ctrlp_user_command = ['.git/', my_ctrlp_ffind_command, my_ctrlp_ffind_command]
-" " }}}
 
+" StatusLine: 
+" Arguments: focus, byfname, s:regexp, prv, item, nxt, marked
+" a:1 a:2 a:3 a:4 a:5 a:6 a:7
+fu! CtrlP_main_status(...)
+  let regex = a:3 ? '%2*regex %*' : ''
+  let prv = '%#StatusLineNC# '.a:4.' %*'
+  let item = ' ' . (a:5 == 'mru files' ? 'mru' : a:5) . ' '
+  let nxt = '%#StatusLineNC# '.a:6.' %*'
+  let byfname = '%2* '.a:2.' %*'
+  let dir = '%3* ← %*%#StatusLineNC#' . fnamemodify(getcwd(), ':~') . '%* '
+
+  " only outputs current mode
+  " retu ' %4*»%*' . item . '%4*«%* ' . '%=%<' . dir
+
+  " outputs previous/next modes as well
+  retu prv . '%4*»%*' . item . '%4*«%*' . nxt . '%=%<' . dir
+endf
+ 
+" Argument: len
+" a:1
+fu! CtrlP_progress_status(...)
+  let len = '%#Function# '.a:1.' %*'
+  let dir = ' %=%<%#LineNr# '.getcwd().' %*'
+  retu len.dir
+endf
+
+hi CtrlP_Purple ctermfg=255 guifg=#ffffff ctermbg=54 guibg=#5f5faf
+hi CtrlP_IPurple ctermfg=54 guifg=#5f5faf ctermbg=255 guibg=#ffffff
+hi CtrlP_Violet ctermfg=54 guifg=#5f5faf ctermbg=104 guibg=#aeaed7
+
+let g:ctrlp_status_func = {
+  \ 'main': 'CtrlP_main_status',
+  \ 'prog': 'CtrlP_progress_status'
+  \}
+" }}}
+
+" Tagbar {{{
+" let g:tagbar_iconchars = ['▶', '▼']
+let g:tagbar_iconchars = ['▸', '▾']
+" let g:tagbar_iconchars = ['▷', '◢']
+let g:tagbar_compact = 1
+" let g:tagbar_iconchars = ['+','-']
+let g:tagbar_sort = 0
+let g:tagbar_indent = 2
+let g:tagbar_left = 1
+let g:tagbar_foldlevel = 0
+nnoremap <silent> <F9> :TagbarToggle<CR>
+" }}}
 
 " Fugitive {{{
 let g:fugitive_github_domains = ['github.banksimple.com']
@@ -569,6 +769,19 @@ vnoremap <leader>H :Gbrowse<cr>
 " Linediff {{{
 vnoremap <leader>l :Linediff<cr>
 nnoremap <leader>L :LinediffReset<cr>
+" }}}
+
+" Vimux {{{
+ function! VimuxSlime()
+  call VimuxSendText(@v)
+  call VimuxSendKeys("Enter")
+ endfunction
+
+ " If text is selected, save it in the v buffer and send that buffer it to tmux
+ vmap <LocalLeader>vs "vy :call VimuxSlime()<CR>
+
+ " Select current paragraph and send it to tmux
+ nmap <LocalLeader>vs vip<LocalLeader>vs<CR>
 " }}}
 
 " Syntastic {{{
@@ -612,26 +825,89 @@ nnoremap <leader>C :SyntasticCheck<cr>
 " xmap ]G <plug>unimpairedTabLast
 
 " }}}
+
 " undotree ---------------------------------------------------------------- {{{
 nnoremap <F5> :UndotreeToggle<cr>
+let g:undotree_WindowLayout = 4
+let g:undotree_SplitWidth = 50
+" let g:undotree_DiffCommand = "diff -y --suppress-common-lines -W 180 -t"
+let g:undotree_DiffCommand = "diff --context=1"
+let g:undotree_DiffpanelHeight = 20
 
 " }}}
 
+" jedi -------------------------------------------------------------------- {{{
+let g:jedi#auto_vim_configuration = 0
+autocmd FileType python setlocal omnifunc=jedi#completions
+let g:jedi#completions_enabled = 0
+let g:jedi#use_tabs_not_buffers = 0
+ " }}}
 
+" neocomplete -------------------------------------------------------------------- {{{
+" NEOCOMPLCACHE SETTINGS
+" let g:neocomplcache_enable_at_startup = 1
+" imap neosnippet#expandable() ? "(neosnippet_expand_or_jump)" : pumvisible() ? "" : ""
+" smap neosnippet#expandable() ? "(neosnippet_expand_or_jump)" :
+" if !exists('g:neocomplcache_omni_functions')
+"   let g:neocomplcache_omni_functions = {}
+" endif
+" if !exists('g:neocomplcache_force_omni_patterns')
+"   let g:neocomplcache_force_omni_patterns = {}
+" endif
+" " let g:neocomplcache_force_overwrite_completefunc = 1
+" let g:neocomplcache_force_omni_patterns['python'] = '[^. t].w*'
+" set ofu=syntaxcomplete#Complete
+" au FileType python set omnifunc=pythoncomplete#Complete
+" au FileType python let b:did_ftplugin = 1
+" " Vim-jedi settings
+" let g:jedi#popup_on_dot = 0
+
+let g:neocomplete#enable_at_startup = 1
+" let g:neocomplete#enable_smart_case = 1
+let g:neocomplete#enable_auto_select = 0
+" let g:neocomplete#disable_auto_complete = 1
+" let g:neocomplcache_force_omni_patterns['python'] = '\%([^. \t]\.\|^\s*@\|^\s*from\s.\+import \|^\s*from \|^\s*import \)\w*'
+" imap <expr><TAB> neosnippet#expandable_or_jumpable() ? "\<Plug>(neosnippet_expand_or_jump)" : pumvisible() ? "\<C-n>" : "\<TAB>"
+" let g:neocomplcache_force_omni_patterns['python'] = '[^. t].w*'
+"
+inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
+function! s:my_cr_function()
+  return neocomplete#close_popup() . "\<CR>"
+  " For no inserting <CR> key.
+  "return pumvisible() ? neocomplete#close_popup() : "\<CR>"
+endfunction
+" <TAB>: completion.
+inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+" SuperTab like snippets behavior.
+let g:neocomplete#force_omni_input_patterns = {}
+let g:neocomplete#force_omni_input_patterns.python = '\%([^. \t]\.\|^\s*@\|^\s*from\s.\+import \|^\s*from \|^\s*import \)\w*'
+
+imap <C-k>     <Plug>(neosnippet_expand_or_jump)
+smap <C-k>     <Plug>(neosnippet_expand_or_jump)
+xmap <C-k>     <Plug>(neosnippet_expand_target)
+
+if has('conceal')
+    set conceallevel=2 concealcursor=i
+endif
 
 " }}}
 
+" marching -------------------------------------------------------------------- {{{
+let g:marching_enable_neocomplete = 1
+let g:marching_backend = "sync_clang_command"
+let g:marching_debug = 1
 
-
-
-" Text objects ------------------------------------------------------------ {{{
-
+" set updatetime=200
+" imap <buffer> <C-x><C-o> <Plug>(marching_start_omni_complete)
+" imap <buffer> <C-x><C-x><C-o> <Plug>(marching_force_start_omni_complete)
+" let g:neocomplete#sources#omni#input_patterns = {}
+" let g:neocomplete#sources#omni#input_patterns.cpp = '[^. *\t]\%(\.\|->\)\w*\|\h\w*::\w*'
+let g:neocomplete#force_omni_input_patterns.cpp = '[^. *\t]\%(\.\|->\)\w*\|\h\w*::\w*'
 " }}}
 
+" Miniplugins ------------------------------------------------------------ {{{
 
-
-
-" Mini-plugins ------------------------------------------------------------ {{{
+" Difforig {{{
 command DiffOrig let g:diffline = line('.') | vert new | set bt=nofile | r # | 0d_ | diffthis | :exe "norm! ".g:diffline."G" | wincmd p | diffthis | wincmd p
 nnoremap <Leader>do :DiffOrig<cr>
 nnoremap <leader>dc :q<cr>:diffoff<cr>:exe "norm! ".g:diffline."G"<cr>
@@ -645,10 +921,155 @@ function! SynStack()
   echo join(map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")'), " > ")
 endfunc
 
-nnoremap <F7> :call SynStack()<CR>
+nnoremap <F2> :call SynStack()<CR>
 
 " }}}
 
+" Pulse Line {{{
+
+function! s:Pulse()
+    redir => old_hi
+        silent execute 'hi CursorLine'
+    redir END
+    let old_hi = split(old_hi, '\n')[0]
+    let old_hi = substitute(old_hi, 'xxx', '', '')
+
+    let steps = 8
+    let width = 1
+    let start = width
+    let end = steps * width
+    let color = 233
+
+    for i in range(start, end, width)
+        execute "hi CursorLine ctermbg=" . (color + i)
+        redraw
+        sleep 36m
+    endfor
+    for i in range(end, start, -1 * width)
+        execute "hi CursorLine ctermbg=" . (color + i)
+        redraw
+        sleep 36m
+    endfor
+
+    execute 'hi ' . old_hi
+endfunction 
+command! -nargs=0 Pulse call s:Pulse()
+
+" }}}
+
+function! s:MyDiffLastSaved()
+  if &modified
+    let winnum = winnr()
+    let filetype=&ft
+    vertical botright new | r #
+    1,1delete _
+
+    diffthis
+    setlocal buftype=nofile
+    setlocal bufhidden=wipe
+    setlocal nobuflisted
+    setlocal noswapfile
+    setlocal readonly
+    exec "setlocal ft=" . filetype
+    let diffnum = winnr()
+
+    augroup diff_saved
+      autocmd! BufUnload <buffer>
+      autocmd BufUnload <buffer> :diffoff!
+    augroup END
+
+    exec winnum . "winc w"
+    diffthis
+
+    " for some reason, these settings only take hold if set here.
+    call setwinvar(diffnum, "&foldmethod", "diff")
+    call setwinvar(diffnum, "&foldlevel", "0")
+  else
+    echo "No changes"
+  endif
+endfunction
+command! -nargs=0 MyDiffLastSaved call s:MyDiffLastSaved()
+
+" }}}
+"
+
+" Python-mode folding functions
+
+
+
+let g:def_regex = '^\s*\%(class\|def\) \w\+' 
+let g:blank_regex = '^\s*$'
+let g:decorator_regex = '^\s*@'
+let g:doc_begin_regex = '^\s*\%("""\|''''''\)'
+let g:doc_end_regex = '\%("""\|''''''\)\s*$'
+let g:doc_line_regex = '^\s*\("""\|''''''\).\+\1\s*$'
+let g:symbol = matchstr(&fillchars, 'fold:\zs.')  " handles multibyte characters
+if g:symbol == ''
+    let g:symbol = ' '
+endif
+
+" fun! g:pymodefoldingtext() " {{{
+"     let fs = v:foldstart
+"     while getline(fs) =~ '\%(^\s*@\)\|\%(^\s*\%("""\|''''''\)\s*$\)'
+"         let fs = nextnonblank(fs + 1)
+"     endwhile
+"     let line = getline(fs)
+
+"     let nucolwidth = &fdc + &number * &numberwidth
+"     let windowwidth = winwidth(0) - nucolwidth - 6
+"     let foldedlinecount = v:foldend - v:foldstart
+
+"     " expand tabs into spaces
+"     let onetab = strpart('          ', 0, &tabstop)
+"     let line = substitute(line, '\t', onetab, 'g')
+
+"     let line = strpart(line, 0, windowwidth - 2 -len(foldedlinecount))
+"     let line = substitute(line, '\%("""\|''''''\)', '', '')
+"     let fillcharcount = windowwidth - len(line) - len(foldedlinecount)
+"     return line . '…' . repeat(g:symbol, fillcharcount) . ' ' . foldedlinecount . ' '
+" endfunction "}}}
+
+
+fun! g:pymodefoldingexpr(lnum) "{{{
+
+    let line = getline(a:lnum)
+    let indent = indent(a:lnum)
+    let prev_line = getline(a:lnum - 1)
+
+    if line =~ g:def_regex || line =~ g:decorator_regex
+        if prev_line =~ g:decorator_regex
+            return '='
+        else
+            return ">".(indent / &shiftwidth + 1)
+        endif
+    endif
+
+    if line =~ g:doc_begin_regex && line !~ g:doc_line_regex && prev_line =~ g:def_regex
+        return ">".(indent / &shiftwidth + 1)
+    endif
+
+    if line =~ g:doc_end_regex && line !~ g:doc_line_regex
+        return "<".(indent / &shiftwidth + 1)
+    endif
+
+    if line =~ g:blank_regex
+        if prev_line =~ g:blank_regex
+            if indent(a:lnum + 1) == 0 && getline(a:lnum + 1) !~ g:blank_regex
+                return 0
+            endif
+            return -1
+        else
+            return '='
+        endif
+    endif
+
+    if indent == 0
+        return 0 
+    endif
+
+    return '='
+
+endfunction "}}}
 
 
 " Environments (GUI/Console) ---------------------------------------------- {{{
@@ -661,11 +1082,16 @@ if has('gui_running')
     end
 else
     set mouse=a
-        if &term =~ '^screen'
-            " tmux knows the extended mouse mode
-            set ttymouse=xterm2
-        endif
-    set clipboard=unnamed,unnamedplus
+    set clipboard=unnamed
+    if &term =~ '^screen'
+        " tmux knows the extended mouse mode
+        set ttymouse=xterm2
+        let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
+        let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
+    else
+        let &t_SI = "\<Esc>]50;CursorShape=1\x7"
+        let &t_EI = "\<Esc>]50;CursorShape=0\x7"
+    endif
 endif
 
 " }}}
