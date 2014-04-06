@@ -1,5 +1,20 @@
  " based on https://bitbucket.org/sjl/dotfiles/src/10f4bf76eddda27da7e273fc26a31a96aef97b9d/vim/vimrc
-
+function SmoothScroll(up)
+    if a:up
+        let scrollaction=""
+    else
+        let scrollaction=""
+    endif
+    exec "normal " . scrollaction
+    redraw
+    let counter=1
+    while counter<&scroll
+        let counter+=1
+        sleep 10m
+        redraw
+        exec "normal " . scrollaction
+    endwhile
+endfunction
 " Preamble ---------------------------------------------------------------- {{{
 
 filetype off
@@ -39,6 +54,7 @@ set autoread
 set shiftround
 set title
 set cursorline
+set diffopt=filler,iwhite
 "set linebreak
 "set dictionary=/usr/share/dict/words
 "set spellfile=~/.vim/custom-dictionary.utf-8.add
@@ -47,7 +63,7 @@ set cursorline
 " iTerm2 is currently slow as ball at rendering the nice unicode lines, so for
 " now I'll just use ascii pipes.  They're ugly but at least I won't want to kill
 " myself when trying to move around a file.
-set fillchars=diff:⣿,vert:│
+set fillchars=diff:\·,vert:│
 "set fillchars=diff:⣿,vert:\|
 
 " Don't try to highlight lines longer than 800 characters.
@@ -174,9 +190,9 @@ endif
 
 syntax on
 set background=dark
-let g:trafficlights_tabline = 2
-let g:trafficlights_darkgutter = 0 
-let g:trafficlights_html_link_underline = 0
+" let g:trafficlights_tabline = 2
+" let g:trafficlights_darkgutter = 0 
+" let g:trafficlights_html_link_underline = 0
 colorscheme trafficlights
 
 " Reload the colorscheme whenever we write the file.
@@ -185,7 +201,56 @@ augroup color_trafficlights_dev
     au BufWritePost trafficlights.vim color trafficlights
 augroup END
 " }}}
+if exists("+showtabline")
+  function! MyTabLine()
+    let s = ''
+    for i in range(tabpagenr('$'))
+      " set up some oft-used variables
+      let tab = i + 1 " range() starts at 0
+      let winnr = tabpagewinnr(tab) " gets current window of current tab
+      let buflist = tabpagebuflist(tab) " list of buffers associated with the windows in the current tab
+      let bufnr = buflist[winnr - 1] " current buffer number
+      let bufname = bufname(bufnr) " gets the name of the current buffer in the current window of the current tab
 
+      let s .= '%' . tab . 'T' " start a tab
+      let s .= (tab == tabpagenr() ? '%#TabLineSel#' : '%#TabLine#') " if this tab is the current tab...set the right highlighting
+      let s .= ' ' . tab " current tab number
+      let n = tabpagewinnr(tab,'$') " get the number of windows in the current tab
+      if n > 1
+        let s .= ':' . n " if there's more than one, add a colon and display the count
+      endif
+      let bufmodified = '' 
+      " getbufvar(bufnr, "&mod")
+      for b in buflist
+        if getbufvar(b, "&mod")
+          let bufmodified = 1
+          break
+        endif
+      endfor
+      if bufmodified
+        let s .= ' +'
+      endif
+      if bufname != ''
+        let s .= ' ' . pathshorten(bufname) . ' ' " outputs the one-letter-path shorthand & filename
+      else
+        let s .= ' [No Name] '
+      endif
+      if tab == tabpagenr()
+          let s .= '%999X × ' 
+      else 
+          let s .= '   '
+      endif
+    endfor
+    let s .= '%#TabLineFill#' " blank highlighting between the tabs and the righthand close 'X'
+    let s .= '%T' " resets tab page number?
+    let s .= '%=' " seperate left-aligned from right-aligned
+    " let s .= '%#TabLine#' " set highlight for the 'X' below
+    " let s .= '%999XX' " places an 'X' at the far-right
+    return s
+  endfunction
+  set tabline=%!MyTabLine()
+endif
+" }}}
 " Statusline {{{
 function! GetCWD()
   return expand(":pwd")
@@ -424,8 +489,6 @@ nnoremap <leader>w :w<cr>
 " Sort lines
 " nnoremap <leader>s vip:!sort<cr>
 vnoremap <leader>s :!sort<cr>
-
-" set pastetoggle=cop
 
 " Tabs
 " nnoremap <leader>( :tabprev<cr>
@@ -666,6 +729,10 @@ augroup END
 
 " Plugin settings --------------------------------------------------------- {{{
 
+" DelimitMate {{{
+let delimitMate_expand_cr = 1
+" }}}
+
 " Ctrl-P {{{
 let g:ctrlp_reuse_window = 'netrw\|help\|quickfix'
 let g:ctrlp_cmd = 'CtrlPBuffer'
@@ -772,21 +839,22 @@ nnoremap <leader>L :LinediffReset<cr>
 " }}}
 
 " Vimux {{{
- function! VimuxSlime()
-  call VimuxSendText(@v)
-  call VimuxSendKeys("Enter")
- endfunction
+let g:VimuxRunnerType="window"
 
- " If text is selected, save it in the v buffer and send that buffer it to tmux
- vmap <LocalLeader>vs "vy :call VimuxSlime()<CR>
+function! VimuxSlime()
+    call VimuxSendText(@v)
+    call VimuxSendKeys("Enter")
+endfunction
 
- " Select current paragraph and send it to tmux
- nmap <LocalLeader>vs vip<LocalLeader>vs<CR>
+" If text is selected, save it in the v buffer and send that buffer it to tmux
+vmap <leader>vs "vy :call VimuxSlime()<CR>
+
+" Select current paragraph and send it to tmux
+nmap <leader>vs vip<LocalLeader>vs<CR>
 " }}}
 
 " Syntastic {{{
-
-"let g:syntastic_check_on_open = 0
+let g:syntastic_check_on_open=1
 "let g:syntastic_check_on_wq = 0
 
 "let g:syntastic_java_checker = 'javac'
@@ -836,6 +904,10 @@ let g:undotree_DiffpanelHeight = 20
 
 " }}}
 
+" indent-guides ----------------------------------------------------------- {{{
+let g:indent_guides_auto_colors = 0
+" }}}
+
 " jedi -------------------------------------------------------------------- {{{
 let g:jedi#auto_vim_configuration = 0
 autocmd FileType python setlocal omnifunc=jedi#completions
@@ -869,8 +941,9 @@ let g:neocomplete#enable_auto_select = 0
 " let g:neocomplcache_force_omni_patterns['python'] = '\%([^. \t]\.\|^\s*@\|^\s*from\s.\+import \|^\s*from \|^\s*import \)\w*'
 " imap <expr><TAB> neosnippet#expandable_or_jumpable() ? "\<Plug>(neosnippet_expand_or_jump)" : pumvisible() ? "\<C-n>" : "\<TAB>"
 " let g:neocomplcache_force_omni_patterns['python'] = '[^. t].w*'
-"
-inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
+imap <expr> <CR> pumvisible() ? "\<c-y>" : "<Plug>delimitMateCR"
+" inoremap <expr><CR>  pumvisible() ? neocomplete#close_popup() : "\<Plug>delimitMateCR"
+" inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
 function! s:my_cr_function()
   return neocomplete#close_popup() . "\<CR>"
   " For no inserting <CR> key.
@@ -881,6 +954,7 @@ inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
 " SuperTab like snippets behavior.
 let g:neocomplete#force_omni_input_patterns = {}
 let g:neocomplete#force_omni_input_patterns.python = '\%([^. \t]\.\|^\s*@\|^\s*from\s.\+import \|^\s*from \|^\s*import \)\w*'
+let g:neocomplete#force_omni_input_patterns.javascript = '[^. \t]\.\w*'
 
 imap <C-k>     <Plug>(neosnippet_expand_or_jump)
 smap <C-k>     <Plug>(neosnippet_expand_or_jump)

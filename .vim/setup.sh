@@ -13,6 +13,8 @@ git clone https://github.com/Shougo/neosnippet-snippets.git
 git clone https://github.com/gcavn/vimpos.git
 git clone https://github.com/scrooloose/syntastic.git
 git clone https://github.com/majutsushi/tagbar.git
+git clone https://github.com/marijnh/tern_for_vim.git
+(cd tern_for_vim ; npm install )
 git clone https://github.com/gcavn/trafficlights.git
 git clone https://github.com/mbbill/undotree.git
 git clone https://github.com/tpope/vim-abolish.git
@@ -24,6 +26,7 @@ git clone https://github.com/Lokaltog/vim-easymotion.git
 git clone https://github.com/tpope/vim-fugitive.git
 git clone https://github.com/airblade/vim-gitgutter.git
 git clone https://github.com/jamessan/vim-gnupg.git 
+git clone https://github.com/pangloss/vim-javascript.git
 git clone https://github.com/osyo-manga/vim-marching.git
 git clone https://github.com/tpope/vim-repeat.git
 git clone https://github.com/tpope/vim-surround

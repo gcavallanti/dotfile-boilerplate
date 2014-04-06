@@ -5,7 +5,7 @@
         # View the current working tree status using the short format
         s = status -sb
         # Show the diff between the latest commit and the current state
-        d = !"git diff-index --quiet HEAD -- || clear; git --no-pager diff --patch-with-stat"
+	d = difftool
         diffw = diff --word-diff=color
         # `git di $number` shows the diff between the state `$number` revisions ago and the current state
         di = !"d() { git diff --patch-with-stat HEAD~$1; }; git diff-index --quiet HEAD -- || clear; d"
@@ -80,3 +80,5 @@
         extendRegexp = true
 [diff]
 	tool = vimdiff
+[difftool]
+	prompt = false
