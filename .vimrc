@@ -684,7 +684,7 @@ augroup ft_python
     au!
 
     au FileType python set foldmethod=expr
-    au FileType python set foldexpr=g:pymodefoldingexpr(v:lnum)
+    au FileType python set foldexpr=Pymodefoldingexpr(v:lnum)
     au FileType python set omnifunc=pythoncomplete#Complete
 augroup END
 
@@ -1094,7 +1094,7 @@ endif
 " endfunction "}}}
 
 
-fun! g:pymodefoldingexpr(lnum) "{{{
+fun! g:Pymodefoldingexpr(lnum) "{{{
 
     let line = getline(a:lnum)
     let indent = indent(a:lnum)
