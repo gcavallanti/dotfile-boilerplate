@@ -32,7 +32,7 @@ set listchars=tab:▸\ ,eol:¬,extends:❯,precedes:❮
 set lazyredraw
 set matchtime=3
 set showbreak=↪
-set splitbelow
+" set splitbelow
 set splitright
 set autowrite
 set autoread
@@ -40,6 +40,8 @@ set shiftround
 set title
 set cursorline
 set diffopt=filler,iwhite
+set winheight=10
+set winminheight=10
 "set linebreak
 "set dictionary=/usr/share/dict/words
 "set spellfile=~/.vim/custom-dictionary.utf-8.add
@@ -443,14 +445,10 @@ iabbrev gcavn@ gcavn@gcavn.com
 
 " Convenience mappings ---------------------------------------------------- {{{
 
-nmap \x :call GetFoo()<CR>:exe "/" . Foo<CR>
-function GetFoo()
-  call inputsave()
-  let g:Foo = input("enter search pattern: ")
-  call inputrestore()
-endfunction
-
 let mapleader=' ' 
+
+nnoremap <silent> <Leader>= :exe "resize " . (winheight(0) * 3/2)<CR>
+nnoremap <silent> <Leader>- :exe "resize " . (winheight(0) * 2/3)<CR>
 
 nnoremap <c-z> mzzMzvzz15<c-e>`z:Pulse<cr>
 " nnoremap <leader>, "
@@ -473,8 +471,8 @@ nnoremap <leader>w :w<cr>
 vnoremap <leader>s :!sort<cr>
 
 " Tabs
-" nnoremap <leader>( :tabprev<cr>
-" nnoremap <leader>) :tabnext<cr>
+nnoremap <leader>[ :tabprev<cr>
+nnoremap <leader>] :tabnext<cr>
 
 " Rebuild Ctags (mnemonic RC -> CR -> <cr>)
 " nnoremap <leader><cr> :silent !myctags<cr>:redraw!<cr>
@@ -497,10 +495,10 @@ vnoremap <leader>S y:execute @@<cr>:echo 'Sourced selection.'<cr>
 nnoremap <leader>S ^vg_y:execute @@<cr>:echo 'Sourced line.'<cr>
 
 " Easier to type, and I never use the default behavior.
-noremap <C-h> ^
-noremap <C-l> $
-noremap ^ <C-h>
-noremap $ <C-l>
+" noremap <C-h> ^
+" noremap <C-l> $
+" noremap ^ <C-h>
+" noremap $ <C-l>
 "
 
 " Directional Keys 
@@ -676,7 +674,7 @@ augroup ft_vim
 
     au FileType vim setlocal foldmethod=marker
     au FileType help setlocal textwidth=78
-    au BufWinEnter *.txt if &ft == 'help' | wincmd L | endif
+    " au BufWinEnter *.txt if &ft == 'help' | wincmd L | endif
 augroup END
 " }}}
 
