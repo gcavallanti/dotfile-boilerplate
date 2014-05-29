@@ -1,20 +1,5 @@
  " based on https://bitbucket.org/sjl/dotfiles/src/10f4bf76eddda27da7e273fc26a31a96aef97b9d/vim/vimrc
-function SmoothScroll(up)
-    if a:up
-        let scrollaction=""
-    else
-        let scrollaction=""
-    endif
-    exec "normal " . scrollaction
-    redraw
-    let counter=1
-    while counter<&scroll
-        let counter+=1
-        sleep 10m
-        redraw
-        exec "normal " . scrollaction
-    endwhile
-endfunction
+
 " Preamble ---------------------------------------------------------------- {{{
 
 filetype off
@@ -190,9 +175,6 @@ endif
 
 syntax on
 set background=dark
-" let g:trafficlights_tabline = 2
-" let g:trafficlights_darkgutter = 0 
-" let g:trafficlights_html_link_underline = 0
 colorscheme trafficlights
 
 " Reload the colorscheme whenever we write the file.
@@ -236,7 +218,7 @@ if exists("+showtabline")
         let s .= ' [No Name] '
       endif
       if tab == tabpagenr()
-          let s .= '%999X × ' 
+          let s .= '%999X x ' 
       else 
           let s .= '   '
       endif
@@ -251,6 +233,7 @@ if exists("+showtabline")
   set tabline=%!MyTabLine()
 endif
 " }}}
+
 " Statusline {{{
 function! GetCWD()
   return expand(":pwd")
@@ -447,7 +430,6 @@ augroup status
 augroup END
 
 autocmd VimEnter,WinEnter,BufWinEnter * set statusline=%!Status(1)
-" }}}
 
 " Highlight VCS conflict markers
 match ErrorMsg '^\(<\|=\|>\)\{7\}\([^=].\+\)\?$'
@@ -471,13 +453,13 @@ endfunction
 let mapleader=' ' 
 
 nnoremap <c-z> mzzMzvzz15<c-e>`z:Pulse<cr>
-
-nnoremap <leader>d "_d
-vnoremap <leader>d "_d
-vnoremap <leader>p "_dP
+" nnoremap <leader>, "
+" nnoremap <leader>d "_d
+" vnoremap <leader>d "_d
+" vnoremap <leader>p "_dP
 
 " Kill window
-nnoremap <leader>q :q<cr>
+nnoremap <leader>q :qa<cr>
 
 " Write buffer to file
 nnoremap <leader>w :w<cr>
@@ -551,6 +533,7 @@ nnoremap <leader>ef :e %:p:h<cr>
 nnoremap <leader>e. :e .<cr>
 
 " }}}
+
 " Searching and movement -------------------------------------------------- {{{
 
 " Use sane regexes.
@@ -765,30 +748,30 @@ let g:ctrlp_match_window = 'order:ttb,max:20'
 " a:1 a:2 a:3 a:4 a:5 a:6 a:7
 fu! CtrlP_main_status(...)
   let regex = a:3 ? '%2*regex %*' : ''
-  let prv = '%#StatusLineNC# '.a:4.' %*'
-  let item = ' ' . (a:5 == 'mru files' ? 'mru' : a:5) . ' '
-  let nxt = '%#StatusLineNC# '.a:6.' %*'
   let byfname = '%2* '.a:2.' %*'
-  let dir = '%3* ← %*%#StatusLineNC#' . fnamemodify(getcwd(), ':~') . '%* '
+  let dir = '%1* ' . fnamemodify(getcwd(), ':~') . '%* '
+  let prv = '%1* '.a:4.' %*'
+  let item = ' ' . (a:5 == 'mru files' ? 'mru' : a:5) . ' '
+  let nxt = '%1* '.a:6.' %*'
 
   " only outputs current mode
   " retu ' %4*»%*' . item . '%4*«%* ' . '%=%<' . dir
 
   " outputs previous/next modes as well
-  retu prv . '%4*»%*' . item . '%4*«%*' . nxt . '%=%<' . dir
+  retu prv . '»' . item . '«' . nxt . '%=%<' . dir
 endf
  
 " Argument: len
 " a:1
 fu! CtrlP_progress_status(...)
-  let len = '%#Function# '.a:1.' %*'
-  let dir = ' %=%<%#LineNr# '.getcwd().' %*'
+  let len = '%1* '.a:1.' %*'
+  let dir = ' %=%<%1* '.getcwd().' %*'
   retu len.dir
 endf
 
-hi CtrlP_Purple ctermfg=255 guifg=#ffffff ctermbg=54 guibg=#5f5faf
-hi CtrlP_IPurple ctermfg=54 guifg=#5f5faf ctermbg=255 guibg=#ffffff
-hi CtrlP_Violet ctermfg=54 guifg=#5f5faf ctermbg=104 guibg=#aeaed7
+" hi CtrlP_Purple ctermfg=255 guifg=#ffffff ctermbg=54 guibg=#5f5faf
+" hi CtrlP_IPurple ctermfg=54 guifg=#5f5faf ctermbg=255 guibg=#ffffff
+" hi CtrlP_Violet ctermfg=54 guifg=#5f5faf ctermbg=104 guibg=#aeaed7
 
 let g:ctrlp_status_func = {
   \ 'main': 'CtrlP_main_status',
@@ -979,6 +962,15 @@ let g:marching_debug = 1
 let g:neocomplete#force_omni_input_patterns.cpp = '[^. *\t]\%(\.\|->\)\w*\|\h\w*::\w*'
 " }}}
 
+" dragvisuals ----------------------------------------------------------------- {{{
+" vmap  <expr>  <LEFT>   DVB_Drag('left')
+" vmap  <expr>  <RIGHT>  DVB_Drag('right')
+" vmap  <expr>  <DOWN>   DVB_Drag('down')
+" vmap  <expr>  <UP>     DVB_Drag('up')
+" vmap  <expr>  D        DVB_Duplicate()
+" let g:dvb_trimws = 3 
+" }}}
+
 " Miniplugins ------------------------------------------------------------ {{{
 
 " Difforig {{{
@@ -1160,8 +1152,14 @@ else
     if &term =~ '^screen'
         " tmux knows the extended mouse mode
         set ttymouse=xterm2
+        " change cursor shape when switching from normal to insert mode and back
         let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
         let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
+        " support for shift + arrow keys
+        execute "set <xUp>=\e[1;*A"
+        execute "set <xDown>=\e[1;*B"
+        execute "set <xRight>=\e[1;*C"
+        execute "set <xLeft>=\e[1;*D"
     else
         let &t_SI = "\<Esc>]50;CursorShape=1\x7"
         let &t_EI = "\<Esc>]50;CursorShape=0\x7"

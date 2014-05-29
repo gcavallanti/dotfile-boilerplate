@@ -1,6 +1,6 @@
 [alias]
         # View abbreviated SHA, description, and history graph of the latest 20 commits
-        lg = log --graph --abbrev-commit --decorate --date=relative --format=format:'%C(blue)%h%C(reset) %C(magenta)%d%C(reset) %s %C(dim black)- %an, %ar%C(reset)'  --all
+        lg = log --graph --abbrev-commit --decorate --date=relative --format=format:'%C(blue)%h%C(reset) %C(magenta)%d%C(reset) %s %C(dim black)- %an, %C(green)%ar%C(reset)'  --all
         lgs = !"git lg -15"
         # View the current working tree status using the short format
         s = status -sb
@@ -38,7 +38,7 @@
         excludesfile = ~/.gitignore
         attributesfile = ~/.gitattributes
         # Treat spaces before tabs, lines that are indented with 8 or more spaces, and all kinds of trailing whitespace as an error
-        whitespace = space-before-tab,indent-with-non-tab #,trailing-space
+        whitespace = space-before-tab,indent-with-non-tab,cr-at-eol #,trailing-space
 
 [color]
         # Use colors in Git commands that are capable of colored output when outputting to the terminal
@@ -69,8 +69,8 @@
         default = matching
 
 [user]
-        name = Giovanni Cavallanti
-        email = gcavn@gcavn.com
+	name = Giovanni Cavallanti
+	email = gcavn@gcavn.com
 
 [credential]
         helper = cache --timeout=3600
