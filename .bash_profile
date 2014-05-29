@@ -201,9 +201,9 @@ if [[ -n $(type -t __git_ps1) ]]; then
     export GIT_PS1_SHOWDIRTYSTATE=1
     export GIT_PS1_SHOWSTASHSTATE=1
     export GIT_PS1_SHOWUNTRACKEDFILES=1
-    export GIT_PS1_SHOWUPSTREAM="auto"
+    export GIT_PS1_SHOWUPSTREAM="verbose"
     export GIT_PS1_SHOWCOLORHINTS=1
-    export GIT_PS1_STATESEPARATOR=""
+    export GIT_PS1_STATESEPARATOR=" "
    
      PS1="\[${RED}\]\u \[$RESET\]at \[$YELLOW\]\h \[$RESET\]in \[$BLUE\]\w\$(__git_ps1 \"\[$RESET\] on \[$MAGENTA\]%s\"  )\[$RESET\]\n\$ "
 else
