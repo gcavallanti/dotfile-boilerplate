@@ -40,7 +40,7 @@ set shiftround
 set title
 set cursorline
 set diffopt=filler,iwhite
-set winheight=10
+set winheight=40
 set winminheight=10
 "set linebreak
 "set dictionary=/usr/share/dict/words
@@ -67,7 +67,8 @@ set synmaxcol=800
 
 " Better Completion
 "set complete=.,w,b,u,t
-set completeopt=longest,menuone,preview
+set completeopt=longest,menuone
+" ,preview
 
 " Turn off previews once a completion is accepted
 "autocmd CursorMovedI *  if pumvisible() == 0|silent! pclose|endif
@@ -92,10 +93,10 @@ au VimResized * :wincmd =
 
 " cpoptions+=J {{{
 " A |sentence| has to be followed by two spaces after the '.', '!' or '?'.  A <Tab> is not recognized as white space.
-augroup twospace
-    au!
-    au BufRead * :set cpoptions+=J
-augroup END
+" augroup twospace
+"     au!
+"     au BufRead * :set cpoptions+=J
+" augroup END
 
 " }}}
 
@@ -348,7 +349,7 @@ function! Status(focused)
 
   " let stat .= '%1*'
   let stat .= '%{ColPad()}'
-  let stat .= '%1*%v%*'
+  let stat .= '%v'
 
   " file
   " let stat .= Color(a:focused, 4, a:focused ? ' »' : ' «')
@@ -382,7 +383,7 @@ function! Status(focused)
   " let stat .= "%{&modified ? ' [+]' : ''}"
   " let stat .= Color(a:focused, 2, "%m")
   let stat .= "     "
-  let stat .= "%1*%m"
+  let stat .= "%m"
   let stat .= "%r"
   let stat .= "%w"
   let stat .= "%q"
@@ -416,7 +417,7 @@ function! Status(focused)
   endif
   let stat .= "%{exists('g:loaded_syntastic_plugin')?SyntasticStatuslineFlag():''}" 
   let stat .= "%{exists('g:loaded_fugitive')?fugitive#statusline():''}"
-  let stat .= "     %1*[%{exists('g:scrollbar_loaded')?ScrollBar(20,' ','='):''}]%*"
+  let stat .= "     [%{exists('g:scrollbar_loaded')?ScrollBar(20,' ','='):''}]"
   " if !empty(head)
   "   " let stat .= Color(a:focused, 3, ' ← ') . head . ' '
   "   let stat .= ' ' . head . ' '
@@ -894,6 +895,8 @@ let g:jedi#auto_vim_configuration = 0
 autocmd FileType python setlocal omnifunc=jedi#completions
 let g:jedi#completions_enabled = 0
 let g:jedi#use_tabs_not_buffers = 0
+let g:jedi#show_call_signatures = 0
+let g:jedi#auto_close_doc = 0
  " }}}
 
 " neocomplete -------------------------------------------------------------------- {{{
@@ -941,9 +944,9 @@ imap <C-k>     <Plug>(neosnippet_expand_or_jump)
 smap <C-k>     <Plug>(neosnippet_expand_or_jump)
 xmap <C-k>     <Plug>(neosnippet_expand_target)
 
-if has('conceal')
-    set conceallevel=2 concealcursor=i
-endif
+" if has('conceal')
+"     set conceallevel=2 concealcursor=i
+" endif
 
 " }}}
 
@@ -971,6 +974,62 @@ let g:neocomplete#force_omni_input_patterns.cpp = '[^. *\t]\%(\.\|->\)\w*\|\h\w*
 
 " Miniplugins ------------------------------------------------------------ {{{
 
+" Highlight Word {{{
+"
+" This mini-plugin provides a few mappings for highlighting words temporarily.
+"
+" Sometimes you're looking at a hairy piece of code and would like a certain
+" word or two to stand out temporarily.  You can search for it, but that only
+" gives you one color of highlighting.  Now you can use <leader>N where N is
+" a number from 1-6 to highlight the current word in a specific color.
+
+function! HiInterestingWord(n) " {{{
+    " Save our location.
+    normal! mz
+
+    " Yank the current word into the z register.
+    normal! "zyiw
+
+    " Calculate an arbitrary match ID.  Hopefully nothing else is using it.
+    let mid = 86750 + a:n
+
+    " Clear existing matches, but don't worry if they don't exist.
+    silent! call matchdelete(mid)
+
+    " Construct a literal pattern that has to match at boundaries.
+    let pat = '\V\<' . escape(@z, '\') . '\>'
+
+    " Actually match the words.
+    call matchadd("InterestingWord" . a:n, pat, 1, mid)
+
+    " Move back to our original location.
+    normal! `z
+endfunction " }}}
+
+" Mappings {{{
+
+nnoremap <silent> <leader>1 :call HiInterestingWord(1)<cr>
+nnoremap <silent> <leader>o2 :call matchdelete(86752)<cr>
+nnoremap <silent> <leader>2 :call HiInterestingWord(2)<cr>
+nnoremap <silent> <leader>3 :call HiInterestingWord(3)<cr>
+nnoremap <silent> <leader>4 :call HiInterestingWord(4)<cr>
+nnoremap <silent> <leader>5 :call HiInterestingWord(5)<cr>
+nnoremap <silent> <leader>6 :call HiInterestingWord(6)<cr>
+
+" }}}
+" Default Highlights {{{
+
+hi def InterestingWord1 guifg=#000000 ctermfg=16 guibg=#ffa724 ctermbg=214
+hi def InterestingWord2 guifg=#000000 ctermfg=16 guibg=#aeee00 ctermbg=154
+hi def InterestingWord3 guifg=#000000 ctermfg=16 guibg=#8cffba ctermbg=121
+hi def InterestingWord4 guifg=#000000 ctermfg=16 guibg=#b88853 ctermbg=137
+hi def InterestingWord5 guifg=#000000 ctermfg=16 guibg=#ff9eb8 ctermbg=211
+hi def InterestingWord6 guifg=#000000 ctermfg=16 guibg=#ff2c4b ctermbg=195
+
+" }}}
+
+" }}}
+
 " Difforig {{{
 command DiffOrig let g:diffline = line('.') | vert new | set bt=nofile | r # | 0d_ | diffthis | :exe "norm! ".g:diffline."G" | wincmd p | diffthis | wincmd p
 nnoremap <Leader>do :DiffOrig<cr>
@@ -986,6 +1045,40 @@ function! SynStack()
 endfunc
 
 nnoremap <F2> :call SynStack()<CR>
+
+" }}}
+
+" Block Colors {{{
+
+let g:blockcolor_state = 0
+function! BlockColor() " {{{
+    if g:blockcolor_state
+        let g:blockcolor_state = 0
+        call matchdelete(77881)
+        call matchdelete(77882)
+        call matchdelete(77883)
+        call matchdelete(77884)
+        call matchdelete(77885)
+        call matchdelete(77886)
+    else
+        let g:blockcolor_state = 1
+        call matchadd("BlockColor1", '^ \{4}.*', 1, 77881)
+        call matchadd("BlockColor2", '^ \{8}.*', 2, 77882)
+        call matchadd("BlockColor3", '^ \{12}.*', 3, 77883)
+        call matchadd("BlockColor4", '^ \{16}.*', 4, 77884)
+        call matchadd("BlockColor5", '^ \{20}.*', 5, 77885)
+        call matchadd("BlockColor6", '^ \{24}.*', 6, 77886)
+    endif
+endfunction " }}}
+" Default highlights {{{
+hi def BlockColor1 guibg=#222222 ctermbg=234
+hi def BlockColor2 guibg=#2a2a2a ctermbg=235
+hi def BlockColor3 guibg=#353535 ctermbg=236
+hi def BlockColor4 guibg=#3d3d3d ctermbg=237
+hi def BlockColor5 guibg=#444444 ctermbg=238
+hi def BlockColor6 guibg=#4a4a4a ctermbg=239
+" }}}
+nnoremap <leader>B :call BlockColor()<cr>
 
 " }}}
 
