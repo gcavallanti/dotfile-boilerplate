@@ -1,6 +1,6 @@
 [alias]
         # View abbreviated SHA, description, and history graph of the latest 20 commits
-        lg = log --graph --abbrev-commit --decorate --date=relative --format=format:'%C(blue)%h%C(reset) %C(magenta)%d%C(reset) %s %C(dim black)- %an, %C(green)%ar%C(reset)'  --all
+        lg = log --graph --abbrev-commit --decorate --date=iso --format=format:'%C(blue)%h%C(reset) %C(black)- (%ad) -%C(reset)%C(magenta)%d%C(reset) %s%C(black) - <%an>'  --all
         lgs = !"git lg -15"
         # View the current working tree status using the short format
         s = status -sb
@@ -51,7 +51,7 @@
 
 [color "diff"]
         meta = yellow
-        frag = black
+        # frag = black
         old = red
         new = green
         whitespace = white reverse
