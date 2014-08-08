@@ -177,6 +177,7 @@ export PATH=$HOME/.local/bin:$HOME/.dotfiles/bin:/usr/local/bin:/usr/local/sbin:
 
 # third-party -----------------------------------------------------------------
 
+# git
 if [[ $(uname -s) == "Darwin" ]]; then 
 
     if [ -f $(brew --prefix)/etc/bash_completion ]; then
@@ -190,12 +191,19 @@ if [[ $(uname -s) == "Darwin" ]]; then
         . $(brew --prefix)/etc/bash_completion.d/git-prompt.sh 
     fi
 
+# rvm
 export PATH=$HOME/.rvm/bin:$PATH
     [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" 
 
 elif [[ $(uname -s) == "Linux" ]]; then
     :
 fi
+
+# virtualenv
+# pip should only run if there is a virtualenv currently activated
+export PIP_REQUIRE_VIRTUALENV=true
+# cache pip-installed packages to avoid re-downloading
+export PIP_DOWNLOAD_CACHE=$HOME/.pip/cache
 
 # Prompt ----------------------------------------------------------------------
 if [[ -n $(type -t __git_ps1) ]]; then
