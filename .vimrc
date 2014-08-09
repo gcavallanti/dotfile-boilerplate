@@ -88,7 +88,7 @@ augroup END
 
 " Wildmenu completion {{{
 set wildmenu
-set wildmode=list:longest
+set wildmode=longest:full
 set wildignore+=.hg,.git,.svn                    " Version control
 set wildignore+=*.aux,*.out,*.toc                " LaTeX intermediate files
 set wildignore+=*.jpg,*.bmp,*.gif,*.png,*.jpeg   " binary images
@@ -283,6 +283,12 @@ augroup status
 augroup END
 
 autocmd VimEnter,WinEnter,BufWinEnter * set statusline=%!Status(1)
+
+augroup signs
+  autocmd!
+  autocmd BufEnter * sign define dummy
+  autocmd BufEnter * execute 'sign place 9999 line=1 name=dummy buffer=' . bufnr('')
+augroup END
 
 " Highlight VCS conflict markers
 match ErrorMsg '^\(<\|=\|>\)\{7\}\([^=].\+\)\?$'
@@ -566,7 +572,7 @@ let g:ctrlp_reuse_window = 'netrw\|help\|quickfix'
 let g:ctrlp_cmd = 'CtrlPBuffer'
 let g:ctrlp_switch_buffer = 0
 let g:ctrlp_match_window = 'order:ttb,max:20'
-let g:ctrlp_mruf_exclude = '/usr/local/Cellar/.*'
+let g:ctrlp_mruf_exclude = '/usr/local/Cellar/.*\|/var/folders/.*\|/private/var/folders/.*\|.*\.DS_Store\|\.vim/bundle/.*/doc/.*'
 " }}}
 
 " Tagbar {{{
@@ -802,8 +808,12 @@ if has('gui_running')
 
     end
 else
+    if has("mac")
+        set clipboard=unnamed
+    else
+        set clipboard=unnamedplus
+    endif
     set mouse=a
-    set clipboard=unnamed
     if &term =~ '^screen'
 
         " tmux knows the extended mouse mode
