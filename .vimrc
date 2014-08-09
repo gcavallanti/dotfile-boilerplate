@@ -66,8 +66,6 @@ let mapleader=' '
 " autocmd InsertLeave * if pumvisible() == 0|silent! pclose|endif
 " }}}
 
-" }}}
-
 " cpoptions+=J {{{
 " A |sentence| has to be followed by two spaces after the '.', '!' or '?'.  A <Tab> is not recognized as white space.
 " augroup twospace
@@ -208,6 +206,7 @@ if exists("+showtabline")
 endif
 " }}}
 
+" Statusline {{{
 function! Status(focused)
   let stat = ''
 
@@ -286,6 +285,8 @@ autocmd VimEnter,WinEnter,BufWinEnter * set statusline=%!Status(1)
 
 " Highlight VCS conflict markers
 match ErrorMsg '^\(<\|=\|>\)\{7\}\([^=].\+\)\?$'
+
+" }}}
 
 " }}}
 

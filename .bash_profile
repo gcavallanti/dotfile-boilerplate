@@ -126,6 +126,11 @@ alias badge="tput bel"
 #     alias "$method"="lwp-request -m '$method'"
 # done
 
+if [[ $(uname -s) == "Linux" ]]; then 
+    alias pbpaste='xclip -selection clipboard -o'
+    alias pbcopy='xclip -selection clipboard'
+fi
+
 # Trim new lines and copy to clipboard
 alias c="tr -d '\n' | pbcopy"
 
