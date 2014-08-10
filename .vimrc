@@ -340,7 +340,7 @@ nnoremap <leader>w :w<cr>
 " imap <F14> <esc>
 
 " Easier dictionary completion
-inoremap <C-K> <C-X><C-K>
+inoremap <C-j> <C-X><C-K>
 
 " A tab is like a paGe
 nnoremap [g :tabprev<cr>
@@ -539,7 +539,7 @@ augroup ft_vim
     au FileType vim setlocal foldmethod=marker
     au FileType help setlocal textwidth=78
     au FileType vim setlocal formatoptions=qrn1cl
-    au BufWinEnter *.txt if &ft == 'help' | wincmd L | endif
+    " au BufWinEnter *.txt if &ft == 'help' | wincmd L | endif
 augroup END
 " }}}
 
@@ -579,7 +579,7 @@ let g:ctrlp_reuse_window = 'netrw\|help\|quickfix'
 let g:ctrlp_cmd = 'CtrlPBuffer'
 let g:ctrlp_switch_buffer = 0
 let g:ctrlp_match_window = 'order:ttb,max:20'
-let g:ctrlp_mruf_exclude = '/usr/local/Cellar/.*\|/var/folders/.*\|/private/var/folders/.*\|.*\.DS_Store\|\.vim/bundle/.*/doc/.*'
+let g:ctrlp_mruf_exclude = '/usr/local/Cellar/.*\|/var/folders/.*\|/private/var/folders/.*\|.*\.DS_Store\|\.vim/bundle/.*/doc/.*\|/usr/share/.*doc/.*'
 " }}}
 
 " Tagbar {{{
