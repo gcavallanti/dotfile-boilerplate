@@ -38,8 +38,7 @@ set title
 set cursorline
 set diffopt=filler,iwhite
 set linebreak
-" set dictionary=/usr/share/dict/words
-" set spellfile=~/.vim/custom-dictionary.utf-8.add
+set dictionary=/usr/share/dict/words
 set fillchars=diff:\·,vert:│
 
 " Don't try to highlight lines longer than 800 characters.
@@ -49,7 +48,7 @@ set timeout
 " Set mapping delay to 1s so you can think what to type next
 set timeoutlen=1000
 " Set key code delay to 0.01s
-set ttimeoutlen=50
+set ttimeoutlen=10
 
 " Set up ins-completions preferences
 " set complete=.,w,b,u,t,kspell
@@ -86,7 +85,7 @@ augroup END
 
 " Wildmenu completion {{{
 set wildmenu
-set wildmode=longest:full
+set wildmode=longest,list
 set wildignore+=.hg,.git,.svn                    " Version control
 set wildignore+=*.aux,*.out,*.toc                " LaTeX intermediate files
 set wildignore+=*.jpg,*.bmp,*.gif,*.png,*.jpeg   " binary images
@@ -100,6 +99,13 @@ set wildignore+=*.pyc                            " Python byte code
 set wildignore+=*.orig                           " Merge resolution files
 cnoremap <Left> <Space><BS><Left>
 cnoremap <Right> <Space><BS><Right>
+" }}}
+
+" Insertion mode completion {{{
+set completeopt=longest,menuone
+inoremap <expr><CR> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<S-TAB>"
 " }}}
 
 " Line Return {{{
@@ -327,23 +333,23 @@ nnoremap <leader>q :confirm qa<cr>
 " Write buffer to file
 nnoremap <leader>w :w<cr>
 
-inoremap <C-j> <esc>
+" inoremap <C-j> <esc>
 " set <F13>=jk
 " imap <F13> <esc>
 " set <F14>=kj
 " imap <F14> <esc>
 
-" Tabs
-" a tab is short Strip of material attached to something
+" Easier dictionary completion
+inoremap <C-K> <C-X><C-K>
+
+" A tab is like a paGe
 nnoremap [g :tabprev<cr>
 nnoremap ]g :tabnext<cr>
 nnoremap ]G :tablast<cr>
 nnoremap [G :tabfirst<cr>
 
 " Paste mode
-nnoremap [ot :set paste<cr>
-nnoremap ]ot :set nopaste<cr>
-set pastetoggle=cot
+set pastetoggle=<F11>
      
 " Make Y move like D and C
 noremap Y y$
@@ -616,23 +622,41 @@ let g:jedi#auto_close_doc = 0
 
 " neocomplete {{{
 let g:neocomplete#enable_at_startup = 1
+let g:neocomplete#enable_fuzzy_completion = 0
+let g:neocomplete#manual_completion_start_length = 0
+" let g:neocomplete#max_list=100
 let g:neocomplete#enable_auto_select = 0
 let g:neocomplete#disable_auto_complete = 1
-let g:neocomplete#enable_insert_char_pre = 1
-inoremap <expr><CR> pumvisible() ? neocomplete#close_popup() : "\<CR>"
-
-inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<S-TAB>"
+" let g:neocomplete#enable_insert_char_pre = 1
+" inoremap <expr><CR> pumvisible() ? neocomplete#close_popup() : "\<CR>"
 inoremap <expr><C-Space> neocomplete#start_manual_complete()
 imap <C-@> <C-Space>
-imap <C-k> <Plug>(neosnippet_expand_or_jump)
-smap <C-k> <Plug>(neosnippet_expand_or_jump)
-xmap <C-k> <Plug>(neosnippet_expand_target)
 
 let g:neocomplete#force_omni_input_patterns = {}
 let g:neocomplete#force_omni_input_patterns.python = '\%([^. \t]\.\|^\s*@\|^\s*from\s.\+import \|^\s*from \|^\s*import \)\w*'
 let g:neocomplete#force_omni_input_patterns.javascript = '[^. \t]\.\w*'
 let g:neocomplete#force_omni_input_patterns.cpp = '[^. *\t]\%(\.\|->\)\w*\|\h\w*::\w*'
+" }}}
+
+" " neosnippet {{{
+" let g:neosnippet#snippets_directory='~/.vim/custom_snippets/'
+" imap <C-k> <Plug>(neosnippet_expand_or_jump)
+" smap <C-k> <Plug>(neosnippet_expand_or_jump)
+" xmap <C-k> <Plug>(neosnippet_expand_target)
+" " }}}
+
+" Ultisnips {{{
+" Trigger configuration. Do not use <tab> if you use
+" https://github.com/Valloric/YouCompleteMe.
+let g:UltiSnipsExpandTrigger="<c-k>"
+let g:UltiSnipsJumpForwardTrigger="<tab>"
+let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
+
+" let g:UltiSnipsExpandTrigger="<tab>"
+ " let g:UltiSnipsJumpForwardTrigger="<tab>"
+ " let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
+" If you want :UltiSnipsEdit to split your window.
+" let g:UltiSnipsEditSplit="vertical"
 " }}}
 
 " marching {{{
