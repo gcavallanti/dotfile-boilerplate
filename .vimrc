@@ -52,7 +52,9 @@ set ttimeoutlen=10
 
 " Set up ins-completions preferences
 " set complete=.,w,b,u,t,kspell
-set completeopt=longest,menuone
+set completeopt=longest,menuone,preview
+
+set pumheight=10
 
 " Resize splits when the window is resized
 au VimResized * :wincmd =
@@ -97,15 +99,6 @@ set wildignore+=*.luac                           " Lua byte code
 set wildignore+=migrations                       " Django migrations
 set wildignore+=*.pyc                            " Python byte code
 set wildignore+=*.orig                           " Merge resolution files
-cnoremap <Left> <Space><BS><Left>
-cnoremap <Right> <Space><BS><Right>
-" }}}
-
-" Insertion mode completion {{{
-set completeopt=longest,menuone
-inoremap <expr><CR> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<S-TAB>"
 " }}}
 
 " Line Return {{{
@@ -310,6 +303,10 @@ iabbrev gcavn@ gcavn@gcavn.com
 
 " Convenience mappings ---------------------------------------------------- {{{
 
+" Preview window
+noremap <f2> :pclose<cr>
+inoremap <f2> <C-O>:pclose<cr>
+
 " Easy window resizing
 nnoremap <silent> <C-W><C-Up> 10<c-w>+
 nnoremap <silent> <C-W><C-down> 10<c-w>-
@@ -340,7 +337,7 @@ nnoremap <leader>w :w<cr>
 " imap <F14> <esc>
 
 " Easier dictionary completion
-inoremap <C-j> <C-X><C-K>
+" inoremap <C-j> <C-X><C-K>
 
 " A tab is like a paGe
 nnoremap [g :tabprev<cr>
@@ -357,7 +354,7 @@ noremap Y y$
 " Rebuild Ctags (mnemonic RC -> CR -> <cr>)
 " nnoremap <leader><cr> :silent !myctags<cr>:redraw!<cr>
 
-nnoremap <F3> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<' . synIDattr(synID(line("."),col("."),0),"name") . "> lo<" . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
+nnoremap <F9> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<' . synIDattr(synID(line("."),col("."),0),"name") . "> lo<" . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
 
 " Select entire buffer
 nnoremap vaa ggvGg_
@@ -384,7 +381,17 @@ noremap gk k
 " Switch inner word caSe
 inoremap <C-s> <esc>mzg~iw`za
 
+" Wildmenu completion {{{
+cnoremap <Left> <Space><BS><Left>
+cnoremap <Right> <Space><BS><Right>
 " }}}
+
+" Ins-completion mode {{{
+inoremap <expr><CR> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<S-TAB>"
+" }}}
+
 
 " Quick editing ----------------------------------------------------------- {{{
 
@@ -416,7 +423,9 @@ set sidescrolloff=10
 " Folding ----------------------------------------------------------------- {{{
 
 set foldlevelstart=99
-
+" Space to toggle folds.
+nnoremap <leader>l za
+vnoremap <leader>l za
 " }}}
 
 " Filetype-specific ------------------------------------------------------- {{{
@@ -570,6 +579,11 @@ augroup END
 
 " Plugin settings --------------------------------------------------------- {{{
 
+" EasyAlign {{{
+vmap <Enter> <Plug>(EasyAlign)
+nmap <Leader>a <Plug>(EasyAlign)
+" }}}
+
 " DelimitMate {{{
 let delimitMate_expand_cr = 1
 " }}}
@@ -591,11 +605,6 @@ let g:tagbar_indent = 2
 let g:tagbar_left = 1
 let g:tagbar_foldlevel = 0
 nnoremap <silent> <F9> :TagbarToggle<CR>
-" }}}
-
-" Linediff {{{
-vnoremap <leader>l :Linediff<cr>
-nnoremap <leader>L :LinediffReset<cr>
 " }}}
 
 " Syntastic {{{
@@ -621,47 +630,53 @@ let g:jedi#auto_close_doc = 0
  " }}}
 
 " neocomplete {{{
-let g:neocomplete#enable_at_startup = 1
+let g:neocomplete#enable_at_startup = 0
 let g:neocomplete#enable_fuzzy_completion = 0
 let g:neocomplete#manual_completion_start_length = 0
-" let g:neocomplete#max_list=100
 let g:neocomplete#enable_auto_select = 0
 let g:neocomplete#disable_auto_complete = 1
-" let g:neocomplete#enable_insert_char_pre = 1
+let g:neocomplete#enable_insert_char_pre = 1
 " inoremap <expr><CR> pumvisible() ? neocomplete#close_popup() : "\<CR>"
-inoremap <expr><C-Space> neocomplete#start_manual_complete()
-imap <C-@> <C-Space>
-
+" inoremap <expr><C-Space> neocomplete#start_manual_complete()
+" imap <C-@> <C-Space>
 let g:neocomplete#force_omni_input_patterns = {}
 let g:neocomplete#force_omni_input_patterns.python = '\%([^. \t]\.\|^\s*@\|^\s*from\s.\+import \|^\s*from \|^\s*import \)\w*'
 let g:neocomplete#force_omni_input_patterns.javascript = '[^. \t]\.\w*'
 let g:neocomplete#force_omni_input_patterns.cpp = '[^. *\t]\%(\.\|->\)\w*\|\h\w*::\w*'
 " }}}
 
-" " neosnippet {{{
-" let g:neosnippet#snippets_directory='~/.vim/custom_snippets/'
-" imap <C-k> <Plug>(neosnippet_expand_or_jump)
-" smap <C-k> <Plug>(neosnippet_expand_or_jump)
-" xmap <C-k> <Plug>(neosnippet_expand_target)
-" " }}}
+" Yankstack {{{
+nmap <esc>p <Plug>yankstack_substitute_older_paste
+nmap <esc>P <Plug>yankstack_substitute_newer_paste
+" }}}
 
 " Ultisnips {{{
-" Trigger configuration. Do not use <tab> if you use
-" https://github.com/Valloric/YouCompleteMe.
+let g:UltiSnipsListSnippets="<c-j>"
 let g:UltiSnipsExpandTrigger="<c-k>"
 let g:UltiSnipsJumpForwardTrigger="<tab>"
 let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
+let g:UltiSnipsEditSplit="vertical"
 
-" let g:UltiSnipsExpandTrigger="<tab>"
- " let g:UltiSnipsJumpForwardTrigger="<tab>"
- " let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
-" If you want :UltiSnipsEdit to split your window.
-" let g:UltiSnipsEditSplit="vertical"
-" }}}
+function! SnipComplete(findstart, base)
+    if a:findstart
+        let line = getline('.')
+        let start = col('.') - 1
+        while start > 0 && line[start - 1] =~ '\a'
+            let start -= 1
+        endwhile
+        return start
+    else
+        let suggestions = []
+        let ultidict = UltiSnips#SnippetsInCurrentScope()
+        for entry in items(ultidict)
+            if entry[0] =~ '^' . a:base
+                call add(suggestions, {'word': entry[0], "menu": entry[1]})
+            endif
+        endfor
+        return suggestions
+endfunction
+set completefunc=SnipComplete
 
-" marching {{{
-let g:marching_enable_neocomplete = 1
-let g:marching_backend = "sync_clang_command"
 " }}}
 
 " Miniplugins ------------------------------------------------------------ {{{
@@ -679,7 +694,7 @@ function! SynStack()
   echo join(map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")'), " > ")
 endfunc
 
-nnoremap <F2> :call SynStack()<CR>
+nnoremap <F8> :call SynStack()<CR>
 " }}}
 
 " Pulse Line {{{
