@@ -4,7 +4,7 @@ function mkcd () {
 }
 
 function ssht () {
-    ssh -X "$@" -t 'export COLORFGBG=''$COLORFGBG''; exec bash -l'
+    ssh -X "$@" -t 'export COLORFGBG='"'$COLORFGBG'"'; exec bash -l'
 }
 
 # Determine size of a file or total size of a directory
