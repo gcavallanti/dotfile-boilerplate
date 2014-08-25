@@ -16,15 +16,12 @@ set showmode
 set showcmd
 set hidden
 set visualbell
-set ruler
 set backspace=indent,eol,start
 set number
-set relativenumber
 set laststatus=2
 set history=1000
 set undofile
 set undoreload=10000
-" set list
 set listchars=tab:▸\ ,eol:¬,extends:❯,precedes:❮
 set lazyredraw
 set matchtime=3
@@ -35,7 +32,6 @@ set autowrite
 set autoread
 set shiftround
 set title
-set cursorline
 set diffopt=filler,iwhite
 set linebreak
 set dictionary=/usr/share/dict/words
@@ -53,11 +49,16 @@ set ttimeoutlen=10
 " Set up ins-completions preferences
 " set complete=.,w,b,u,t,kspell
 set completeopt=longest,menuone,preview
+set omnifunc=syntaxcomplete#Complete
 
 set pumheight=10
 
 " Resize splits when the window is resized
 au VimResized * :wincmd =
+
+" set winheight=6
+" set winminheight=6
+" set winheight=9999
 
 let mapleader=' '
 
@@ -65,6 +66,13 @@ let mapleader=' '
 " Turn off previews once a completion is accepted
 " autocmd CursorMovedI *  if pumvisible() == 0|silent! pclose|endif
 " autocmd InsertLeave * if pumvisible() == 0|silent! pclose|endif
+set previewheight=6
+au BufEnter ?* call PreviewHeightWorkAround()
+func PreviewHeightWorkAround()
+    if &previewwindow
+        res &previewheight
+    endif
+endfunc
 " }}}
 
 " cpoptions+=J {{{
@@ -76,6 +84,9 @@ let mapleader=' '
 
 " }}}
 
+" Highlight VCS conflict markers
+match ErrorMsg '^\(<\|=\|>\)\{7\}\([^=].\+\)\?$'
+
 " Trailing whitespace {{{
 " Only shown when not in insert mode so I don't go insane.
 augroup trailing
@@ -86,8 +97,8 @@ augroup END
 " }}}
 
 " Wildmenu completion {{{
-set wildmenu
-set wildmode=longest,list
+" set wildmenu
+set wildmode=list:longest,full
 set wildignore+=.hg,.git,.svn                    " Version control
 set wildignore+=*.aux,*.out,*.toc                " LaTeX intermediate files
 set wildignore+=*.jpg,*.bmp,*.gif,*.png,*.jpeg   " binary images
@@ -102,10 +113,10 @@ set wildignore+=*.orig                           " Merge resolution files
 " }}}
 
 " Line Return {{{
-" Make sure Vim returns to the same line when you reopen a file.
+" Make sure Vim returns to the same line when you reopen a file or buffer
 augroup line_return
     au!
-    au BufReadPost *
+    au BufReadPost,BufWinEnter *
     \ if line("'\"") > 0 && line("'\"") <= line("$") |
         \     execute 'normal! g`"' |
         \ endif
@@ -184,7 +195,8 @@ if exists("+showtabline")
         let s .= ' +'
       endif
       if bufname != ''
-        let s .= ' ' . pathshorten(bufname) . ' ' " outputs the one-letter-path shorthand & filename
+        " let s .= ' ' . pathshorten(bufname) . ' ' " outputs the one-letter-path shorthand & filename
+        let s .= ' ' . fnamemodify(bufname,":t") . ' ' " outputs the one-letter-path shorthand & filename
       else
         let s .= ' [No Name] '
       endif
@@ -206,32 +218,7 @@ endif
 " }}}
 
 " Statusline {{{
-function! Status(focused)
-  let stat = ''
-
-  " this function just outputs the content colored by the
-  " supplied colorgroup number, e.g. num = 2 -> User2
-  " it only colors the input if the window is the currently
-  " focused one
-  function! Color(active, num, content)
-    if a:active
-      return '%' . a:num . '*' . a:content . '%*'
-    else
-      return a:content
-    endif
-  endfunction
-
-  " column
-  " this might seem a bit complicated but all it amounts to is
-  " a calculation to see how much padding should be used for the
-  " column number, so that it lines up nicely with the line numbers
-
-  " an expression is needed because expressions are evaluated within
-  " the context of the window for which the statusline is being prepared
-  " this is crucial because the line and virtcol functions otherwise
-  " operate on the currently focused window
-
-  function! ColPad()
+function! ColPad()
     let ruler_width = max([strlen(line('$')), (&numberwidth - 1)])
     let column_width = strlen(virtcol('.'))
     let padding = ruler_width - column_width
@@ -247,50 +234,29 @@ function! Status(focused)
     endif
 
     if padding <= 0
-      return ''
+        return ''
     else
-      " + 1 becuase for some reason vim eats one of the spaces
-      return repeat(' ', padding + 1)
-  endfunction
-
-  let stat .= '%{ColPad()}'
-  let stat .= '%v'
-  let stat .= ' %<'
-  let stat .= ' %2n: %F'
-  let stat .= "     "
-  let stat .= "%m"
-  let stat .= "%r"
-  let stat .= "%w"
-  let stat .= "%q"
-  let stat .= "%y"
-  let stat .= "%{&diff ? '[diff]' : ''}"
-  let stat .= '%='
-  if &paste
-    let stat .= '[paste]'
-  endif
-  let stat .= "%{exists('g:loaded_syntastic_plugin')?SyntasticStatuslineFlag():''}"
-  let stat .= "%{exists('g:loaded_fugitive')?fugitive#statusline():''}"
-  let stat .= "     [%{exists('g:scrollbar_loaded')?ScrollBar(20,' ','='):''}]"
-  return stat
+        " + 1 becuase for some reason vim eats one of the spaces
+        return repeat(' ', padding + 1)
 endfunction
 
-augroup status
-  autocmd!
-  autocmd VimEnter,WinEnter,BufWinEnter * setl statusline=%!Status(1)
-  autocmd WinLeave * setl statusline=%!Status(0)
-augroup END
+let &statusline="%{ColPad()}%c  %<%2n: %t    %m%r%w%q%y%{&diff?'[diff]':''}"
+let &statusline.="%{exists('g:loaded_fugitive')?fugitive#statusline():''}"
+let &statusline
+\   .="%{exists('g:loaded_syntastic_plugin')?SyntasticStatuslineFlag():''}"
+let &statusline.="%="
+let &statusline.=" %1*%{&paste?' paste ':''}%0*"
+let &statusline
+\   .=" %1*%{exists('g:scrollbar_loaded')?ScrollBar(20,'\ ','='):''}%0*"
+" \   .=" %2*%{exists('g:scrollbar_loaded')?ScrollBar(20,'■','◫',['','◧'],['','◨'],'a'):''}%0* "
+" }}}
 
-autocmd VimEnter,WinEnter,BufWinEnter * set statusline=%!Status(1)
-
+" Signs {{{
 augroup signs
   autocmd!
   autocmd BufEnter * sign define dummy
   autocmd BufEnter * execute 'sign place 9999 line=1 name=dummy buffer=' . bufnr('')
 augroup END
-
-" Highlight VCS conflict markers
-match ErrorMsg '^\(<\|=\|>\)\{7\}\([^=].\+\)\?$'
-
 " }}}
 
 " }}}
@@ -302,10 +268,6 @@ iabbrev gcavn@ gcavn@gcavn.com
 " }}}
 
 " Convenience mappings ---------------------------------------------------- {{{
-
-" Preview window
-noremap <f2> :pclose<cr>
-inoremap <f2> <C-O>:pclose<cr>
 
 " Easy window resizing
 nnoremap <silent> <C-W><C-Up> 10<c-w>+
@@ -390,8 +352,9 @@ cnoremap <Right> <Space><BS><Right>
 inoremap <expr><CR> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
 inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<S-TAB>"
+inoremap <C-Space> <C-x><C-o>
+imap <C-@> <C-Space>
 " }}}
-
 
 " Quick editing ----------------------------------------------------------- {{{
 
@@ -555,23 +518,24 @@ augroup END
 " Python {{{
 augroup ft_python
     au!
-    au FileType python set foldmethod=expr
-    au FileType python set foldexpr=g:Pymodefoldingexpr(v:lnum)
-    au FileType python set omnifunc=pythoncomplete#Complete
+    au FileType python setl foldmethod=expr
+    au FileType python setl foldexpr=g:Pymodefoldingexpr(v:lnum)
+    au FileType python setl omnifunc=pythoncomplete#Complete
 augroup END
+
 " }}}
 
 " YAML {{{
 augroup ft_yaml
     au!
-    au FileType yaml set shiftwidth=2
+    au FileType yaml setl shiftwidth=2
 augroup END
 " }}}
 
 " XML {{{
 augroup ft_xml
     au!
-    au FileType xml setlocal foldmethod=manual
+    au FileType xml setl foldmethod=manual
 augroup END
 " }}}
 
@@ -589,11 +553,13 @@ let delimitMate_expand_cr = 1
 " }}}
 
 " Ctrl-P {{{
+let g:ctrlp_match_window = 'bottom,order:ttb,min:20,max:20'
 let g:ctrlp_reuse_window = 'netrw\|help\|quickfix'
 let g:ctrlp_cmd = 'CtrlPBuffer'
 let g:ctrlp_switch_buffer = 0
-let g:ctrlp_match_window = 'order:ttb,max:20'
-let g:ctrlp_mruf_exclude = '/usr/local/Cellar/.*\|/var/folders/.*\|/private/var/folders/.*\|.*\.DS_Store\|\.vim/bundle/.*/doc/.*\|/usr/share/.*doc/.*'
+" let g:ctrlp_match_window = 'order:ttb,max:20'
+let g:ctrlp_mruf_exclude = '/var/folders/.*\|/private/var/folders/.*\|.*\.DS_Store\|\.vim/bundle/.*/doc/.*\|/usr/share/.*doc/.*'
+" /usr/local/Cellar/.*doc\|
 " }}}
 
 " Tagbar {{{
@@ -627,6 +593,11 @@ let g:jedi#completions_enabled = 0
 let g:jedi#use_tabs_not_buffers = 0
 let g:jedi#show_call_signatures = 0
 let g:jedi#auto_close_doc = 0
+ " }}}
+
+ " tern {{{
+let g:tern_show_signature_in_pum=0
+let g:tern_show_argument_hints='no'
  " }}}
 
 " neocomplete {{{
@@ -695,36 +666,6 @@ function! SynStack()
 endfunc
 
 nnoremap <F8> :call SynStack()<CR>
-" }}}
-
-" Pulse Line {{{
-function! s:Pulse()
-    redir => old_hi
-        silent execute 'hi CursorLine'
-    redir END
-    let old_hi = split(old_hi, '\n')[0]
-    let old_hi = substitute(old_hi, 'xxx', '', '')
-
-    let steps = 8
-    let width = 1
-    let start = width
-    let end = steps * width
-    let color = 233
-
-    for i in range(start, end, width)
-        execute "hi CursorLine ctermbg=" . (color + i)
-        redraw
-        sleep 36m
-    endfor
-    for i in range(end, start, -1 * width)
-        execute "hi CursorLine ctermbg=" . (color + i)
-        redraw
-        sleep 36m
-    endfor
-
-    execute 'hi ' . old_hi
-endfunction
-command! -nargs=0 Pulse call s:Pulse()
 " }}}
 
 " Diff Last Saved {{{
@@ -836,6 +777,66 @@ fun! g:Pymodefoldingexpr(lnum) "{{{
 
 endfunction "}}}
 " }}}
+
+" Show context-preview {{{
+function! ShowContextPreview()
+    let l:winview = winsaveview()
+    call searchpair('(', '', ')', 'bW', 'synIDattr(synID(line("."), col("."), 0), "name") =~? "string"')
+    let pos = col('.')
+    call ShowCurrentPreview(pos-1)
+    call winrestview(l:winview)
+endfunc
+
+function! ShowCurrentPreview(pos)
+    let startpos=function(&omnifunc)(a:pos,'')
+    if type(startpos) == 3
+        let completions=startpos
+    elseif type(startpos) == 0
+        echom startpos
+        if startpos > -1
+            let line=getline('.')
+            let matchstring=strpart(line,startpos,a:pos-startpos)
+            let completions=function(&omnifunc)(0,matchstring)
+        endif
+    endif
+    if completions == [] || len(completions) == 0 || has_key(completions[0],'info')==0 || completions[0]['info']==''
+        return
+    endif
+    silent! wincmd P
+    if &previewwindow
+        setlocal modifiable
+        %delete _
+    else
+        new
+        setlocal previewwindow
+        setlocal buftype=nofile
+        setlocal bufhidden=wipe
+        setlocal noswapfile
+    endif
+    resize 5
+    put =completions[0]['info']
+    setlocal nomodifiable
+    wincmd p
+endfunc
+nnoremap <F2> :silent! call ShowContextPreview()<CR>
+inoremap <F2> <C-O>:silent! call ShowContextPreview()<CR>
+nnoremap <leader>kc :silent! call ShowCurrentPreview(col('.'))<CR>
+" }}}
+
+" Online help {{{
+function! OnlineHelp()
+    if exists("b:source") && b:source != ''
+        let b:source = input("Choose source: ", b:source)
+    else
+        let b:source = input("Choose source: ", &ft)
+    endif
+    let l:keyword = input("Search for: ", expand("<cword>"))
+    call system('/Users/ioacvl/.dotfiles/bin/ioadoc ' . b:source . ' ' . l:keyword)
+endfunc
+nnoremap <F12> :call OnlineHelp()<CR>
+" }}}
+
+
 
 " }}}
 

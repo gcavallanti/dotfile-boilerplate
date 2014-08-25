@@ -1,11 +1,14 @@
 [alias]
         # View abbreviated SHA, description, and history graph of the latest 20 commits
-        lg = log --graph --abbrev-commit --decorate --date=iso --format=format:'%C(blue)%h%C(reset) %C(black)- (%ad) -%C(reset)%C(magenta)%d%C(reset) %s%C(black) - <%an>'  --all
+        # lg = log --graph --abbrev-commit --decorate --date=iso --format=format:'%C(blue)%h%C(reset) %C(normal)-%C(reset)%C(red)%d%C(reset) %C(normal)%s%C(reset)'  --all
+        lg = log --graph --abbrev-commit --decorate --date=local \
+        --format=format:'%C(blue)%h%C(reset)\t%C(black)%C(reset) %C(normal)%>(24,trunc)%ad%C(reset) %C(black).%C(reset)%C(red )%d%C(reset) %C(normal)%s%C(reset) %C(black).%C(reset) %C(magenta)%an%C(reset)'  --all
         lgs = !"git lg -15"
+        lb = log --graph --simplify-by-decoration --pretty=format:'%d' --all
         # View the current working tree status using the short format
         s = status -sb
         # Show the diff between the latest commit and the current state
-	d = difftool
+        d = difftool
         diffw = diff --word-diff=color
         # `git di $number` shows the diff between the state `$number` revisions ago and the current state
         di = !"d() { git diff --patch-with-stat HEAD~$1; }; git diff-index --quiet HEAD -- || clear; d"
@@ -39,6 +42,7 @@
         attributesfile = ~/.gitattributes
         # Treat spaces before tabs, lines that are indented with 8 or more spaces, and all kinds of trailing whitespace as an error
         whitespace = space-before-tab,indent-with-non-tab,cr-at-eol #,trailing-space
+        # pager = less -+S -+x8
 
 [color]
         # Use colors in Git commands that are capable of colored output when outputting to the terminal
@@ -51,27 +55,32 @@
 
 [color "diff"]
         meta = yellow
-        # frag = black
+        frag = black
         old = red
         new = green
         whitespace = white reverse
+        commit = blue
 
 [color "status"]
         added = yellow
         changed = green
         untracked = cyan
 
+[color "grep"]
+        separator = green
+        match = red
+
 [merge]
         # Include summaries of merged commits in newly created merge commit messages
         log = true
-	tool = vimdiff
+        tool = vimdiff
 
 [push]
         default = matching
 
 [user]
-	name = Giovanni Cavallanti
-	email = gcavn@gcavn.com
+        name = Giovanni Cavallanti
+        email = gcavn@gcavn.com
 
 [credential]
         helper = cache --timeout=3600
@@ -80,6 +89,6 @@
         lineNumber = true
         extendRegexp = true
 [diff]
-	tool = vimdiff
+        tool = vimdiff
 [difftool]
-	prompt = false
+        prompt = false
