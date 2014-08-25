@@ -1,0 +1,8 @@
+#! /bin/bash
+
+case "$1" in
+    "l")
+    printf "\033Ptmux;\033\033]50;SetProfile=prismlight\a\033\\" ;;
+    "d")
+    printf "\033Ptmux;\033\033]50;SetProfile=prismdark\a\033\\" ;;
+esac

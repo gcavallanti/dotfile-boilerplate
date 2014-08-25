@@ -150,7 +150,7 @@ export EDITOR="vim"
 # Larger bash history (allow 32³ entries; default is 500)
 export HISTSIZE=32768
 export HISTFILESIZE=$HISTSIZE
-export HISTCONTROL=ignoredups,ignorespace
+export HISTCONTROL=ignoredups
 export HISTTIMEFORMAT="%F %T "
 # Make some commands not show up in history
 export HISTIGNORE="ls:cd:cd -:pwd:exit:date:* --help"
@@ -219,7 +219,7 @@ if [[ -n $(type -t __git_ps1) ]]; then
     export GIT_PS1_SHOWCOLORHINTS=1
     export GIT_PS1_STATESEPARATOR=" "
    
-     PS1="\[${RED}\]\u \[$RESET\]at \[$YELLOW\]\h \[$RESET\]in \[$BLUE\]\w\$(__git_ps1 \"\[$RESET\] on \[$MAGENTA\]%s\"  )\[$RESET\]\n\$ "
+     PS1="\[${MAGENTA}\]\u \[$RESET\]at \[$YELLOW\]\h \[$RESET\]in \[$BLUE\]\w\$(__git_ps1 \"\[$RESET\] on \[$RED\]%s\"  )\[$RESET\]\n\$ "
 else
     
     parse_git_dirty () {
