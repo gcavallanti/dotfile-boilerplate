@@ -155,6 +155,9 @@ export HISTTIMEFORMAT="%F %T "
 # Make some commands not show up in history
 export HISTIGNORE="ls:cd:cd -:pwd:exit:date:* --help"
 export PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
+# PROMPT_COMMAND='echo -ne "\033]0;${HOSTNAME%%.*}: ${PWD/$HOME/~}\007"'
+export PROMPT_COMMAND='echo -ne "\033]0;${HOSTNAME%%.*}\007";'"$PROMPT_COMMAND"
+
 
 # Prefer US English and use UTF-8
 export LANG="en_US"
@@ -231,8 +234,6 @@ else
 
     PS1="\[${BOLD}${MAGENTA}\]\u \[$WHITE\]at \[$ORANGE\]\h \[$WHITE\]in \[$GREEN\]\w\[$WHITE\]\$([[ -n \$(git branch 2> /dev/null) ]] && echo \" on \")\[$PURPLE\]\$(parse_git_branch)\[$WHITE\]\n\$ \[$RESET\]"
 fi
-
-PROMPT_COMMAND='echo -ne "\033]0;${HOSTNAME%%.*}: ${PWD/$HOME/~}\007"'
 
 # Source files ----------------------------------------------------------------
 if [ -r ~/.functions ]; then

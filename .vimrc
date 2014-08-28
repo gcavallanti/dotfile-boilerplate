@@ -461,18 +461,20 @@ augroup ft_javascript
     au!
     au FileType javascript setlocal foldmethod=marker
     au FileType javascript setlocal foldmarker={,}
-"
-"    " Make {<cr> insert a pair of brackets in such a way that the cursor is correctly
-"    " positioned inside of them AND the following code doesn't get unfolded.
-"    au Filetype javascript inoremap <buffer> {<cr> {}<left><cr><space><space><space><space>.<cr><esc>kA<bs>
+
+    " Make {<cr> insert a pair of brackets in such a way that the cursor is correctly
+    " positioned inside of them AND the following code doesn't get unfolded.
+    " au Filetype javascript inoremap <buffer> {<cr> {}<left><cr><space><space><space><space>.<cr><esc>kA<bs>
 augroup END
 " }}}
 
 " Markdown {{{
-augroup ft_markdown
+augroup ft_mardakdown
     au!
-    au BufNewFile,BufRead {*.md,*.mkd,*.markdown} setlocal filetype=markdown foldlevel=1
+    au BufNewFile,BufRead {*.md,*.mkd,*.markdown} setl filetype=markdown 
 augroup END
+let g:markdown_folding=1
+let g:markdown_fenced_languages = ['ruby']
 " }}}
 
 " Postgresql {{{
@@ -570,6 +572,14 @@ let g:tagbar_sort = 0
 let g:tagbar_indent = 2
 let g:tagbar_left = 1
 let g:tagbar_foldlevel = 0
+let g:tagbar_type_markdown = {
+    \ 'ctagstype' : 'markdown',
+    \ 'kinds' : [
+        \ 'h:Heading_L1',
+        \ 'i:Heading_L2',
+        \ 'k:Heading_L3'
+    \ ]
+\ }
 nnoremap <silent> <F9> :TagbarToggle<CR>
 " }}}
 
