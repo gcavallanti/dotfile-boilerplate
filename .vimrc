@@ -240,15 +240,18 @@ function! ColPad()
         return repeat(' ', padding + 1)
 endfunction
 
-let &statusline="%{ColPad()}%c  %<%2n: %t    %m%r%w%q%y%{&diff?'[diff]':''}"
+let &statusline=''
+let &statusline.="%{ColPad()}"
+let &statusline.='%c'
+let &statusline.="  %<%t  %m%r%w%q%y%{&diff?'[diff]':''}"
 let &statusline.="%{exists('g:loaded_fugitive')?fugitive#statusline():''}"
 let &statusline
 \   .="%{exists('g:loaded_syntastic_plugin')?SyntasticStatuslineFlag():''}"
 let &statusline.="%="
-let &statusline.=" %1*%{&paste?' paste ':''}%0*"
 let &statusline
 \   .=" %1*%{exists('g:scrollbar_loaded')?ScrollBar(20,'\ ','='):''}%0*"
-" \   .=" %2*%{exists('g:scrollbar_loaded')?ScrollBar(20,'■','◫',['','◧'],['','◨'],'a'):''}%0* "
+" \   .=" %2*%{exists('g:scrollbar_loaded')?ScrollBar(35,'■','◫',['','◧'],['','◨'],'a'):''}%0* "
+let &statusline.="%3*%{&paste?'  paste ':''}%0*"
 " }}}
 
 " Signs {{{
@@ -473,8 +476,6 @@ augroup ft_mardakdown
     au!
     au BufNewFile,BufRead {*.md,*.mkd,*.markdown} setl filetype=markdown 
 augroup END
-let g:markdown_folding=1
-let g:markdown_fenced_languages = ['ruby']
 " }}}
 
 " Postgresql {{{
@@ -630,6 +631,12 @@ let g:neocomplete#force_omni_input_patterns.cpp = '[^. *\t]\%(\.\|->\)\w*\|\h\w*
 nmap <esc>p <Plug>yankstack_substitute_older_paste
 nmap <esc>P <Plug>yankstack_substitute_newer_paste
 " }}}
+
+" Markdown {{{
+let g:markdown_folding=1
+let g:markdown_fenced_languages = ['python', 'ruby']
+" }}}
+
 
 " Ultisnips {{{
 let g:UltiSnipsListSnippets="<c-j>"
