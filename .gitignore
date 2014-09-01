@@ -5,3 +5,4 @@
 .vim/tmp
 .vim/.netrwhist
 .vim/.netrwbook
+.vim/tmp_bundle*

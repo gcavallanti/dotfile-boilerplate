@@ -36,6 +36,10 @@ curl -Sso "${HOME}/.vim/autoload/pathogen.vim" "https://raw.github.com/tpope/vim
 cd "$bundle_dir"
 
 # Get plugins
+VIMRUNTIME=`vim -e -T dumb --cmd 'exe "set t_cm=\<C-M>"|echo $VIMRUNTIME|quit' | tr -d '\015' `
+mkdir -p matchit/plugin matchit/doc
+cp "$VIMRUNTIME/macros/matchit.vim" matchit/plugin
+cp "$VIMRUNTIME/macros/matchit.txt" matchit/doc
 get_git "https://github.com/kien/ctrlp.vim.git"
 get_git "https://github.com/davidhalter/jedi-vim.git"
 (cd jedi-vim ; git submodule update --init )
