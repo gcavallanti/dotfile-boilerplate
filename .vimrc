@@ -344,7 +344,7 @@ noremap gj j
 noremap gk k
 
 " Switch inner word caSe
-inoremap <C-s> <esc>mzg~iw`za
+" inoremap <C-s> <esc>mzg~iw`za
 
 " Wildmenu completion {{{
 cnoremap <Left> <Space><BS><Left>
@@ -628,8 +628,8 @@ let g:neocomplete#force_omni_input_patterns.cpp = '[^. *\t]\%(\.\|->\)\w*\|\h\w*
 " }}}
 
 " Yankstack {{{
-nmap <esc>p <Plug>yankstack_substitute_older_paste
-nmap <esc>P <Plug>yankstack_substitute_newer_paste
+" nmap <esc>p <Plug>yankstack_substitute_older_paste
+" nmap <esc>P <Plug>yankstack_substitute_newer_paste
 " }}}
 
 " Markdown {{{

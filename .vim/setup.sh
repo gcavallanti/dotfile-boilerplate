@@ -64,7 +64,7 @@ get_git "https://github.com/tpope/vim-repeat.git"
 get_git "https://github.com/honza/vim-snippets.git"
 get_git "https://github.com/tpope/vim-surround"
 get_git "https://github.com/tpope/vim-unimpaired.git"
-get_git "https://github.com/maxbrunsfeld/vim-yankstack.git"
+# get_git "https://github.com/maxbrunsfeld/vim-yankstack.git"
 get_git "https://github.com/gcavn/vimpos.git"
 
 echo "Bundles downloaded."

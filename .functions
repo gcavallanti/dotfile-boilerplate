@@ -1,10 +1,14 @@
 # Create a new directory and enter it
+syspip(){
+   PIP_REQUIRE_VIRTUALENV="" pip "$@"
+}
+
 function mkcd () {
     mkdir -p "$@" && cd "$@"
 }
 
 function ssht () {
-    ssh -X "$@" -t 'export COLORFGBG='"'$COLORFGBG'"'; exec bash -l'
+    ssh -Y "$@" -t 'export COLORFGBG='"'$COLORFGBG'"'; exec bash -l'
 }
 
 rawurlencode() {
