@@ -80,7 +80,7 @@
 
 [user]
         name = Giovanni Cavallanti
-        email = gcavn@gcavn.com
+        email = ioacvl@ioacvl.com
 
 [credential]
         helper = cache --timeout=3600
