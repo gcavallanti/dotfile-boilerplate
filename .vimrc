@@ -18,6 +18,7 @@ set hidden
 set visualbell
 set backspace=indent,eol,start
 set number
+set relativenumber
 set laststatus=2
 set history=1000
 set undofile
@@ -35,7 +36,8 @@ set title
 set diffopt=filler,iwhite
 set linebreak
 set dictionary=/usr/share/dict/words
-set fillchars=diff:\·,vert:│
+" set fillchars=diff:\·,vert:│
+set fillchars=diff:.
 
 " Don't try to highlight lines longer than 800 characters.
 set synmaxcol=800
@@ -243,24 +245,24 @@ endfunction
 let &statusline=''
 let &statusline.="%{ColPad()}"
 let &statusline.='%c'
-let &statusline.="  %<%t  %m%r%w%q%y%{&diff?'[diff]':''}"
+let &statusline.=" %<%t  %m%r%w%q%y%{&diff?'[diff]':''}"
 let &statusline.="%{exists('g:loaded_fugitive')?fugitive#statusline():''}"
 let &statusline
 \   .="%{exists('g:loaded_syntastic_plugin')?SyntasticStatuslineFlag():''}"
 let &statusline.="%="
 let &statusline
-\   .=" %1*%{exists('g:scrollbar_loaded')?ScrollBar(20,'\ ','='):''}%0*"
+\   .=" %1*[%{exists('g:scrollbar_loaded')?ScrollBar(20,'\ ','-'):''}]%0*"
 " \   .=" %2*%{exists('g:scrollbar_loaded')?ScrollBar(35,'■','◫',['','◧'],['','◨'],'a'):''}%0* "
 let &statusline.="%3*%{&paste?'  paste ':''}%0*"
 " }}}
 
-" Signs {{{
-augroup signs
-  autocmd!
-  autocmd BufEnter * sign define dummy
-  autocmd BufEnter * execute 'sign place 9999 line=1 name=dummy buffer=' . bufnr('')
-augroup END
-" }}}
+" " Signs {{{
+" augroup signs
+"   autocmd!
+"   autocmd BufEnter * sign define dummy
+"   autocmd BufEnter * execute 'sign place 9999 line=1 name=dummy buffer=' . bufnr('')
+" augroup END
+" " }}}
 
 " }}}
 
@@ -281,8 +283,11 @@ nnoremap <silent> <C-W><C-right> 10<c-w>>
 nnoremap <silent> <leader>/ :execute 'vimgrep /' . @/ . '/g %'<CR>:copen<CR>
 
 " nnoremap <c-z> mzzMzvzz15<c-e>`z:Pulse<cr>
-nnoremap <leader>d "_d
-vnoremap <leader>d "_d
+" nnoremap <leader>d "_d
+" vnoremap <leader>d "_d
+
+nnoremap <leader>p "0p
+nnoremap <leader>P "0P
 
 command! -range=% SoftWrap <line2>put _ | <line1>,<line2>g/.\+/ .;-/^$/ join |normal $x
 " Clean trailing whitespace
@@ -300,9 +305,6 @@ nnoremap <leader>w :w<cr>
 " imap <F13> <esc>
 " set <F14>=kj
 " imap <F14> <esc>
-
-" Easier dictionary completion
-" inoremap <C-j> <C-X><C-K>
 
 " A tab is like a paGe
 nnoremap [g :tabprev<cr>
@@ -357,6 +359,8 @@ inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
 inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<S-TAB>"
 inoremap <C-Space> <C-x><C-o>
 imap <C-@> <C-Space>
+inoremap <C-j> <C-X><C-U>
+
 " }}}
 
 " Quick editing ----------------------------------------------------------- {{{
@@ -491,7 +495,8 @@ augroup END
 " QuickFix {{{
 augroup ft_quickfix
     au!
-    au Filetype qf setlocal colorcolumn=0 nolist nocursorline nowrap tw=0
+    au Filetype qf setlocal colorcolumn=0 nolist nonumber norelativenumber nocursorline nowrap tw=0
+    au Filetype qf setlocal stl=%t\ (%l\ of\ %L)%{exists('w:quickfix_title')?\ '\ '.w:quickfix_title\ :\ ''}\ %=%-15(%l,%c%V%)\ [%{exists('g:scrollbar_loaded')?ScrollBar(20,'\ ','-'):''}]
 augroup END
 " }}}
 
@@ -639,7 +644,7 @@ let g:markdown_fenced_languages = ['python', 'ruby']
 
 
 " Ultisnips {{{
-let g:UltiSnipsListSnippets="<c-j>"
+" let g:UltiSnipsListSnippets="<c-j>"
 let g:UltiSnipsExpandTrigger="<c-k>"
 let g:UltiSnipsJumpForwardTrigger="<tab>"
 let g:UltiSnipsJumpBackwardTrigger="<s-tab>"

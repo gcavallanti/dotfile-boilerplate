@@ -222,7 +222,7 @@ if [[ -n $(type -t __git_ps1) ]]; then
     export GIT_PS1_SHOWCOLORHINTS=1
     export GIT_PS1_STATESEPARATOR=" "
    
-     PS1="\[${MAGENTA}\]\u \[$RESET\]at \[$YELLOW\]\h \[$RESET\]in \[$BLUE\]\w\$(__git_ps1 \"\[$RESET\] on \[$RED\]%s\"  )\[$RESET\]\n\$ "
+     PS1="\[${MAGENTA}\]\u \[$RESET\]at \[$YELLOW\]\h \[$RESET\]in \[$BLUE\]\w\$(__git_ps1 \"\[$RESET\] on \[$CYAN\]%s\"  )\[$RESET\]\n\$ "
 else
     
     parse_git_dirty () {
