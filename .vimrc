@@ -32,6 +32,7 @@ set splitright
 set autowrite
 set autoread
 set shiftround
+set nomagic
 set title
 set diffopt=filler,iwhite
 set linebreak
@@ -127,8 +128,8 @@ augroup END
 
 " Tabs, spaces, wrapping {{{
 set tabstop=8
-set shiftwidth=4
-set softtabstop=4
+set shiftwidth=2
+set softtabstop=2
 set expandtab
 set wrap
 set textwidth=80
@@ -374,8 +375,8 @@ nnoremap <leader>e. :e .<cr>
 " Searching and movement -------------------------------------------------- {{{
 
 " Use sane regexes.
-nnoremap / /\v
-vnoremap / /\v
+" nnoremap / /\v
+" vnoremap / /\v
 
 set ignorecase
 set smartcase
@@ -500,18 +501,19 @@ augroup ft_quickfix
 augroup END
 " }}}
 
-" " Text {{{
-" augroup ft_text
-"     au!
-"     au FileType text setlocal spell fo=t1
-"     au InsertEnter *.txt setlocal fo+=a
-"     au InsertLeave *.txt setlocal fo-=a
-"     au FileType text inoremap <buffer> . .<C-G>u
-"     au FileType text inoremap <buffer> , ,<C-G>u
-"     au FileType text inoremap <buffer> ! !<C-G>u
-"     au FileType text inoremap <buffer> ? ?<C-G>u
-" augroup END
-" " }}}
+" Text {{{
+augroup ft_text
+    au!
+    " au FileType text setlocal 
+    " au InsertEnter *.txt setlocal fo+=t
+    " au InsertLeave *.txt setlocal fo-=t
+    au FileType text setlocal fo+=t
+    au FileType text inoremap <buffer> . .<C-G>u
+    au FileType text inoremap <buffer> , ,<C-G>u
+    au FileType text inoremap <buffer> ! !<C-G>u
+    au FileType text inoremap <buffer> ? ?<C-G>u
+augroup END
+" }}}
 
 " Vim {{{
 augroup ft_vim
@@ -590,8 +592,10 @@ nnoremap <silent> <F9> :TagbarToggle<CR>
 " }}}
 
 " Syntastic {{{
-let g:syntastic_check_on_open=0
-nnoremap <leader>C :SyntasticCheck<cr>
+let g:syntastic_mode_map = { "mode": "passive"}
+let g:syntastic_enable_highlighting = 0
+nnoremap <leader>sc :SyntasticCheck<cr>
+nnoremap <leader>sr :SyntasticReset<cr>
 " }}}
 
 " undotree {{{
@@ -673,6 +677,19 @@ set completefunc=SnipComplete
 " }}}
 
 " Miniplugins ------------------------------------------------------------ {{{
+
+" Prose {{{
+" command! Prose inoremap <buffer> . .<C-G>u|
+"             \ inoremap <buffer> ! !<C-G>u|
+"             \ inoremap <buffer> ? ?<C-G>u|
+"             \ setlocal fo=qrn1tl
+
+" command! Code silent! iunmap <buffer> .|
+"             \ silent! iunmap <buffer> !|
+"             \ silent! iunmap <buffer> ?|
+"             \ setlocal nospell list nowrap
+"             \     tw=74 fo=cqr1 showbreak=… nu|
+" }}}
 
 " Diff orig {{{
 command DiffOrig let g:diffline = line('.') | vert new | set bt=nofile | r # | 0d_ | diffthis | :exe "norm! ".g:diffline."G" | wincmd p | diffthis | wincmd p
