@@ -31,7 +31,7 @@ mv "$bundle_dir" "$tmp_bundle_dir"
 
 # Get pathogen
 mkdir -p "${HOME}/.vim/autoload" "$bundle_dir"
-curl -Sso "${HOME}/.vim/autoload/pathogen.vim" "https://raw.github.com/tpope/vim-pathogen/master/autoload/pathogen.vim"
+curl -LSso "${HOME}/.vim/autoload/pathogen.vim" "https://raw.github.com/tpope/vim-pathogen/master/autoload/pathogen.vim"
 
 cd "$bundle_dir"
 
