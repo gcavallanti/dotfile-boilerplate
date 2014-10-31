@@ -36,14 +36,14 @@ if tput setaf 1 &> /dev/null; then
         PURPLE=$(tput setaf 141) #4 blue
         WHITE=$(tput setaf 255) #7
     else
-        RED=$(tput setaf 1)
-        CYAN=$(tput setaf 6)
-        MAGENTA=$(tput setaf 5)
-        YELLOW=$(tput setaf 3)
-        GREEN=$(tput setaf 2)
-        BLUE=$(tput setaf 4)
-        WHITE=$(tput setaf 7)
         BLACK=$(tput setaf 0)
+        RED=$(tput setaf 1)
+        GREEN=$(tput setaf 2)
+        YELLOW=$(tput setaf 3)
+        BLUE=$(tput setaf 4)
+        MAGENTA=$(tput setaf 5)
+        CYAN=$(tput setaf 6)
+        WHITE=$(tput setaf 7)
     fi
     BOLD=$(tput bold)
     RESET=$(tput sgr0)
@@ -222,7 +222,7 @@ if [[ -n $(type -t __git_ps1) ]]; then
     export GIT_PS1_SHOWCOLORHINTS=1
     export GIT_PS1_STATESEPARATOR=" "
    
-     PS1="\[${MAGENTA}\]\u \[$RESET\]at \[$YELLOW\]\h \[$RESET\]in \[$BLUE\]\w\$(__git_ps1 \"\[$RESET\] on \[$CYAN\]%s\"  )\[$RESET\]\n\$ "
+     PS1="\[${MAGENTA}\]\u \[$RESET\]at \[$CYAN\]\h \[$RESET\]in \[$BLUE\]\w\$(__git_ps1 \"\[$RESET\] on \[$YELLOW\]%s\"  )\[$RESET\]\n\$ "
 else
     
     parse_git_dirty () {

@@ -38,7 +38,7 @@ set diffopt=filler,iwhite
 set linebreak
 set dictionary=/usr/share/dict/words
 " set fillchars=diff:\·,vert:│
-set fillchars=diff:.
+set fillchars=diff:\ 
 
 " Don't try to highlight lines longer than 800 characters.
 set synmaxcol=800
@@ -157,7 +157,7 @@ endif
 
 " Color scheme {{{
 syntax on
-" set background=dark
+set background=dark
 colorscheme trafficlights
 
 " Reload the colorscheme whenever we write the file.
@@ -252,7 +252,7 @@ let &statusline
 \   .="%{exists('g:loaded_syntastic_plugin')?SyntasticStatuslineFlag():''}"
 let &statusline.="%="
 let &statusline
-\   .=" %1*[%{exists('g:scrollbar_loaded')?ScrollBar(20,'\ ','-'):''}]%0*"
+\   .=" [%{exists('g:scrollbar_loaded')?ScrollBar(20,'\ ','-'):''}]"
 " \   .=" %2*%{exists('g:scrollbar_loaded')?ScrollBar(35,'■','◫',['','◧'],['','◨'],'a'):''}%0* "
 let &statusline.="%3*%{&paste?'  paste ':''}%0*"
 " }}}
