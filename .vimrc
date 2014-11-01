@@ -158,12 +158,13 @@ endif
 " Color scheme {{{
 syntax on
 set background=dark
-colorscheme trafficlights
+colorscheme plain
 
 " Reload the colorscheme whenever we write the file.
 augroup color_trafficlights_dev
     au!
     au BufWritePost trafficlights.vim color trafficlights
+    au BufWritePost plain.vim color plain
 augroup END
 " }}}
 

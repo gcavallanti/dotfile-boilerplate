@@ -2,7 +2,7 @@
         # View abbreviated SHA, description, and history graph of the latest 20 commits
         # lg = log --graph --abbrev-commit --decorate --date=iso --format=format:'%C(blue)%h%C(reset) %C(normal)-%C(reset)%C(red)%d%C(reset) %C(normal)%s%C(reset)'  --all
         lg = log --graph --abbrev-commit --decorate --date=local \
-        --format=format:'%C(blue)%h%C(reset)\t%C(black)%C(reset) %C(normal)%<(24,trunc)%ad%C(reset) %C(black).%C(reset)%C(yellow)%d%C(reset) %C(normal)%s%C(reset) %C(black).%C(reset) %C(magenta)%an%C(reset)'  --all
+        --format=format:'%C(black)%h%C(reset)\t%C(black)%C(reset) %C(normal)%<(24,trunc)%ad%C(reset) %C(black).%C(reset)%C(green)%d%C(reset) %C(normal)%s%C(reset) %C(black).%C(reset) %C(black)%an%C(reset)'  --all
         lgs = !"git lg -15"
         lb = log --graph --simplify-by-decoration --pretty=format:'%d' --all
         # View the current working tree status using the short format
