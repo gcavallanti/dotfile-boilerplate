@@ -181,7 +181,7 @@ if [[ $(uname -s) == "Darwin" ]]; then
 fi
 
 # Customize to your needs...
-export PATH=$HOME/.local/bin:$HOME/.dotfiles/bin:/usr/local/bin:/usr/local/sbin:$PATH
+export PATH=$HOME/local/bin:$HOME/.dotfiles/bin:/usr/local/bin:/usr/local/sbin:$PATH
 
 # third-party -----------------------------------------------------------------
 
@@ -222,7 +222,13 @@ if [[ -n $(type -t __git_ps1) ]]; then
     export GIT_PS1_SHOWCOLORHINTS=1
     export GIT_PS1_STATESEPARATOR=" "
    
-     PS1="\[${BLACK}\]\u \[$RESET\]at \[$BLACK\]\h \[$RESET\]in \[$BLACK\]\w\$(__git_ps1 \"\[$RESET\] on \[$GREEN\]%s\"  )\[$RESET\]\n\$ "
+     # PS1="\[${BLUE}\]\u \[$RESET\]at \[$MAGENTA\]\h \[$RESET\]in \[$GREEN\]\w\$(__git_ps1 \"\[$RESET\] on \[$YELLOW\]%s\"  )\[$RESET\]\n\$ "
+     PS1="\[${BLUE}\]\u \[$RESET\]at \[$CYAN\]\h \[$RESET\]in \[$GREEN\]\w\$(__git_ps1 \"\[$RESET\] on \[$MAGENTA\]%s\"  )\[$RESET\]\n\$ "
+     # PS1="\[${GREEN}\]\u \[$RESET\]at \[$GREEN\]\h \[$RESET\]in \[$GREEN\]\w\$(__git_ps1 \"\[$RESET\] on \[$GREEN\]%s\"  )\[$RESET\]\n\$ "
+     # PS1="\[${MAGENTA}\]\u \[$RESET\]at \[$MAGENTA\]\h \[$RESET\]in \[$MAGENTA\]\w\$(__git_ps1 \"\[$RESET\] on \[$GREEN\]%s\"  )\[$RESET\]\n\$\[$RESET\] "
+     # PS1="\[${RESET}\]\u \[$RESET\]at \[$RESET\]\h \[$RESET\]in \[$RESET\]\w\$(__git_ps1 \"\[$RESET\] on \[$GREEN\]%s\"  )\[$RESET\]\n\$ "
+     # PS1="\[${RESET}\]\u \[$BLACK\]at \[$RESET\]\h \[$BLACK\]in \[$RESET\]\w\$(__git_ps1 \"\[$BLACK\] on \[$GREEN\]%s\"  )\[$RESET\]\n\$ "
+     # PS1="\u @ \h : \w\$(__git_ps1 \" (%s)\" )\n\$ "
 else
     
     parse_git_dirty () {

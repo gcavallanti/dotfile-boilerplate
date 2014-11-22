@@ -357,11 +357,34 @@ cnoremap <Right> <Space><BS><Right>
 
 " Ins-completion mode {{{
 inoremap <expr><CR> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+" inoremap <expr><TAB> pumvisible() ? "\<C-y>" : "\<TAB>"
+" inoremap . .<C-x><C-o>
+inoremap <expr>. IsValidSuffix() ? ".\<C-x>\<C-o>" : "."
 inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
 inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<S-TAB>"
-inoremap <C-Space> <C-x><C-o>
+" inoremap <C-Space> <C-x><C-o><C-n><C-p>
+inoremap <expr><C-Space> (pumvisible() ? "\<C-y>\<C-x>\<C-o>\<C-n>\<C-p>" : "\<C-x>\<C-o>\<C-n>\<C-p>" )
 imap <C-@> <C-Space>
-inoremap <C-j> <C-X><C-U>
+inoremap <C-l> <C-X><C-U>
+inoremap <expr><C-j> pumvisible() ? '<C-y><C-n><down><up><c-n><c-p>' : "\<C-n>\<down>\<up>\<C-n>\<C-p>"
+inoremap <C-h> <C-x><C-f>
+" inoremap <expr> <C-n> pumvisible() ? '<C-n>' : '<C-n><C-r>=pumvisible() ? "\<lt>Down>" : ""<CR>'
+
+function IsValidSuffix()
+  if col('.') == 1
+    return 0
+  endif
+  let d = synIDattr(synID(line("."), col("."), 1), "name")
+  if match(d, 'omment\|tring') >= 0
+    return 0
+  endif
+  let suffix = getline('.')[col('.') - 2]
+  if match(suffix, '\a') >= 0
+    return 1
+  else
+    return 0
+  endif
+endfunction
 
 " }}}
 
@@ -505,14 +528,18 @@ augroup END
 " Text {{{
 augroup ft_text
     au!
+    " if vim does not set ft=text for txt files use this
+    " autocmd BufReadPost,BufNewFile *.txt setlocal filetype=text 
     " au FileType text setlocal 
     " au InsertEnter *.txt setlocal fo+=t
     " au InsertLeave *.txt setlocal fo-=t
-    au FileType text setlocal fo+=t
-    au FileType text inoremap <buffer> . .<C-G>u
-    au FileType text inoremap <buffer> , ,<C-G>u
-    au FileType text inoremap <buffer> ! !<C-G>u
-    au FileType text inoremap <buffer> ? ?<C-G>u
+    " au FileType text setlocal fo+=t
+    au FileType text call Prose()
+    " au FileType text inoremap <buffer> . .<C-G>u
+    " au FileType text inoremap <buffer> , ,<C-G>u
+    " au FileType text inoremap <buffer> ! !<C-G>u
+    " au FileType text inoremap <buffer> ? ?<C-G>u
+    " au FileType text inoremap <buffer><expr><C-Space> pumvisible() ? '<C-y><C-x><C-k><down><up><c-n><c-p>' : "\<C-x><C-k>\<down>\<up>\<C-n>\<C-p>"
 augroup END
 " }}}
 
@@ -680,6 +707,15 @@ set completefunc=SnipComplete
 " Miniplugins ------------------------------------------------------------ {{{
 
 " Prose {{{
+
+function Prose()
+    inoremap <buffer><expr><C-Space> pumvisible() ? '<C-y><C-x><C-k><down><up><c-n><c-p>' : "\<C-x><C-k>\<down>\<up>\<C-n>\<C-p>"
+    setlocal fo+=t
+    inoremap <buffer> . .<C-G>u
+    inoremap <buffer> , ,<C-G>u
+    inoremap <buffer> ! !<C-G>u
+    inoremap <buffer> ? ?<C-G>u
+endfunction
 " command! Prose inoremap <buffer> . .<C-G>u|
 "             \ inoremap <buffer> ! !<C-G>u|
 "             \ inoremap <buffer> ? ?<C-G>u|

@@ -48,6 +48,7 @@ get_git "https://github.com/majutsushi/tagbar.git"
 get_git "https://github.com/marijnh/tern_for_vim.git"
 (cd tern_for_vim ; npm install )
 get_git "https://github.com/gcavn/trafficlights.git"
+get_git "https://github.com/gcavn/plain.git"
 get_git "https://github.com/SirVer/ultisnips.git"
 get_git "https://github.com/mbbill/undotree.git"
 # get_git "https://github.com/tpope/vim-abolish.git"
