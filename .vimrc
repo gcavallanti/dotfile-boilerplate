@@ -13,18 +13,19 @@ set encoding=utf-8
 set modelines=0
 set autoindent
 set showmode
-set showcmd
 set hidden
 set visualbell
 set backspace=indent,eol,start
 set number
-set relativenumber
+" These slow things down too much
+" set showcmd
+" set lazyredraw
+" set relativenumber
 set laststatus=2
 set history=1000
 set undofile
 set undoreload=10000
 set listchars=tab:▸\ ,eol:¬,extends:❯,precedes:❮
-set lazyredraw
 set matchtime=3
 set showbreak=↪
 set splitbelow

@@ -226,7 +226,8 @@ if [[ -n $(type -t __git_ps1) ]]; then
      PS1="\[${BLUE}\]\u \[$RESET\]at \[$CYAN\]\h \[$RESET\]in \[$GREEN\]\w\$(__git_ps1 \"\[$RESET\] on \[$MAGENTA\]%s\"  )\[$RESET\]\n\$ "
      # PS1="\[${GREEN}\]\u \[$RESET\]at \[$GREEN\]\h \[$RESET\]in \[$GREEN\]\w\$(__git_ps1 \"\[$RESET\] on \[$GREEN\]%s\"  )\[$RESET\]\n\$ "
      # PS1="\[${MAGENTA}\]\u \[$RESET\]at \[$MAGENTA\]\h \[$RESET\]in \[$MAGENTA\]\w\$(__git_ps1 \"\[$RESET\] on \[$GREEN\]%s\"  )\[$RESET\]\n\$\[$RESET\] "
-     # PS1="\[${RESET}\]\u \[$RESET\]at \[$RESET\]\h \[$RESET\]in \[$RESET\]\w\$(__git_ps1 \"\[$RESET\] on \[$GREEN\]%s\"  )\[$RESET\]\n\$ "
+     PS1="\[${RESET}\]\u \[$RESET\]at \[$RESET\]\h \[$RESET\]in \[$GREEN\]\w\$(__git_ps1 \"\[$RESET\] on \[$MAGENTA\]%s\"  )\[$RESET\]\n\$ "
+     PS1="\[${RESET}\]\u\[$RESET\]@\[$RESET\]\h\[$RESET\]:\[$GREEN\]\w \$(__git_ps1 \"\[$RESET\]\[$RESET\][%s]\"  )\[$RESET\]\n\$ "
      # PS1="\[${RESET}\]\u \[$BLACK\]at \[$RESET\]\h \[$BLACK\]in \[$RESET\]\w\$(__git_ps1 \"\[$BLACK\] on \[$GREEN\]%s\"  )\[$RESET\]\n\$ "
      # PS1="\u @ \h : \w\$(__git_ps1 \" (%s)\" )\n\$ "
 else
