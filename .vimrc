@@ -33,7 +33,7 @@ set splitright
 set autowrite
 set autoread
 set shiftround
-set nomagic
+" set nomagic
 set title
 set diffopt=filler,iwhite
 set linebreak
@@ -53,9 +53,7 @@ set ttimeoutlen=10
 " Set up ins-completions preferences
 " set complete=.,w,b,u,t,kspell
 set completeopt=longest,menuone,preview
-set omnifunc=syntaxcomplete#Complete
-
-set pumheight=10
+" set omnifunc=syntaxcomplete#Complete
 
 " Resize splits when the window is resized
 au VimResized * :wincmd =
@@ -66,17 +64,18 @@ au VimResized * :wincmd =
 
 let mapleader=' '
 
+" set pumheight=10
 " Preview {{{
 " Turn off previews once a completion is accepted
 " autocmd CursorMovedI *  if pumvisible() == 0|silent! pclose|endif
-" autocmd InsertLeave * if pumvisible() == 0|silent! pclose|endif
-set previewheight=6
-au BufEnter ?* call PreviewHeightWorkAround()
-func PreviewHeightWorkAround()
-    if &previewwindow
-        res &previewheight
-    endif
-endfunc
+autocmd InsertLeave * if pumvisible() == 0|silent! pclose|endif
+" set previewheight=6
+" au BufEnter ?* call PreviewHeightWorkAround()
+" func PreviewHeightWorkAround()
+"     if &previewwindow
+"         res &previewheight
+"     endif
+" endfunc
 " }}}
 
 " cpoptions+=J {{{
@@ -278,6 +277,8 @@ iabbrev gcavn@ gcavn@gcavn.com
 " Convenience mappings ---------------------------------------------------- {{{
 
 " Easy window resizing
+vmap <Leader>g :<C-U>!git blame <C-R>=expand("%:p") <CR> \| sed -n <C-R>=line("'<") <CR>,<C-R>=line("'>") <CR>p <CR>
+
 nnoremap <silent> <C-W><C-Up> 10<c-w>+
 nnoremap <silent> <C-W><C-down> 10<c-w>-
 nnoremap <silent> <C-W><C-left> 10<c-w><
@@ -571,6 +572,13 @@ augroup ft_yaml
 augroup END
 " }}}
 
+" latex {{{
+augroup ft_latex
+    au!
+    let g:tex_flavor = "latex"
+augroup END
+" }}}
+
 " XML {{{
 augroup ft_xml
     au!
@@ -580,7 +588,14 @@ augroup END
 
 " }}}
 
+" }}}
+
 " Plugin settings --------------------------------------------------------- {{{
+
+" Latex-Box {{{
+let g:LatexBox_autojump=0
+let g:LatexBox_no_mappings=1
+" }}}
 
 " EasyAlign {{{
 vmap <Enter> <Plug>(EasyAlign)
@@ -649,6 +664,10 @@ let g:tern_show_signature_in_pum=0
 let g:tern_show_argument_hints='no'
  " }}}
 
+" eclim {{{
+let g:EclimCompletionMethod = 'omnifunc'
+" }}}
+
 " neocomplete {{{
 let g:neocomplete#enable_at_startup = 0
 let g:neocomplete#enable_fuzzy_completion = 0
@@ -703,6 +722,7 @@ function! SnipComplete(findstart, base)
 endfunction
 set completefunc=SnipComplete
 
+" }}}
 " }}}
 
 " Miniplugins ------------------------------------------------------------ {{{

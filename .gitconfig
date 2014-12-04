@@ -1,8 +1,7 @@
 [alias]
         # View abbreviated SHA, description, and history graph of the latest 20 commits
         # lg = log --graph --abbrev-commit --decorate --date=iso --format=format:'%C(blue)%h%C(reset) %C(normal)-%C(reset)%C(red)%d%C(reset) %C(normal)%s%C(reset)'  --all
-        lg = log --graph --abbrev-commit --decorate --date=local \
-        --format=format:'%C(black)%h%C(reset)\t%C(black)%C(reset) %C(normal)%<(24,trunc)%ad%C(reset) %C(black).%C(reset)%C(green)%d%C(reset) %C(normal)%s%C(reset) %C(black).%C(reset) %C(black)%an%C(reset)'  --all
+        lg = log --graph --abbrev-commit --decorate --date=local --format=format:'%C(black)%h%C(reset)\t%C(black)%C(reset) %C(normal)%<(24,trunc)%ad%C(reset) %C(black).%C(reset)%C(green)%d%C(reset) %C(normal)%s%C(reset) %C(black).%C(reset) %C(black)%an%C(reset)'  --all
         lgs = !"git lg -15"
         lb = log --graph --simplify-by-decoration --pretty=format:'%d' --all
         # View the current working tree status using the short format
@@ -31,6 +30,8 @@
         # Remove all deleted files
         rma = !git rm $(git ls-files -d)
         g = grep --break --heading --line-number
+        # hgrep = !git rev-list --all | xargs git grep 
+        hgrep = !"f() { git log --pretty=format:'%H' -S \"$1\" | xargs git grep \"$1\"; }; f" 
 
 [apply]
         # Detect whitespace errors when applying a patch
@@ -62,9 +63,9 @@
         commit = blue
 
 [color "status"]
-        added = yellow
-        changed = green
-        untracked = cyan
+#        added = green
+#        changed = red
+        untracked = yellow
 
 [color "grep"]
         separator = green
@@ -80,7 +81,7 @@
 
 [user]
         name = Giovanni Cavallanti
-        email = ioacvl@ioacvl.com
+        email = gcavallanti@gmail.com
 
 [credential]
         helper = cache --timeout=3600
