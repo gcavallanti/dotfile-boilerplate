@@ -331,8 +331,8 @@ nnoremap <F9> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> t
 nnoremap vaa ggvGg_
 nnoremap Vaa ggVG
 
-" Easier linewise reselection of what you just pasted.
-nnoremap <leader>V V`]
+" Easier reselection of what you just pasted.
+nnoremap <expr> <leader>V '`[' . strpart(getregtype(), 0, 1) . '`]'
 
 " Indent/dedent/autoindent what you just pasted.
 nnoremap <lt>> V`]<
