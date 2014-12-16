@@ -183,7 +183,7 @@ if [[ $(uname -s) == "Darwin" ]]; then
 fi
 
 # Customize to your needs...
-export PATH=$HOME/local/bin:$HOME/.dotfiles/bin:/usr/local/bin:/usr/local/sbin:$PATH
+export PATH=$HOME/local/bin:/home/ioacvl/.local/bin/:$HOME/.dotfiles/bin:/usr/local/bin:/usr/local/sbin:$PATH
 
 # third-party -----------------------------------------------------------------
 
@@ -211,7 +211,7 @@ fi
 
 # virtualenv
 # pip should only run if there is a virtualenv currently activated
-export PIP_REQUIRE_VIRTUALENV=true
+# export PIP_REQUIRE_VIRTUALENV=true
 # cache pip-installed packages to avoid re-downloading
 export PIP_DOWNLOAD_CACHE=$HOME/.pip/cache
 
