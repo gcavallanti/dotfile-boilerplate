@@ -9,7 +9,7 @@ set nocompatible
 
 " Basic options ----------------------------------------------------------- {{{
 
-set encoding=utf-8
+" set encoding=utf-8
 set modelines=0
 set autoindent
 set showmode
@@ -34,6 +34,7 @@ set autowrite
 set autoread
 set shiftround
 " set nomagic
+set whichwrap+=<,>,h,l,[,]
 set title
 set diffopt=filler,iwhite
 set linebreak
@@ -244,6 +245,8 @@ function! ColPad()
         return repeat(' ', padding + 1)
 endfunction
 
+" runtime! autoload/noscrollbar.vim
+
 let &statusline=''
 let &statusline.="%{ColPad()}"
 let &statusline.='%c'
@@ -253,11 +256,38 @@ let &statusline
 \   .="%{exists('g:loaded_syntastic_plugin')?SyntasticStatuslineFlag():''}"
 let &statusline.="%="
 let &statusline
-\   .=" [%{exists('g:scrollbar_loaded')?ScrollBar(20,'\ ','-'):''}]"
-" \   .=" %2*%{exists('g:scrollbar_loaded')?ScrollBar(35,'■','◫',['','◧'],['','◨'],'a'):''}%0* "
+\   .=" %{exists('g:noscrollbar_loaded')?noscrollbar#statusline():''} "
+" \   .=" %{exists('g:noscrollbar_loaded')?noscrollbar#statusline(20,'■','◫',['◧'],['◨']):''} "
+" \   .=" %{exists('*noscrollbar#statusline')?noscrollbar#statusline(20,'■','◫',['◧'],['◨']):''} "
+" \   .=" %{noscrollbar#statusline()} "
+" \   .=" %{exists('g:noscrollbar_loaded')?noscrollbar#statusline():''} "
+" \   .=" %{exists('g:noscrollbar_loaded')?noscrollbar#statusline(20,'■','◫',['◧'],['◨']):''} "
+" \   .=" %3*%{exists('g:noscrollbar_loaded')?noscrollbar#statusline(30,' ','▓',['▐'],['▌']):''}%0*"
+" \   .="[%3*%{noscrollbar#statusline(20,'_','-',[],[],'l')}%1*%{noscrollbar#statusline(20,'_','-',[],[],'m')}%3*%{noscrollbar#statusline(20,'_','-',[],[],'r')}%0*]"
+" \   .=" %{exists('g:noscrollbar_loaded')?noscrollbar#statusline():''} "
+" \   .=" %{noscrollbar#statusline(20,'■','-',[],[],'l')}%3*%{noscrollbar#statusline(20,'■','■',[],[],'m')}%0*%{noscrollbar#statusline(20,'■','-',[],[],'r')}" 
+" \   .=" %{exists('g:noscrollbar_loaded')?noscrollbar#statusline():''} "
+" \   .=" %3*%{exists('g:noscrollbar_loaded')?noscrollbar#statusline(30,' ','▓',['▐'],['▌']):''}%0*"
+" \   .=" %3*%{exists('g:noscrollbar_loaded')?noscrollbar#statusline(30,' ','█',['▐'],['▌']):''}%0*"
+" \   .=" [%{exists('g:noscrollbar_loaded')?noscrollbar#statusline(10,'_','0',['o','O'],['o','O']):''}]"
+" \   .=" %{exists('g:noscrollbar_loaded')?noscrollbar#statusline(20,'■','◫',['◧'],['◨']):''} "
+" \   .=" %{exists('g:noscrollbar_loaded')?noscrollbar#statusline():''} "
+" \   .=" %{exists('g:noscrollbar_loaded')?noscrollbar#statusline(20,'■','◫',['◧'],['◨']):''} "
+" \   .=" %{exists('g:noscrollbar_loaded')?noscrollbar#statusline():''} "
+" \   .=" [%{exists('g:noscrollbar_loaded')?noscrollbar#statusline(20,' ','▌'):''}]"
+" \   .=" [%{exists('g:noscrollbar_loaded')?noscrollbar#statusline(10,'_','0',['o','O'],['o','O']):''}]"
+" \   .=" [%{exists('g:noscrollbar_loaded')?noscrollbar#statusline(30,' ','█',['░','▒','▓'],['░','▒','▓']):''}]"
+" \   .=" [%{exists('g:noscrollbar_loaded')?noscrollbar#statusline():''}]"
+" \   .=" [%{exists('g:noscrollbar_loaded')?noscrollbar#statusline(20,'\ ','-'):''}]"
+" \   .=" %{noscrollbar#statusline(20,'■','-',[],[],'l')}%3*%{noscrollbar#statusline(20,'■','■',[],[],'m')}%0*%{noscrollbar#statusline(20,'■','-',[],[],'r')}" 
+" \   .=" %{exists('g:noscrollbar_loaded')?noscrollbar#statusline(20,'■',' '):''} "
+" \   .=" %{exists('g:noscrollbar_loaded')?noscrollbar#statusline(25,'■','◫',['◧'],['◨'],'a'):''} "
+" \   .=" %{exists('g:noscrollbar_loaded')?noscrollbar#statusline(25,'■','◫',['','◧'],['','◨'],'a'):''} "
+" \   .=" [%{exists('g:noscrollbar_loaded')?noscrollbar#statusline(20,'\ ','-'):''}]"
 let &statusline.="%3*%{&paste?'  paste ':''}%0*"
 " }}}
 
+" set statusline=%<%f\ %h%m%r%=%-14.(%l,%c%V%)\ %{noscrollbar#statusline()}
 " " Signs {{{
 " augroup signs
 "   autocmd!
@@ -523,7 +553,7 @@ augroup END
 augroup ft_quickfix
     au!
     au Filetype qf setlocal colorcolumn=0 nolist nonumber norelativenumber nocursorline nowrap tw=0
-    au Filetype qf setlocal stl=%t\ (%l\ of\ %L)%{exists('w:quickfix_title')?\ '\ '.w:quickfix_title\ :\ ''}\ %=%-15(%l,%c%V%)\ [%{exists('g:scrollbar_loaded')?ScrollBar(20,'\ ','-'):''}]
+    au Filetype qf setlocal stl=%t\ (%l\ of\ %L)%{exists('w:quickfix_title')?\ '\ '.w:quickfix_title\ :\ ''}\ %=%-15(%l,%c%V%)\ [%{exists('g:noscrollbar_loaded')?noscrollbar#statusline(20,'\ ','-'):''}]
 augroup END
 " }}}
 
@@ -875,6 +905,58 @@ fun! g:Pymodefoldingexpr(lnum) "{{{
 endfunction "}}}
 " }}}
 
+" Highlight Word {{{
+"
+" This mini-plugin provides a few mappings for highlighting words temporarily.
+"
+" Sometimes you're looking at a hairy piece of code and would like a certain
+" word or two to stand out temporarily.  You can search for it, but that only
+" gives you one color of highlighting.  Now you can use <leader>N where N is
+" a number from 1-6 to highlight the current word in a specific color.
+
+function! HiInterestingWord(n) " {{{
+    " Save our location.
+    normal! mz
+
+    " Yank the current word into the z register.
+    normal! "zyiw
+
+    " Calculate an arbitrary match ID.  Hopefully nothing else is using it.
+    let mid = 86750 + a:n
+
+    " Clear existing matches, but don't worry if they don't exist.
+    silent! call matchdelete(mid)
+
+    " Construct a literal pattern that has to match at boundaries.
+    let pat = '\V\<' . escape(@z, '\') . '\>'
+
+    " Actually match the words.
+    call matchadd("InterestingWord" . a:n, pat, 1, mid)
+
+    " Move back to our original location.
+    normal! `z
+endfunction " }}}
+
+" Mappings {{{
+
+nnoremap <silent> <leader>1 :call HiInterestingWord(1)<cr>
+nnoremap <silent> <leader>2 :call HiInterestingWord(2)<cr>
+nnoremap <silent> <leader>3 :call HiInterestingWord(3)<cr>
+nnoremap <silent> <leader>4 :call HiInterestingWord(4)<cr>
+nnoremap <silent> <leader>5 :call HiInterestingWord(5)<cr>
+nnoremap <silent> <leader>6 :call HiInterestingWord(6)<cr>
+
+" }}}
+" Default Highlights {{{
+
+hi def InterestingWord1 guifg=#000000 ctermfg=16 guibg=#ffa724 ctermbg=214
+hi def InterestingWord2 guifg=#000000 ctermfg=16 guibg=#aeee00 ctermbg=154
+hi def InterestingWord3 guifg=#000000 ctermfg=16 guibg=#8cffba ctermbg=121
+hi def InterestingWord4 guifg=#000000 ctermfg=16 guibg=#b88853 ctermbg=137
+hi def InterestingWord5 guifg=#000000 ctermfg=16 guibg=#ff9eb8 ctermbg=211
+hi def InterestingWord6 guifg=#000000 ctermfg=16 guibg=#ff2c4b ctermbg=195
+
+" }}}
 " Show context-preview {{{
 function! ShowContextPreview()
     let l:winview = winsaveview()
