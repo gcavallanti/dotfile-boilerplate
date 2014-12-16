@@ -11,7 +11,7 @@ function get_git() {
     echo "$FUNCNAME $1"
     ldir=$(local_dir "$1")
     mv "$tmp_bundle_dir/$ldir" "$bundle_dir/" 2> /dev/null
-    if cd "$ldir"; then git pull ; cd .. ; else git clone "$1"; fi
+    if cd "$ldir"; then git pull -q ; cd .. ; else git clone -q "$1"; fi
 }
 
 function get_download() {
@@ -29,17 +29,22 @@ tmp_bundle_dir="$HOME/.vim/tmp_bundle"
 [[ -d  "$tmp_bundle_dir" ]] && { echo "$tmp_bundle_dir already exists!" ; exit 1; }
 mv "$bundle_dir" "$tmp_bundle_dir"
 
-# Get pathogen
+
+# Install pathogen
 mkdir -p "${HOME}/.vim/autoload" "$bundle_dir"
 curl -LSso "${HOME}/.vim/autoload/pathogen.vim" "https://raw.github.com/tpope/vim-pathogen/master/autoload/pathogen.vim"
 
+# Get plugins
 cd "$bundle_dir"
 
-# Get plugins
+# Get matchit
+rm -rf "$tmp_bundle_dir/matchit"
 VIMRUNTIME=`vim -e -T dumb --cmd 'exe "set t_cm=\<C-M>"|echo $VIMRUNTIME|quit' | tr -d '\015' `
 mkdir -p matchit/plugin matchit/doc
 cp "$VIMRUNTIME/macros/matchit.vim" matchit/plugin
 cp "$VIMRUNTIME/macros/matchit.txt" matchit/doc
+
+# Get other plugins
 get_git "https://github.com/kien/ctrlp.vim.git"
 get_git "https://github.com/davidhalter/jedi-vim.git"
 (cd jedi-vim ; git submodule update --init )
@@ -51,6 +56,7 @@ get_git "https://github.com/gcavallanti/trafficlights.git"
 get_git "https://github.com/gcavallanti/plain.git"
 get_git "https://github.com/SirVer/ultisnips.git"
 get_git "https://github.com/mbbill/undotree.git"
+get_git "https://github.com/gummesson/note.vim.git"
 # get_git "https://github.com/tpope/vim-abolish.git"
 get_git "https://github.com/tpope/vim-commentary.git"
 # get_git "https://github.com/octol/vim-cpp-enhanced-highlight.git"
