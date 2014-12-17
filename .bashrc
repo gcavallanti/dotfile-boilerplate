@@ -228,7 +228,7 @@ if [[ -n $(type -t __git_ps1) ]]; then
      # PS1="\[$RESET\]\u\[$RESET\]@\[$RESET\]\h\[$RESET\]:\[$RESET\]\w\$(__git_ps1 \" [\[$RESET\]%s\[$RESET\]]\"  )\[$RESET\]\$ "
      # PS1="\[$BOLD\]\[$RESET\]\u@\[$YELLOW\]\h:\[$RESET\]\w\$(__git_ps1 \[$RESET\]\"[%s]\"  )\[$RESET\]\$\[$RESET\] "
      # PS1="\[${RESET}\]\u \[$BLACK\]at \[$RESET\]\h \[$BLACK\]in \[$RESET\]\w\$(__git_ps1 \"\[$BLACK\] on \[$GREEN\]%s\"  )\[$RESET\]\n\$ "
-     PS1="\h:\w \$(__git_ps1 \"[%s]\")\$ "
+     PS1="\u@\h:\w \$(__git_ps1 \"[%s]\")\$ "
 else
     
     parse_git_dirty () {
