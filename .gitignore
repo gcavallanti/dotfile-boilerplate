@@ -1,5 +1,7 @@
 .DS_Store
 .*~
+.vim/eclim
+.vim/plugin
 .vim/bundle
 .vim/autoload
 .vim/tmp
