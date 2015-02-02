@@ -391,7 +391,7 @@ cnoremap <Right> <Space><BS><Right>
 inoremap <expr><CR> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 " inoremap <expr><TAB> pumvisible() ? "\<C-y>" : "\<TAB>"
 " inoremap . .<C-x><C-o>
-inoremap <expr>. IsValidSuffix() ? ".\<C-x>\<C-o>" : "."
+" inoremap <expr>. IsValidSuffix() ? ".\<C-x>\<C-o>" : "."
 inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
 inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<S-TAB>"
 " inoremap <C-Space> <C-x><C-o><C-n><C-p>
@@ -698,21 +698,21 @@ let g:tern_show_argument_hints='no'
 let g:EclimCompletionMethod = 'omnifunc'
 " }}}
 
-" neocomplete {{{
-let g:neocomplete#enable_at_startup = 0
-let g:neocomplete#enable_fuzzy_completion = 0
-let g:neocomplete#manual_completion_start_length = 0
-let g:neocomplete#enable_auto_select = 0
-let g:neocomplete#disable_auto_complete = 1
-let g:neocomplete#enable_insert_char_pre = 1
-" inoremap <expr><CR> pumvisible() ? neocomplete#close_popup() : "\<CR>"
-" inoremap <expr><C-Space> neocomplete#start_manual_complete()
-" imap <C-@> <C-Space>
-let g:neocomplete#force_omni_input_patterns = {}
-let g:neocomplete#force_omni_input_patterns.python = '\%([^. \t]\.\|^\s*@\|^\s*from\s.\+import \|^\s*from \|^\s*import \)\w*'
-let g:neocomplete#force_omni_input_patterns.javascript = '[^. \t]\.\w*'
-let g:neocomplete#force_omni_input_patterns.cpp = '[^. *\t]\%(\.\|->\)\w*\|\h\w*::\w*'
-" }}}
+" " neocomplete {{{
+" let g:neocomplete#enable_at_startup = 0
+" let g:neocomplete#enable_fuzzy_completion = 0
+" let g:neocomplete#manual_completion_start_length = 0
+" let g:neocomplete#enable_auto_select = 0
+" let g:neocomplete#disable_auto_complete = 1
+" let g:neocomplete#enable_insert_char_pre = 1
+" " inoremap <expr><CR> pumvisible() ? neocomplete#close_popup() : "\<CR>"
+" " inoremap <expr><C-Space> neocomplete#start_manual_complete()
+" " imap <C-@> <C-Space>
+" let g:neocomplete#force_omni_input_patterns = {}
+" let g:neocomplete#force_omni_input_patterns.python = '\%([^. \t]\.\|^\s*@\|^\s*from\s.\+import \|^\s*from \|^\s*import \)\w*'
+" let g:neocomplete#force_omni_input_patterns.javascript = '[^. \t]\.\w*'
+" let g:neocomplete#force_omni_input_patterns.cpp = '[^. *\t]\%(\.\|->\)\w*\|\h\w*::\w*'
+" " }}}
 
 " Yankstack {{{
 " nmap <esc>p <Plug>yankstack_substitute_older_paste
