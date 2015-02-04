@@ -19,7 +19,7 @@ set backspace=indent,eol,start
 set number
 " These slow things down too much
 " set showcmd
-" set lazyredraw
+set lazyredraw
 " set relativenumber
 set laststatus=2
 set history=1000
@@ -41,6 +41,7 @@ set linebreak
 set dictionary=/usr/share/dict/words
 " set fillchars=diff:\·,vert:│
 set fillchars=diff:\ 
+" set cursorline
 
 " Don't try to highlight lines longer than 800 characters.
 set synmaxcol=800

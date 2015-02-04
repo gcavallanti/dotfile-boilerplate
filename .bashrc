@@ -225,9 +225,10 @@ if [[ -n $(type -t __git_ps1) ]]; then
     export GIT_PS1_SHOWCOLORHINTS=1
     export GIT_PS1_STATESEPARATOR=" "
    
-     PS1="\[$RESET\]\u\[$RESET\]@\[$RESET\]\h\[$RESET\]:\[$RESET\]\w\$(__git_ps1 \" \[$BLACK\][%s]\[$RESET\]\"  )\[$RESET\]\$ "
+     # PS1="\[$RESET\]\u\[$RESET\]@\[$RESET\]\h\[$RESET\]:\[$RESET\]\w\$(__git_ps1 \" \[$GREEN\][%s]\[$RESET\]\"  )\[$RESET\]\$ "
+     PS1="\[$RESET\]\u\[$RESET\]@\[$RESET\]\h\[$RESET\]:\[$GREEN\]\w\$(__git_ps1 \" \[$RESET\][%s]\[$RESET\]\"  )\[$RESET\]\$ "
      # PS1="\[$BOLD\]\[$RESET\]\u@\[$YELLOW\]\h:\[$RESET\]\w\$(__git_ps1 \[$RESET\]\"[%s]\"  )\[$RESET\]\$\[$RESET\] "
-     # PS1="\[${RESET}\]\u \[$BLACK\]at \[$RESET\]\h \[$BLACK\]in \[$RESET\]\w\$(__git_ps1 \"\[$BLACK\] on \[$GREEN\]%s\"  )\[$RESET\]\n\$ "
+     # PS1="\[$YELLOW\]\u \[$RESET\]at \[$CYAN\]\h \[$RESET\]in \[$BLUE\]\w\$(__git_ps1 \"\[$RESET\] on \[$GREEN\]%s\"  )\[$RESET\] \$ "
      # PS1="\u@\h:\w \$(__git_ps1 \"[%s]\")\$ "
 else
     
