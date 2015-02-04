@@ -140,12 +140,12 @@ alias c="tr -d '\n' | pbcopy"
 
 # exports ---------------------------------------------------------------------
 # Set Term
-if [[ $COLORTERM = gnome-* && $TERM = xterm ]] && infocmp gnome-256color >/dev/null 2>&1; then 
-    export TERM=gnome-256color
-elif [[ $TERM != dumb ]] && infocmp xterm-256color >/dev/null 2>&1; then 
-    export TERM=xterm-256color
-fi
-[ -n "$TMUX" ] && export TERM=screen-256color
+# if [[ $COLORTERM = gnome-* && $TERM = xterm ]] && infocmp gnome-256color >/dev/null 2>&1; then 
+#     export TERM=gnome-256color
+# elif [[ $TERM != dumb ]] && infocmp xterm-256color >/dev/null 2>&1; then 
+#     export TERM=xterm-256color
+# fi
+# [ -n "$TMUX" ] && export TERM=screen-256color
 
 # Make vim the default editor
 export EDITOR="vim"
@@ -225,10 +225,10 @@ if [[ -n $(type -t __git_ps1) ]]; then
     export GIT_PS1_SHOWCOLORHINTS=1
     export GIT_PS1_STATESEPARATOR=" "
    
-     # PS1="\[$RESET\]\u\[$RESET\]@\[$RESET\]\h\[$RESET\]:\[$RESET\]\w\$(__git_ps1 \" [\[$RESET\]%s\[$RESET\]]\"  )\[$RESET\]\$ "
+     PS1="\[$RESET\]\u\[$RESET\]@\[$RESET\]\h\[$RESET\]:\[$RESET\]\w\$(__git_ps1 \" \[$BLACK\][%s]\[$RESET\]\"  )\[$RESET\]\$ "
      # PS1="\[$BOLD\]\[$RESET\]\u@\[$YELLOW\]\h:\[$RESET\]\w\$(__git_ps1 \[$RESET\]\"[%s]\"  )\[$RESET\]\$\[$RESET\] "
      # PS1="\[${RESET}\]\u \[$BLACK\]at \[$RESET\]\h \[$BLACK\]in \[$RESET\]\w\$(__git_ps1 \"\[$BLACK\] on \[$GREEN\]%s\"  )\[$RESET\]\n\$ "
-     PS1="\u@\h:\w \$(__git_ps1 \"[%s]\")\$ "
+     # PS1="\u@\h:\w \$(__git_ps1 \"[%s]\")\$ "
 else
     
     parse_git_dirty () {

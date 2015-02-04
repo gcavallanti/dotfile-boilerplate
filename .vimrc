@@ -25,7 +25,7 @@ set laststatus=2
 set history=1000
 set undofile
 set undoreload=10000
-set listchars=tab:▸\ ,eol:¬,extends:❯,precedes:❮
+set listchars=tab:»\ ,eol:¬,extends:›,precedes:‹
 set matchtime=3
 set showbreak=↪
 set splitbelow
@@ -65,6 +65,8 @@ au VimResized * :wincmd =
 
 let mapleader=' '
 
+set pastetoggle=<F11>
+     
 " set pumheight=10
 " Preview {{{
 " Turn off previews once a completion is accepted
@@ -102,7 +104,7 @@ augroup END
 
 " Wildmenu completion {{{
 " set wildmenu
-set wildmode=list:longest,full
+set wildmode=list:longest
 set wildignore+=.hg,.git,.svn                    " Version control
 set wildignore+=*.aux,*.out,*.toc                " LaTeX intermediate files
 set wildignore+=*.jpg,*.bmp,*.gif,*.png,*.jpeg   " binary images
@@ -306,24 +308,30 @@ iabbrev gcavn@ gcavn@gcavn.com
 
 " Convenience mappings ---------------------------------------------------- {{{
 
-" Easy window resizing
+cnoremap <f1> <C-c>:<up>
+
 vmap <Leader>g :<C-U>!git blame <C-R>=expand("%:p") <CR> \| sed -n <C-R>=line("'<") <CR>,<C-R>=line("'>") <CR>p <CR>
 
-nnoremap <silent> <C-W><C-Up> 10<c-w>+
-nnoremap <silent> <C-W><C-down> 10<c-w>-
-nnoremap <silent> <C-W><C-left> 10<c-w><
-nnoremap <silent> <C-W><C-right> 10<c-w>>
+" Easy window resizing
+nnoremap <silent> <C-w><C-up> 10<c-w>+
+nnoremap <silent> <C-w><C-down> 10<c-w>-
+nnoremap <silent> <C-w><C-left> 10<c-w><
+nnoremap <silent> <C-w><C-right> 10<c-w>>
 
+" Grep the last search pattern and open the quickfix list 
 nnoremap <silent> <leader>/ :execute 'vimgrep /' . @/ . '/g %'<CR>:copen<CR>
 
 " nnoremap <c-z> mzzMzvzz15<c-e>`z:Pulse<cr>
 " nnoremap <leader>d "_d
 " vnoremap <leader>d "_d
 
+" Paste the text from most recent yank command
 nnoremap <leader>p "0p
 nnoremap <leader>P "0P
 
+" Convert hard wraps to soft wraps
 command! -range=% SoftWrap <line2>put _ | <line1>,<line2>g/.\+/ .;-/^$/ join |normal $x
+
 " Clean trailing whitespace
 " nnoremap <leader>j mz:s/\s\+$//<cr>:let @/=''<cr>`z
 " command! DeleteTrailing normal mz<r>:s/\s\+$//
@@ -334,21 +342,12 @@ nnoremap <leader>q :confirm qa<cr>
 " Write buffer to file
 nnoremap <leader>w :w<cr>
 
-" inoremap <C-j> <esc>
-" set <F13>=jk
-" imap <F13> <esc>
-" set <F14>=kj
-" imap <F14> <esc>
-
 " A tab is like a paGe
 nnoremap [g :tabprev<cr>
 nnoremap ]g :tabnext<cr>
 nnoremap ]G :tablast<cr>
 nnoremap [G :tabfirst<cr>
 
-" Paste mode
-set pastetoggle=<F11>
-     
 " Make Y move like D and C
 noremap Y y$
 
@@ -358,12 +357,12 @@ noremap Y y$
 nnoremap <F9> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<' . synIDattr(synID(line("."),col("."),0),"name") . "> lo<" . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
 
 " Select entire buffer
-nnoremap vaa ggvGg_
-nnoremap Vaa ggVG
+nnoremap <leader>a ggVG
 
 " Easier reselection of what you just pasted.
-nnoremap <expr> <leader>V '`[' . strpart(getregtype(), 0, 1) . '`]'
-
+nnoremap <expr> <leader>v '`[' . strpart(getregtype(), , 1) . '`]'
+xnoremap > >gv
+xnoremap < <gv
 " Indent/dedent/autoindent what you just pasted.
 nnoremap <lt>> V`]<
 nnoremap ><lt> V`]>
@@ -380,12 +379,10 @@ noremap gj j
 noremap gk k
 
 " Switch inner word caSe
-" inoremap <C-s> <esc>mzg~iw`za
+inoremap <C-s> <esc>mzg~iw`za
 
-" Wildmenu completion {{{
-cnoremap <Left> <Space><BS><Left>
-cnoremap <Right> <Space><BS><Right>
-" }}}
+" Easier editing of alternate file
+nnoremap <BS> <C-^>
 
 " Ins-completion mode {{{
 inoremap <expr><CR> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
@@ -536,6 +533,7 @@ augroup END
 augroup ft_mardakdown
     au!
     au BufNewFile,BufRead {*.md,*.mkd,*.markdown} setl filetype=markdown 
+    au FileType text call Prose()
 augroup END
 " }}}
 
@@ -560,18 +558,8 @@ augroup END
 " Text {{{
 augroup ft_text
     au!
-    " if vim does not set ft=text for txt files use this
     " autocmd BufReadPost,BufNewFile *.txt setlocal filetype=text 
-    " au FileType text setlocal 
-    " au InsertEnter *.txt setlocal fo+=t
-    " au InsertLeave *.txt setlocal fo-=t
-    " au FileType text setlocal fo+=t
     au FileType text call Prose()
-    " au FileType text inoremap <buffer> . .<C-G>u
-    " au FileType text inoremap <buffer> , ,<C-G>u
-    " au FileType text inoremap <buffer> ! !<C-G>u
-    " au FileType text inoremap <buffer> ? ?<C-G>u
-    " au FileType text inoremap <buffer><expr><C-Space> pumvisible() ? '<C-y><C-x><C-k><down><up><c-n><c-p>' : "\<C-x><C-k>\<down>\<up>\<C-n>\<C-p>"
 augroup END
 " }}}
 
@@ -758,7 +746,6 @@ set completefunc=SnipComplete
 " Miniplugins ------------------------------------------------------------ {{{
 
 " Prose {{{
-
 function Prose()
     inoremap <buffer><expr><C-Space> pumvisible() ? '<C-y><C-x><C-k><down><up><c-n><c-p>' : "\<C-x><C-k>\<down>\<up>\<C-n>\<C-p>"
     setlocal fo+=t
@@ -767,16 +754,24 @@ function Prose()
     inoremap <buffer> ! !<C-G>u
     inoremap <buffer> ? ?<C-G>u
 endfunction
-" command! Prose inoremap <buffer> . .<C-G>u|
-"             \ inoremap <buffer> ! !<C-G>u|
-"             \ inoremap <buffer> ? ?<C-G>u|
-"             \ setlocal fo=qrn1tl
+" }}}
 
-" command! Code silent! iunmap <buffer> .|
-"             \ silent! iunmap <buffer> !|
-"             \ silent! iunmap <buffer> ?|
-"             \ setlocal nospell list nowrap
-"             \     tw=74 fo=cqr1 showbreak=… nu|
+" MRU {{{
+function! MRUComplete(ArgLead, CmdLine, CursorPos)
+  let my_oldfiles = filter(copy(v:oldfiles), 'v:val =~ a:ArgLead')
+  if len(my_oldfiles) > 16
+    call remove(my_oldfiles, 17, len(my_oldfiles) - 1)
+  endif
+  return my_oldfiles
+endfunction
+function! MRU(command, arg)
+  if a:command == "tabedit"
+    execute a:command . " " . a:arg . "\|lcd %:p:h"
+  else
+    execute a:command . " " . a:arg
+  endif
+endfunction
+command! -nargs=1 -complete=customlist,MRUComplete ME call MRU('edit', <f-args>)
 " }}}
 
 " Diff orig {{{
