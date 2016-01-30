@@ -1,1 +1,1 @@
-set prompt "\[\e[1;30m\]lftp: \[\e[0;31m\]\u\[\e[0;0m\] at \[\e[0;33m\]\h\[\e[0;0m\] in \[\e[0;34m\]\w\[\e[0;0m\]\n$ "
+set prompt "lftp \u@\h:\[\e[0;36m\]\w\[\e[0;0m\]> "
