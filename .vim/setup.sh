@@ -45,11 +45,11 @@ cp "$VIMRUNTIME/macros/matchit.vim" matchit/plugin
 cp "$VIMRUNTIME/macros/matchit.txt" matchit/doc
 
 # Get other plugins
-get_git "https://github.com/kien/ctrlp.vim.git"
+# get_git "https://github.com/kien/ctrlp.vim.git"
 get_git "https://github.com/davidhalter/jedi-vim.git"
 (cd jedi-vim ; git submodule update --init )
-# get_git "https://github.com/scrooloose/syntastic.git"
-get_git "https://github.com/majutsushi/tagbar.git"
+get_git "https://github.com/scrooloose/syntastic.git"
+# get_git "https://github.com/majutsushi/tagbar.git"
 get_git "https://github.com/marijnh/tern_for_vim.git"
 (cd tern_for_vim ; npm install )
 # get_git "https://github.com/gcavallanti/trafficlights.git"
@@ -70,7 +70,7 @@ get_git "https://github.com/tpope/vim-markdown.git"
 get_git "https://github.com/tpope/vim-repeat.git"
 get_git "https://github.com/honza/vim-snippets.git"
 get_git "https://github.com/tpope/vim-surround"
-get_git "https://github.com/tpope/vim-unimpaired.git"
+# get_git "https://github.com/tpope/vim-unimpaired.git"
 # get_git "https://github.com/maxbrunsfeld/vim-yankstack.git"
 get_git "https://github.com/gcavallanti/vim-noscrollbar.git"
 
