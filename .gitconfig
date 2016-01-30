@@ -1,7 +1,9 @@
 [alias]
         # View abbreviated SHA, description, and history graph of the latest 20 commits
         # lg = log --graph --abbrev-commit --decorate --date=iso --format=format:'%C(blue)%h%C(reset) %C(normal)-%C(reset)%C(red)%d%C(reset) %C(normal)%s%C(reset)'  --all
-        lg = log --graph --abbrev-commit --decorate --date=local --format=format:'%C(black)%h%C(reset)\t%C(black)%C(reset) %C(normal)%<(24,trunc)%ad%C(reset) %C(black).%C(reset)%C(green)%d%C(reset) %C(normal)%s%C(reset) %C(black).%C(reset) %C(black)%an%C(reset)'  --all
+        # lg = log --graph --abbrev-commit --decorate --date=local --format=format:'%C(black)%h%C(reset)\t%C(black)%C(reset) %C(normal)%<(24,trunc)%ad%C(reset) %C(black).%C(reset)%C(red)%d%C(reset) %C(normal)%s%C(reset) %C(black).%C(reset) %C(black)%an%C(reset)'  --all
+        lg = log --graph --abbrev-commit --decorate --date=local --format=format:'%h\t %<(24,trunc)%ad   %<(19,trunc)%an  %C(red)%d%C(reset) %s'  --all
+        lgd = !"git log --date=local --format=format:'%h%d]%an]%<(24,trunc)%ad]%s' --graph --all | column -ts']' 2> /dev/null"
         lgs = !"git lg -15"
         lb = log --graph --simplify-by-decoration --pretty=format:'%d' --all
         # View the current working tree status using the short format
@@ -32,6 +34,7 @@
         g = grep --break --heading --line-number
         # hgrep = !git rev-list --all | xargs git grep 
         hgrep = !"f() { git log --pretty=format:'%H' -S \"$1\" | xargs git grep \"$1\"; }; f" 
+	m = mergetool
 
 [apply]
         # Detect whitespace errors when applying a patch
@@ -42,7 +45,7 @@
         excludesfile = ~/.gitignore
         attributesfile = ~/.gitattributes
         # Treat spaces before tabs, lines that are indented with 8 or more spaces, and all kinds of trailing whitespace as an error
-        whitespace = space-before-tab,indent-with-non-tab,cr-at-eol #,trailing-space
+        # whitespace = space-before-tab,indent-with-non-tab,cr-at-eol #,trailing-space
         pager = less -S -+x8
 
 [color]
@@ -55,12 +58,7 @@
         remote = green
 
 [color "diff"]
-        meta = yellow
-        frag = black
-        old = red
-        new = green
         whitespace = white reverse
-        commit = blue
 
 [color "status"]
 #        added = green
@@ -74,7 +72,8 @@
 [merge]
         # Include summaries of merged commits in newly created merge commit messages
         log = true
-        tool = vimdiff
+	tool = vimdiff
+	diffstat = false
 
 [push]
         default = matching
@@ -90,6 +89,6 @@
         lineNumber = true
         extendRegexp = true
 [diff]
-        tool = vimdiff
+	tool = vimdiff
 [difftool]
         prompt = false
