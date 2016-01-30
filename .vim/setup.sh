@@ -73,6 +73,7 @@ get_git "https://github.com/tpope/vim-surround"
 # get_git "https://github.com/tpope/vim-unimpaired.git"
 # get_git "https://github.com/maxbrunsfeld/vim-yankstack.git"
 get_git "https://github.com/gcavallanti/vim-noscrollbar.git"
+get_git "https://github.com/junegunn/rainbow_parentheses.vim.git"
 
 echo "Bundles downloaded."
 rmdir "$tmp_bundle_dir" 
