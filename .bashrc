@@ -87,6 +87,8 @@ alias l="ls -lF ${colorflag}"
 # Always use color output for `ls`
 alias ls="command ls ${colorflag}"
 
+#lf
+alias lf="CLICOLOR_FORCE= ll | grep --color=never "^d" && CLICOLOR_FORCE= ll | grep -v "^d" | tail -n +2"
 # Enable aliases to be sudo¿ed
 alias sudo='sudo '
 
@@ -150,9 +152,9 @@ alias c="tr -d '\n' | pbcopy"
 # Make vim the default editor
 export EDITOR="vim"
 
-# Larger bash history (allow 32³ entries; default is 500)
-export HISTSIZE=32768
-export HISTFILESIZE=$HISTSIZE
+# Infinite bash history 
+export HISTSIZE=
+export HISTFILESIZE=
 export HISTCONTROL=ignoredups
 export HISTTIMEFORMAT="%F %T "
 # Make some commands not show up in history
@@ -163,10 +165,10 @@ export PROMPT_COMMAND='echo -ne "\033]0;${HOSTNAME%%.*}\007";'"$PROMPT_COMMAND"
 
 
 # Prefer US English and use UTF-8
-export LANG="en_US"
-export LC_ALL="en_US.UTF-8"
-export LC_TYPE="en_US.UTF-8"
-export LC_TIME="en_US.UTF-8"
+# export LANG="en_US.UTF-8"
+# export LC_ALL="en_US.UTF-8"
+# export LC_TYPE="en_US.UTF-8"
+# export LC_TIME="en_US.UTF-8"
 
 # Highlight section titles in manual pages
 export LESS_TERMCAP_md="$ORANGE"
@@ -190,7 +192,10 @@ export PATH=$HOME/local/bin:$HOME/.local/bin/:$HOME/.dotfiles/bin:/usr/local/bin
 
 # git
 if [[ $(uname -s) == "Darwin" ]]; then 
+    export PATH=$PATH:$HOME/Library/Python/2.7/bin
+    export PATH=$PATH:$HOME/local/opt/apache-maven-3.3.9/bin:$HOME/local/opt/lenskit-2.2.1/bin
 
+    export JAVA_HOME=$(/usr/libexec/java_home -v 1.8)
     if [ -f $(brew --prefix)/etc/bash_completion ]; then
         . $(brew --prefix)/etc/bash_completion
     fi
@@ -202,9 +207,12 @@ if [[ $(uname -s) == "Darwin" ]]; then
         . $(brew --prefix)/etc/bash_completion.d/git-prompt.sh 
     fi
 
-# rvm
-export PATH=$HOME/.rvm/bin:$PATH
+    # rvm
+    export PATH=$HOME/.rvm/bin:$PATH
     [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" 
+
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
 
 elif [[ $(uname -s) == "Linux" ]]; then
     :
