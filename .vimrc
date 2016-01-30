@@ -4,30 +4,37 @@ filetype off
 call pathogen#infect()
 filetype plugin indent on
 set nocompatible
-
 " }}}
 
 " Basic options ----------------------------------------------------------- {{{
 
+" Change directory to the current buffer when opening files.
+" set autochdir
 " set encoding=utf-8
-set modelines=0
+set modelines=1
 set autoindent
 set showmode
 set hidden
 set visualbell
 set backspace=indent,eol,start
 set number
+set numberwidth=5
+" set showtabline=1
 " These slow things down too much
 " set showcmd
-set lazyredraw
-" set relativenumber
+" set lazyredraw
+set relativenumber
+" set ttyfast
+" set ttymouse=xterm2
+" set ttyscroll=3
 set laststatus=2
 set history=1000
 set undofile
 set undoreload=10000
-set listchars=tab:»\ ,eol:¬,extends:›,precedes:‹
+set listchars=tab:»\ ,eol:¬,extends:›,precedes:‹,space:\·
+" set listchars=tab:»\ ,eol:¬,extends:›,precedes:‹
 set matchtime=3
-set showbreak=↪
+" set showbreak=↪
 set splitbelow
 set splitright
 set autowrite
@@ -39,9 +46,13 @@ set title
 set diffopt=filler,iwhite
 set linebreak
 set dictionary=/usr/share/dict/words
-" set fillchars=diff:\·,vert:│
-set fillchars=diff:\ 
+set fillchars=diff:\·,vert:│
+" set fillchars+=diff:\·,fold:█
+set fillchars+=diff:\.
 " set cursorline
+set winminwidth=10
+let &winwidth=float2nr(&columns/1.618)
+let &winheight=float2nr(&lines/1.618)
 
 " Don't try to highlight lines longer than 800 characters.
 set synmaxcol=800
@@ -60,26 +71,32 @@ set completeopt=longest,menuone,preview
 " Resize splits when the window is resized
 au VimResized * :wincmd =
 
-" set winheight=6
-" set winminheight=6
-" set winheight=9999
-
 let mapleader=' '
 
 set pastetoggle=<F11>
      
-" set pumheight=10
+set pumheight=10
 " Preview {{{
 " Turn off previews once a completion is accepted
 " autocmd CursorMovedI *  if pumvisible() == 0|silent! pclose|endif
 autocmd InsertLeave * if pumvisible() == 0|silent! pclose|endif
-" set previewheight=6
+set previewheight=15
+" " set previewheight=10
 " au BufEnter ?* call PreviewHeightWorkAround()
 " func PreviewHeightWorkAround()
 "     if &previewwindow
-"         res &previewheight
+"       exec 'setlocal winheight='.&previewheight
+"         " res &previewheight
 "     endif
 " endfunc
+
+set previewheight=50
+au BufEnter ?* call PreviewHeightWorkAround()
+func PreviewHeightWorkAround()
+    if &previewwindow
+        exec 'setlocal winheight='.&previewheight
+    endif
+endfunc
 " }}}
 
 " cpoptions+=J {{{
@@ -92,32 +109,18 @@ autocmd InsertLeave * if pumvisible() == 0|silent! pclose|endif
 " }}}
 
 " Highlight VCS conflict markers
-match ErrorMsg '^\(<\|=\|>\)\{7\}\([^=].\+\)\?$'
+" match ErrorMsg '^\(<\|=\|>\)\{7\}\([^=].\+\)\?$'
 
 " Trailing whitespace {{{
 " Only shown when not in insert mode so I don't go insane.
-augroup trailing
+augroup trailing           
     au!
     au InsertEnter * :set listchars-=trail:⋅
     au InsertLeave * :set listchars+=trail:⋅
 augroup END
 " }}}
 
-" Wildmenu completion {{{
-" set wildmenu
-set wildmode=list:longest
-set wildignore+=.hg,.git,.svn                    " Version control
-set wildignore+=*.aux,*.out,*.toc                " LaTeX intermediate files
-set wildignore+=*.jpg,*.bmp,*.gif,*.png,*.jpeg   " binary images
-set wildignore+=*.o,*.obj,*.exe,*.dll,*.manifest " compiled object files
-set wildignore+=*.spl                            " compiled spelling word lists
-set wildignore+=*.sw?                            " Vim swap files
-set wildignore+=*.DS_Store                       " OSX files
-set wildignore+=*.luac                           " Lua byte code
-set wildignore+=migrations                       " Django migrations
-set wildignore+=*.pyc                            " Python byte code
-set wildignore+=*.orig                           " Merge resolution files
-" }}}
+set wildmode=list
 
 " Line Return {{{
 " Make sure Vim returns to the same line when you reopen a file or buffer
@@ -137,7 +140,7 @@ set softtabstop=2
 set expandtab
 set wrap
 set textwidth=80
-set formatoptions=qrn1cl
+set formatoptions=crqnl1
 " }}}
 
 " Backups {{{
@@ -165,101 +168,244 @@ set background=dark
 colorscheme plain
 
 " Reload the colorscheme whenever we write the file.
-augroup color_trafficlights_dev
+augroup plain
     au!
-    au BufWritePost trafficlights.vim color trafficlights
     au BufWritePost plain.vim color plain
 augroup END
 " }}}
 
-" Tabline {{{
-if exists("+showtabline")
-  function! MyTabLine()
-    let s = ''
-    for i in range(tabpagenr('$'))
-      " set up some oft-used variables
-      let tab = i + 1 " range() starts at 0
-      let winnr = tabpagewinnr(tab) " gets current window of current tab
-      let buflist = tabpagebuflist(tab) " list of buffers associated with the windows in the current tab
-      let bufnr = buflist[winnr - 1] " current buffer number
-      let bufname = bufname(bufnr) " gets the name of the current buffer in the current window of the current tab
+" " Tabline {{{
+" if exists("+showtabline")
+"   function! MyTabLine()
+"     let s = ''
+"     for i in range(tabpagenr('$'))
+"       " set up some oft-used variables
+"       let tab = i + 1 " range() starts at 0
+"       let winnr = tabpagewinnr(tab) " gets current window of current tab
+"       let buflist = tabpagebuflist(tab) " list of buffers associated with the windows in the current tab
+"       let bufnr = buflist[winnr - 1] " current buffer number
+"       let bufname = bufname(bufnr) " gets the name of the current buffer in the current window of the current tab
 
-      let s .= '%' . tab . 'T' " start a tab
-      let s .= (tab == tabpagenr() ? '%#TabLineSel#' : '%#TabLine#') " if this tab is the current tab...set the right highlighting
-      let s .= ' ' . tab " current tab number
-      let n = tabpagewinnr(tab,'$') " get the number of windows in the current tab
-      if n > 1
-        let s .= ':' . n " if there's more than one, add a colon and display the count
-      endif
-      let bufmodified = ''
-      " getbufvar(bufnr, "&mod")
-      for b in buflist
-        if getbufvar(b, "&mod")
-          let bufmodified = 1
-          break
-        endif
-      endfor
-      if bufmodified
-        let s .= ' +'
-      endif
-      if bufname != ''
-        " let s .= ' ' . pathshorten(bufname) . ' ' " outputs the one-letter-path shorthand & filename
-        let s .= ' ' . fnamemodify(bufname,":t") . ' ' " outputs the one-letter-path shorthand & filename
-      else
-        let s .= ' [No Name] '
-      endif
-      if tab == tabpagenr()
-          let s .= '%999X x '
-      else
-          let s .= '   '
-      endif
-    endfor
-    let s .= '%#TabLineFill#' " blank highlighting between the tabs and the righthand close 'X'
-    let s .= '%T' " resets tab page number?
-    let s .= '%=' " seperate left-aligned from right-aligned
-    " let s .= '%#TabLine#' " set highlight for the 'X' below
-    " let s .= '%999XX' " places an 'X' at the far-right
-    return s
-  endfunction
-  set tabline=%!MyTabLine()
-endif
-" }}}
+"       let s .= '%' . tab . 'T' " start a tab
+"       let s .= (tab == tabpagenr() ? '%#TabLineSel#' : '%#TabLine#') " if this tab is the current tab...set the right highlighting
+"       " let s .= ' ' . tab " current tab number
+"       let n = tabpagewinnr(tab,'$') " get the number of windows in the current tab
+"       " if n > 1
+"       "   let s .= ':' . n " if there's more than one, add a colon and display the count
+"       " endif
+"       let bufmodified = ''
+"       " getbufvar(bufnr, "&mod")
+"       for b in buflist
+"         if getbufvar(b, "&mod")
+"           let bufmodified = 1
+"           break
+"         endif
+"       endfor
+"       if bufname != ''
+"         " let s .= ' ' . pathshorten(bufname) . ' ' " outputs the one-letter-path shorthand & filename
+"         let s .= ' ' . fnamemodify(bufname,":t") . '' " outputs the one-letter-path shorthand & filename
+"       else
+"         let s .= ' [No Name]'
+"       endif
+"       if bufmodified
+"         let s .= '[+]'
+"       endif
+"       if tab == tabpagenr()
+"           let s .= '%999X x '
+"       else
+"           let s .= '   '
+"       endif
+"     endfor
+"     let s .= '%#TabLineFill#' " blank highlighting between the tabs and the righthand close 'X'
+"     let s .= '%T' " resets tab page number?
+"     let s .= '%=' " seperate left-aligned from right-aligned
+"     " let s .= '%#TabLine#' " set highlight for the 'X' below
+"     " let s .= '%999XX' " places an 'X' at the far-right
+"     return s
+"   endfunction
+"   set tabline=%!MyTabLine()
+" endif
+" " }}}
 
 " Statusline {{{
-function! ColPad()
-    let ruler_width = max([strlen(line('$')), (&numberwidth - 1)])
-    let column_width = strlen(virtcol('.'))
-    let padding = ruler_width - column_width
+" function! ColPad()
+"     let ruler_width = max([strlen(line('$')), (&numberwidth - 1)])
+"     let column_width = strlen(virtcol('.'))
+"     let padding = ruler_width - column_width
 
-    redir =>a|exe "sil sign place buffer=".bufnr('')|redir end
-    let signs = split(a, "\n")[1:]
-    if !empty(signs)
-        let padding = padding + 2
-    endif
+"     redir =>a|exe "sil sign place buffer=".bufnr('')|redir end
+"     let signs = split(a, "\n")[1:]
+"     if !empty(signs)
+"         let padding = padding + 2
+"     endif
 
-    if &foldcolumn!=''
-        let padding = padding + &foldcolumn
-    endif
+"     if &foldcolumn!=''
+"         let padding = padding + &foldcolumn
+"     endif
 
-    if padding <= 0
-        return ''
-    else
-        " + 1 becuase for some reason vim eats one of the spaces
-        return repeat(' ', padding + 1)
-endfunction
+"     if padding <= 0
+"         return ''
+"     else
+"         " + 1 becuase for some reason vim eats one of the spaces
+"         return repeat(' ', padding + 1)
+" endfunction
 
-" runtime! autoload/noscrollbar.vim
+" function! Mytabs()
+"   let tabstatus = ''
+"   for i in range(tabpagenr('$'))
+"     " set up some oft-used variables
+"     let tab = i + 1 " range() starts at 0
+"     if (tab == tabpagenr())
+"       let tabstatus .= '*'
+"     else
+"       let tabstatus .= '.'
+"     endif
+"   endfor
+"   return tabstatus
+" endfunction
 
-let &statusline=''
-let &statusline.="%{ColPad()}"
-let &statusline.='%c'
-let &statusline.=" %<%t  %m%r%w%q%y%{&diff?'[diff]':''}"
-let &statusline.="%{exists('g:loaded_fugitive')?fugitive#statusline():''}"
-let &statusline
-\   .="%{exists('g:loaded_syntastic_plugin')?SyntasticStatuslineFlag():''}"
+" function! MyStatusLine()
+
+"     let curwin = winnr()
+
+"     let stl=''.curwin.':'
+"     let stl=''
+"     " let stl.='%1* %{winnr()} %* '
+"     let stl.="%1*%{winnr()==".curwin."?'  ' . &ft . ' ':''}%*"
+
+"     let stl.=" %*%f%*"
+"     let stl.="%m "
+"     let stl.="%*%{exists('g:loaded_fugitive')?fugitive#statusline():''}%*"
+"     let stl.="%*%{exists('g:loaded_gitgutter')?'+'.GitGutterGetHunkSummary():''}%*"
+"     let stl.="%*%r%w%q%{&diff?'[diff]':''}%*"
+"     let stl.="%<"
+"     let stl.="%="
+"     let stl.="%*%{&paste?'[paste]':''}%*"
+"     let stl.="%*%{&hls?'[hls]':''}%*"
+"     let stl.="%2*%5l/%L : %*"
+"     let stl
+"     \   .="%2*%{exists('g:noscrollbar_loaded')?noscrollbar#statusline():''}"
+"     let stl.=" %P "
+"     let stl.=": %3c/%-3{len(getline(line('.')))} %*"
+
+"     return stl
+" endfunc
+" function! Mode()
+"     " redraw
+"     " let l:mode = mode()
+"     let l:mode = &filetype
+
+"     if mode ==# "n" | exec 'hi User1 ' . 'ctermfg=255 ctermbg=236' | return l:mode
+"     elseif mode ==# "i" | exec 'hi User1 ' . 'ctermfg=243 ctermbg=236' | return l:mode
+"     elseif mode ==# "vim" | exec 'hi User1 ' . 'ctermfg=134 ctermbg=236' | return l:mode
+"     elseif mode ==# "v" | exec 'hi User1 ' . 'ctermfg=250 ctermbg=236' | return l:mode
+"     elseif mode ==# "V" | exec 'hi User1 ' . 'ctermfg=250 ctermbg=236' | return l:mode
+"     elseif mode ==# "^V" | exec 'hi User1 ' . 'ctermfg=250 ctermbg=236' | return l:mode
+"     else | exec 'hi User1 ' . 'ctermfg=250 ctermbg=236' | return l:mode
+"     endif
+" endfunc
+" " set statusline=
+" " set statusline+=%*\[%n]                                  "buffernr
+" " set statusline+=%*\ %<%F\                                "File+path
+" " set statusline+=%*\ %y\                                  "FileType
+" " set statusline+=%*\ %{''.(&fenc!=''?&fenc:&enc).''}      "Encoding
+" " set statusline+=%*\ %{(&bomb?\",BOM\":\"\")}\            "Encoding2
+" " set statusline+=%*\ %{&ff}\                              "FileFormat (dos/unix..) 
+" " set statusline+=%*\ %{&spelllang}\%{HighlightSearch()}\  "Spellanguage & Highlight on?
+" " set statusline+=%*\ %=\ row:%l/%L\ (%03p%%)\             "Rownumber/total (%)
+" " set statusline+=%*\ col:%03c\                            "Colnr
+" " set statusline+=%*\ \ %m%r%w\ %P\ \                      "Modified? Readonly? Top/bot.
+" " runtime! autoload/noscrollbar.vim
+" " hi User1 guifg=#ffdad8  guibg=#880c0e
+" " hi User2 guifg=#000000  guibg=#F4905C
+" " hi User3 guifg=#292b00  guibg=#f4f597
+" " hi User4 guifg=#112605  guibg=#aefe7B
+" " hi User5 guifg=#051d00  guibg=#7dcc7d
+" " hi User7 guifg=#ffffff  guibg=#880c0e gui=bold
+" " hi User8 guifg=#ffffff  guibg=#5b7fbb
+" " hi User9 guifg=#ffffff  guibg=#810085
+" " hi User0 guifg=#ffffff  guibg=#094afe
+
+let &statusline=" "
+" let &statusline.="%{ColPad()}"
+" let &statusline.='%c'
+" " let &statusline.=" %<%t  %m%r%w%q%y%{&diff?'[diff]':''}"
+" let &statusline.=" %<%1* [%n]:%f%*"
+" let &statusline.="  %M%R%W%q%Y%{&diff?'[diff]':''}"
+" let &statusline.="%{exists('g:loaded_fugitive')?fugitive#statusline():''}"
+" " let &statusline.="%{exists('g:loaded_fugitive')?fugitive#head(7):''}"
+" " set statusline+=%#WarningMsg#
+" let &statusline
+" \   .="%{exists('g:loaded_syntastic_plugin')?SyntasticStatuslineFlag():''}"
+" let &statusline.="%="
+" " let &statusline.="%{fnamemodify(getcwd(),':p:~')}             "
+" let &statusline
+" \   .=" %*%{exists('g:noscrollbar_loaded')?noscrollbar#statusline(20,'-','='):''}%* "
+
+" let &statusline='%2* paste hls %*'
+" let &statusline='%1* %{Mode()} %* '
+" let &statusline='%1* %Y%* '
+" let &statusline='%{GitGutterGetHunkSummary()}'
+" let &statusline="%1*%{&ft!=''?'  '.&ft.' ':''}%*"
+" let &statusline="%1*%{&ft!=''?'  '.&ft.' ':''}%*"
+" let &statusline.="%*%{Mytabs()}%* : "
+" let &statusline.="%*%{ColPad()}%*"
+" let &statusline.="%*%c %*"
+" let &statusline.="%5l/%-5L %*"
+" let &statusline.="%3c/%-3{len(getline(line('.')))} %*"
+" let &statusline.='%{mode()} '
+" let &statusline.="%* %n %*:"
+" let &statusline.="%1*%{&ft!=''?'  '.&ft.' ':''}%*"
+" let &statusline.="%1*%y%*"
+let &statusline.="%* -  "
+let &statusline.="%*%n:%1*%t%*"
+let &statusline.="%m%r  "
+" let &statusline.="%1*%{exists('g:loaded_fugitive')?fugitive#head(6):''}%*"
+" let &statusline.="%1*%{exists('g:loaded_gitgutter')?'[+'.GitGutterGetHunkSummary()[0].',~'.GitGutterGetHunkSummary()[1].',-'.GitGutterGetHunkSummary()[2].']':''}%*"
+" let &statusline.="%*%r%w%q%y%{&diff?'[diff]':''}%*"
+let &statusline.="%*%y%w%q%*"
+let &statusline.="%*%{exists('g:loaded_fugitive')?fugitive#statusline():''}%*"
+let &statusline.="  %*%{&diff?'[diff]':''}%*"
+let &statusline.="  %*%{&paste?'[paste]':''}%*"
+let &statusline.="%*%{&hls?'[hls]':''}  %*"
+" let &statusline.="%*%{'['.(&fenc!=''?&fenc:&enc).']'}"
+" let &statusline.="%*%{(&bomb?\",BOM\":\"\")}"
+" let &statusline.="%*[%{&ff}]"
+" let &statusline.="%*[%{&spelllang}]"
+" let &statusline.="%6*:%c "
+let &statusline.="%<"
 let &statusline.="%="
+" let &statusline.="%= %{fnamemodify(getcwd(),':p:~')} "
+" let &statusline
+" \   .="%*%{exists('g:noscrollbar_loaded')?noscrollbar#statusline(20,'-','#'):''}"
+" let &statusline.="(%l/%L%*"
+let &statusline.="L:%l/%L "
+let &statusline.="%5(C:%c%)/%-3{len(getline(line('.')))} %*"
+" let &statusline.=" %{tabpagenr()}/%{tabpagenr('$')}%* "
+" let &statusline.=",%c/%{len(getline(line('.')))}) %*"
 let &statusline
-\   .=" %{exists('g:noscrollbar_loaded')?noscrollbar#statusline():''} "
+\   .="%* P:%{exists('g:noscrollbar_loaded')?noscrollbar#statusline(20,'-','#'):''}"
+let &statusline.="(%P) "
+
+" set statusline=%!MyStatusLine()
+" let &statusline.="| %{tabpagenr()}/%{tabpagenr('$')}%* "
+" let &statusline.="%{tabpagenr('$')!=1?'| '.tabpagenr().'/'.tabpagenr('$'):''}%* "
+" let &statusline.="%8* %{fnamemodify(getcwd(),':p:~')} "
+" let &statusline.="%5l/%-5L %*"
+" let &statusline.="%5l[%{line('w0').'-'.line('w$')}]/%-5L %*"
+" let &statusline.=": %3c/%-3{len(getline(line('.')))} %*"
+" let &statusline.=" %P "
+" let &statusline.="%{exists('g:loaded_fugitive')?fugitive#statusline():''}"
+" let &statusline.="%{exists('g:loaded_fugitive')?fugitive#head(7):''}"
+" set statusline+=%#WarningMsg#
+" let &statusline
+" \   .="%{exists('g:loaded_syntastic_plugin')?SyntasticStatuslineFlag():''}"
+" let &statusline.="%="
+" let &statusline.="%{fnamemodify(getcwd(),':p:~')}             "
+" let &statusline
+" \   .=" %*%{exists('g:noscrollbar_loaded')?noscrollbar#statusline(20,'-','='):''}%* "
+
+
 " \   .=" %{exists('g:noscrollbar_loaded')?noscrollbar#statusline(20,'■','◫',['◧'],['◨']):''} "
 " \   .=" %{exists('*noscrollbar#statusline')?noscrollbar#statusline(20,'■','◫',['◧'],['◨']):''} "
 " \   .=" %{noscrollbar#statusline()} "
@@ -287,7 +433,7 @@ let &statusline
 " \   .=" %{exists('g:noscrollbar_loaded')?noscrollbar#statusline(25,'■','◫',['◧'],['◨'],'a'):''} "
 " \   .=" %{exists('g:noscrollbar_loaded')?noscrollbar#statusline(25,'■','◫',['','◧'],['','◨'],'a'):''} "
 " \   .=" [%{exists('g:noscrollbar_loaded')?noscrollbar#statusline(20,'\ ','-'):''}]"
-let &statusline.="%3*%{&paste?'  paste ':''}%0*"
+" let &statusline.="%3*%{&paste?'  paste ':''}%0*"
 " }}}
 
 " set statusline=%<%f\ %h%m%r%=%-14.(%l,%c%V%)\ %{noscrollbar#statusline()}
@@ -301,33 +447,50 @@ let &statusline.="%3*%{&paste?'  paste ':''}%0*"
 
 " }}}
 
+
 " Abbreviations ----------------------------------------------------------- {{{
 
-iabbrev gcavn@ gcavn@gcavn.com
+" iabbrev gcavn@ gcavn@gcavn.com
 
 " }}}
 
+
 " Convenience mappings ---------------------------------------------------- {{{
 
-cnoremap <f1> <C-c>:<up>
+set wildcharm=<C-z>
+" cnoremap <tab> <C-c>:<C-l><up><C-z><C-z>
+" cnoremap <tab> <C-c>:<c-l><up><C-z><C-z><space><BS>
+cnoremap <C-@> <C-c>:<up><C-d>
+" cnoremap <tab> a<bs><C-c>:<up><C-z>
+" cnoremap <expr> <Tab> getcmdtype() == "/" \|\| getcmdtype() == "?" ? "<CR>/<C-r>/" : "<C-z>"
+" cmap <tab> <f1><C-z>
+cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
 
 vmap <Leader>g :<C-U>!git blame <C-R>=expand("%:p") <CR> \| sed -n <C-R>=line("'<") <CR>,<C-R>=line("'>") <CR>p <CR>
 
+nnoremap * :let @/='\<<C-R>=expand("<cword>")<CR>\>'<CR>:set hls<CR>
+
 " Easy window resizing
-nnoremap <silent> <C-w><C-up> 10<c-w>+
-nnoremap <silent> <C-w><C-down> 10<c-w>-
-nnoremap <silent> <C-w><C-left> 10<c-w><
-nnoremap <silent> <C-w><C-right> 10<c-w>>
+" nnoremap <silent> <C-w><C-up> 10<c-w>+
+" nnoremap <silent> <C-w><C-down> 10<c-w>-
+" nnoremap <silent> <C-w><C-left> 10<c-w><
+" nnoremap <silent> <C-w><C-right> 10<c-w>>
 
 " Grep the last search pattern and open the quickfix list 
 nnoremap <silent> <leader>/ :execute 'vimgrep /' . @/ . '/g %'<CR>:copen<CR>
 
 " nnoremap <c-z> mzzMzvzz15<c-e>`z:Pulse<cr>
-" nnoremap <leader>d "_d
-" vnoremap <leader>d "_d
+nnoremap <c-z> mzzMzvzz15<c-e>`z<cr>
+" nnoremap <leader>d "0d
+" vnoremap <leader>d "0d
+" nnoremap <leader>x "_x
+" vnoremap <leader>x "_x
 
-" Paste the text from most recent yank command
+nnoremap s "0d
+vnoremap s "0d
+" Paste the text from from recent yank command
 nnoremap <leader>p "0p
+vnoremap <leader>p "0p
 nnoremap <leader>P "0P
 
 " Convert hard wraps to soft wraps
@@ -338,17 +501,21 @@ command! -range=% SoftWrap <line2>put _ | <line1>,<line2>g/.\+/ .;-/^$/ join |no
 " command! DeleteTrailing normal mz<r>:s/\s\+$//
 
 " Kill window           
-nnoremap <leader>q :confirm qa<cr>
+" nnoremap <leader>q :confirm qa<cr>
 
 " Write buffer to file
-nnoremap <leader>w :w<cr>
+" nnoremap <leader>w :w<cr>
 
 " A tab is like a paGe
-nnoremap [g :tabprev<cr>
-nnoremap ]g :tabnext<cr>
-nnoremap ]G :tablast<cr>
-nnoremap [G :tabfirst<cr>
+" nnoremap [g :tabprev<cr>
+" nnoremap ]g :tabnext<cr>
+" nnoremap ]G :tablast<cr>
+" nnoremap [G :tabfirst<cr>
 
+" nnoremap <esc>n<esc>n :tabnew<cr>
+" nnoremap <esc>w<esc>w :tabprev<cr>
+" nnoremap <esc>[<esc>[ :tabprev<cr>
+" nnoremap <esc>]<esc>] :tabnext<cr>
 " Make Y move like D and C
 noremap Y y$
 
@@ -361,17 +528,13 @@ nnoremap <F9> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> t
 nnoremap <leader>a ggVG
 
 " Easier reselection of what you just pasted.
-nnoremap <expr> <leader>v '`[' . strpart(getregtype(), , 1) . '`]'
+nnoremap <expr> <leader>v '`[' . strpart(getregtype(), 0, 1) . '`]'
 xnoremap > >gv
 xnoremap < <gv
-" Indent/dedent/autoindent what you just pasted.
-nnoremap <lt>> V`]<
-nnoremap ><lt> V`]>
-nnoremap =- V`]=
 
 " Source
-vnoremap <leader>S y:execute @@<cr>:echo 'Sourced selection.'<cr>
-nnoremap <leader>S ^vg_y:execute @@<cr>:echo 'Sourced line.'<cr>
+vnoremap <leader>s y:execute @@<cr>:echo 'Sourced selection.'<cr>
+nnoremap <leader>s ^vg_y:execute @@<cr>:echo 'Sourced line.'<cr>
 
 " Directional Keys
 noremap j gj
@@ -381,24 +544,76 @@ noremap gk k
 
 " Switch inner word caSe
 inoremap <C-s> <esc>mzg~iw`za
+noremap <C-s> :%s/
+
+" Diff 
+" nnoremap <leader>du :diffupdate<cr>
+" nnoremap <leader>dl :DiffLastSaved<cr>
 
 " Easier editing of alternate file
 nnoremap <BS> <C-^>
 
 " Ins-completion mode {{{
-inoremap <expr><CR> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-" inoremap <expr><TAB> pumvisible() ? "\<C-y>" : "\<TAB>"
-" inoremap . .<C-x><C-o>
 " inoremap <expr>. IsValidSuffix() ? ".\<C-x>\<C-o>" : "."
-inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<S-TAB>"
-" inoremap <C-Space> <C-x><C-o><C-n><C-p>
-inoremap <expr><C-Space> (pumvisible() ? "\<C-y>\<C-x>\<C-o>\<C-n>\<C-p>" : "\<C-x>\<C-o>\<C-n>\<C-p>" )
-imap <C-@> <C-Space>
-inoremap <C-l> <C-X><C-U>
-inoremap <expr><C-j> pumvisible() ? '<C-y><C-n><down><up><c-n><c-p>' : "\<C-n>\<down>\<up>\<C-n>\<C-p>"
-inoremap <C-h> <C-x><C-f>
-" inoremap <expr> <C-n> pumvisible() ? '<C-n>' : '<C-n><C-r>=pumvisible() ? "\<lt>Down>" : ""<CR>'
+" inoremap <expr><CR> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+" basic mappings useful when the completion popup is visible
+" inoremap <expr><cr> pumvisible() ? "\<c-y>" : "\<cr>"
+inoremap <expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
+" inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : exists("g:loaded_snips") ? "\<C-r>=TriggerSnippet()\<CR>" : "\<Tab>"
+" inoremap <expr><tab> pumvisible() ? "\<c-y>" : "\<tab>"
+inoremap <expr><s-tab> pumvisible() ? "\<c-p>" : "\<s-tab>"
+
+" omni completion
+inoremap <c-x><c-o> <c-x><c-o><c-r>=pumvisible() ? "\<lt>c-n>\<lt>c-p>\<lt>down>" : ""<cr>
+inoremap <c-@> <c-x><c-o><c-r>=pumvisible() ? "\<lt>c-n>\<lt>c-p>\<lt>down>" : ""<cr>
+inoremap <c-j> <c-x><c-o><c-r>=pumvisible() ? "\<lt>c-n>\<lt>c-p>\<lt>down>" : ""<cr>
+" inoremap . .<c-x><c-o><c-r>=pumvisible() ? "\<lt>c-n>\<lt>c-p>\<lt>down>" : ""<cr>
+" inoremap c c<c-x><c-o><c-r>=pumvisible() ? "\<lt>c-n>\<lt>c-p>\<lt>down>" : ""<cr>
+" inoremap e e<c-r>=IsValidSuffix() ? "" : ""<cr>
+" inoremap e e<c-r>=HasCompletions() ? "" : "\<lt>c-x>\<lt>c-o>"<cr>
+" inoremap e e<c-r>=HasCompletions() ? "\<lt>c-x>\<lt>c-o>" : ""<cr>
+
+" user defined completion   
+inoremap <c-x><c-u> <c-x><c-u><c-r>=pumvisible() ? "\<lt>c-n>\<lt>c-p>\<lt>down>" : ""<cr>
+inoremap <c-l> <c-x><c-u><c-r>=pumvisible() ? "\<lt>c-n>\<lt>c-p>\<lt>down>" : ""<cr>
+
+inoremap <c-f> <c-x><c-f>
+" generic completion, look in places specified in 'complete'
+inoremap <c-n> <c-n><c-r>=pumvisible() ? "\<lt>c-n>\<lt>c-p>\<lt>down>" : ""<cr>
+
+" for i in split('abcdefgdefghijklmnopqrstuvwxyzABCDEFGHIJKLMOPQRSTUVWXYZ0123456789_', '\zs')
+"  execute printf('inoremap <silent> %s %s<c-r>=HasCompletions() ? "" : "\<lt>c-x>\<lt>c-o>"<cr>', i, i)
+" endfor
+" execute printf('inoremap <silent> %s <c-e>%s<c-r>=HasCompletions() ? "" : "\<lt>c-x>\<lt>c-o>"<cr>', '.', '.')
+" au BufEnter * let b:ison=0
+au CompleteDone * let b:ison=0
+function HasCompletions()
+  let l:da = synIDattr(synID(line("."), col("."), 1), "name")
+  echom synID(line("."), col("."), 1)
+  if match(da, 'omment\|tring') >= 0
+    return 1
+  endif
+  if exists('b:ison') && b:ison == 1
+    return 1
+  else
+    let res = call(&omnifunc, [0, ''])
+    if res != []
+      let b:ison=1
+      return 0
+    else
+      return 1
+    endif
+  endif
+  " try
+  "   norm! i
+  "   return 1
+  " catch
+  "   return 0
+  " endtry
+  " let res = call(&omnifunc, [0, ''])
+  " return res != []
+  " return pumvisible()
+endfunction
 
 function IsValidSuffix()
   if col('.') == 1
@@ -408,21 +623,39 @@ function IsValidSuffix()
   if match(d, 'omment\|tring') >= 0
     return 0
   endif
-  let suffix = getline('.')[col('.') - 2]
-  if match(suffix, '\a') >= 0
+  let suffix = getline('.')[col('.') - 3]
+  echom suffix
+  if match(suffix, 'a') >= 0
     return 1
   else
     return 0
   endif
 endfunction
 
+" Zoom / Restore window.
+function! s:ZoomToggle() abort
+    if exists('t:zoomed') && t:zoomed
+        execute t:zoom_winrestcmd
+        let t:zoomed = 0
+    else
+        let t:zoom_winrestcmd = winrestcmd()
+        resize
+        vertical resize
+        let t:zoomed = 1
+    endif
+endfunction
+command! ZoomToggle call s:ZoomToggle()
+nnoremap <silent> <f3> :ZoomToggle<CR>
 " }}}
 
 " Quick editing ----------------------------------------------------------- {{{
 
-nnoremap <leader>eh :e ~/.<cr>
-nnoremap <leader>ef :e %:p:h<cr>
-nnoremap <leader>e. :e .<cr>
+" nnoremap <leader>eh :e ~/<c-l>
+" nnoremap <leader>ef :e %:p:h<c-l>
+nnoremap <leader>e :e <c-d>
+" nnoremap <leader>en :enew<cr> 
+
+nnoremap <leader>b :ls<cr>:b 
 
 " }}}
 
@@ -432,6 +665,7 @@ nnoremap <leader>e. :e .<cr>
 " nnoremap / /\v
 " vnoremap / /\v
 
+set ignorecase
 set ignorecase
 set smartcase
 set incsearch
@@ -449,8 +683,8 @@ set sidescrolloff=10
 
 set foldlevelstart=99
 " Space to toggle folds.
-nnoremap <leader>l za
-vnoremap <leader>l za
+" nnoremap <leader>l za
+" vnoremap <leader>l za
 " }}}
 
 " Filetype-specific ------------------------------------------------------- {{{
@@ -577,8 +811,8 @@ augroup END
 " Python {{{
 augroup ft_python
     au!
-    au FileType python setl foldmethod=expr
-    au FileType python setl foldexpr=g:Pymodefoldingexpr(v:lnum)
+    " au FileType python setl foldmethod=expr
+    " au FileType python setl foldexpr=g:Pymodefoldingexpr(v:lnum)
     au FileType python setl omnifunc=pythoncomplete#Complete
 augroup END
 
@@ -598,6 +832,12 @@ augroup ft_latex
 augroup END
 " }}}
 
+" crontab {{{
+augroup ft_crontab
+  au filetype crontab setl nobackup nowritebackup
+augroup END
+" }}}
+
 " XML {{{
 augroup ft_xml
     au!
@@ -609,64 +849,57 @@ augroup END
 
 " }}}
 
+
 " Plugin settings --------------------------------------------------------- {{{
 
-" Latex-Box {{{
-let g:LatexBox_autojump=0
-let g:LatexBox_no_mappings=1
-" }}}
-
-" EasyAlign {{{
-vmap <Enter> <Plug>(EasyAlign)
-nmap <Leader>a <Plug>(EasyAlign)
-" }}}
-
-" DelimitMate {{{
-let delimitMate_expand_cr = 1
+" Fugitive {{{
+" nnoremap <leader>gd :Gdiff<cr>
+" nnoremap <leader>gs :Gstatus<cr>
+" nnoremap <leader>gw :Gwrite<cr>
+" nnoremap <leader>ga :Gadd<cr>
+" nnoremap <leader>gb :Gblame<cr>
+" nnoremap <leader>gco :Gcheckout<cr>
+" nnoremap <leader>gci :Gcommit<cr>
+" nnoremap <leader>gm :Gmove<cr>
+" nnoremap <leader>gr :Gremove<cr>
+" nnoremap <leader>gl :sp<cr>:Git! lgd<cr>:set ft=git<cr>
 " }}}
 
 " Ctrl-P {{{
+" let g:ctrlp_notational_dir = '~/tmp/notes/origenc/'
+" let g:ctrlp_notational_decrypt_cmd = 'openssl rc4 -d -k bla -in '
+" let g:ctrlp_notational_decrypt_cmd = 'gpg -q --batch --passphrase bla --no-mdc-warning -d '
+" let g:ctrlp_notational_decrypt_ext = 'gpg'
+let g:ctrlp_switch_buffer = 'VHT'
 let g:ctrlp_match_window = 'bottom,order:ttb,min:20,max:20'
 let g:ctrlp_reuse_window = 'netrw\|help\|quickfix'
 let g:ctrlp_cmd = 'CtrlPBuffer'
-let g:ctrlp_switch_buffer = 0
+" let g:ctrlp_switch_buffer = 0
 " let g:ctrlp_match_window = 'order:ttb,max:20'
 let g:ctrlp_mruf_exclude = '/var/folders/.*\|/private/var/folders/.*\|.*\.DS_Store\|\.vim/bundle/.*/doc/.*\|/usr/share/.*doc/.*'
 " /usr/local/Cellar/.*doc\|
-" }}}
+" let g:ctrlp_extensions = ['notational', 'buffertag', 'bookmarkdir','undo']
+let g:ctrlp_extensions = ['cmdline', 'menu']
 
-" Tagbar {{{
-" let g:tagbar_iconchars = ['+','-']
-let g:tagbar_iconchars = ['▸', '▾']
-let g:tagbar_compact = 1
-let g:tagbar_sort = 0
-let g:tagbar_indent = 2
-let g:tagbar_left = 1
-let g:tagbar_foldlevel = 0
-let g:tagbar_type_markdown = {
-    \ 'ctagstype' : 'markdown',
-    \ 'kinds' : [
-        \ 'h:Heading_L1',
-        \ 'i:Heading_L2',
-        \ 'k:Heading_L3'
-    \ ]
-\ }
-nnoremap <silent> <F9> :TagbarToggle<CR>
+com! -n=? -com=dir CtrlPnotational         cal ctrlp#init(ctrlp#notational#id(), { 'dir': <q-args> })
+nnoremap <c-q> :CtrlPnotational ~/notes/<cr>
+
 " }}}
 
 " Syntastic {{{
-let g:syntastic_mode_map = { "mode": "passive"}
-let g:syntastic_enable_highlighting = 0
+" let g:syntastic_mode_map = { "mode": "passive"}
+" let g:syntastic_enable_highlighting = 0
 nnoremap <leader>sc :SyntasticCheck<cr>
 nnoremap <leader>sr :SyntasticReset<cr>
-" }}}
-
-" undotree {{{
-nnoremap <F5> :UndotreeToggle<cr>
-let g:undotree_WindowLayout = 4
-let g:undotree_SplitWidth = 50
-let g:undotree_DiffCommand = "diff --context=1"
-let g:undotree_DiffpanelHeight = 20
+" let g:syntastic_always_populate_loc_list = 1
+" let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+" let g:syntastic_check_on_wq = 0
+let g:syntastic_aggregate_errors = 1
+let g:syntastic_error_symbol = "-"
+let g:syntastic_warning_symbol = "-"
+let g:syntastic_style_error_symbol = "~"
+let g:syntastic_style_warning_symbol = "~"
 " }}}
 
 " jedi {{{
@@ -687,32 +920,10 @@ let g:tern_show_argument_hints='no'
 let g:EclimCompletionMethod = 'omnifunc'
 " }}}
 
-" " neocomplete {{{
-" let g:neocomplete#enable_at_startup = 0
-" let g:neocomplete#enable_fuzzy_completion = 0
-" let g:neocomplete#manual_completion_start_length = 0
-" let g:neocomplete#enable_auto_select = 0
-" let g:neocomplete#disable_auto_complete = 1
-" let g:neocomplete#enable_insert_char_pre = 1
-" " inoremap <expr><CR> pumvisible() ? neocomplete#close_popup() : "\<CR>"
-" " inoremap <expr><C-Space> neocomplete#start_manual_complete()
-" " imap <C-@> <C-Space>
-" let g:neocomplete#force_omni_input_patterns = {}
-" let g:neocomplete#force_omni_input_patterns.python = '\%([^. \t]\.\|^\s*@\|^\s*from\s.\+import \|^\s*from \|^\s*import \)\w*'
-" let g:neocomplete#force_omni_input_patterns.javascript = '[^. \t]\.\w*'
-" let g:neocomplete#force_omni_input_patterns.cpp = '[^. *\t]\%(\.\|->\)\w*\|\h\w*::\w*'
-" " }}}
-
-" Yankstack {{{
-" nmap <esc>p <Plug>yankstack_substitute_older_paste
-" nmap <esc>P <Plug>yankstack_substitute_newer_paste
-" }}}
-
 " Markdown {{{
 let g:markdown_folding=1
 let g:markdown_fenced_languages = ['python', 'ruby']
 " }}}
-
 
 " Ultisnips {{{
 " let g:UltiSnipsListSnippets="<c-j>"
@@ -744,7 +955,17 @@ set completefunc=SnipComplete
 " }}}
 " }}}
 
+
 " Miniplugins ------------------------------------------------------------ {{{
+
+" mRu {
+function! MRUComplete(ArgLead, CmdLine, CursorPos)
+    return filter(copy(v:oldfiles), 'v:val =~ a:ArgLead && v:val !~ "Cellar"')[0:10]
+endfunction
+
+command! -nargs=1 -complete=customlist,MRUComplete R execute 'edit ' . <f-args>
+nnoremap <leader>r :R<space><C-z>
+" }}}
 
 " Prose {{{
 function Prose()
@@ -757,30 +978,6 @@ function Prose()
 endfunction
 " }}}
 
-" MRU {{{
-function! MRUComplete(ArgLead, CmdLine, CursorPos)
-  let my_oldfiles = filter(copy(v:oldfiles), 'v:val =~ a:ArgLead')
-  if len(my_oldfiles) > 16
-    call remove(my_oldfiles, 17, len(my_oldfiles) - 1)
-  endif
-  return my_oldfiles
-endfunction
-function! MRU(command, arg)
-  if a:command == "tabedit"
-    execute a:command . " " . a:arg . "\|lcd %:p:h"
-  else
-    execute a:command . " " . a:arg
-  endif
-endfunction
-command! -nargs=1 -complete=customlist,MRUComplete ME call MRU('edit', <f-args>)
-" }}}
-
-" Diff orig {{{
-command DiffOrig let g:diffline = line('.') | vert new | set bt=nofile | r # | 0d_ | diffthis | :exe "norm! ".g:diffline."G" | wincmd p | diffthis | wincmd p
-nnoremap <Leader>do :DiffOrig<cr>
-nnoremap <leader>dc :q<cr>:diffoff<cr>:exe "norm! ".g:diffline."G"<cr>
-" }}}
-
 " Synstack {{{
 " Show the stack of syntax hilighting classes affecting whatever is under the
 " cursor.
@@ -789,41 +986,6 @@ function! SynStack()
 endfunc
 
 nnoremap <F8> :call SynStack()<CR>
-" }}}
-
-" Diff Last Saved {{{
-function! s:MyDiffLastSaved()
-  if &modified
-    let winnum = winnr()
-    let filetype=&ft
-    vertical botright new | r #
-    1,1delete _
-
-    diffthis
-    setlocal buftype=nofile
-    setlocal bufhidden=wipe
-    setlocal nobuflisted
-    setlocal noswapfile
-    setlocal readonly
-    exec "setlocal ft=" . filetype
-    let diffnum = winnr()
-
-    augroup diff_saved
-      autocmd! BufUnload <buffer>
-      autocmd BufUnload <buffer> :diffoff!
-    augroup END
-
-    " exec winnum . "winc w"
-    " diffthis
-
-    " for some reason, these settings only take hold if set here.
-    call setwinvar(diffnum, "&foldmethod", "diff")
-    call setwinvar(diffnum, "&foldlevel", "0")
-  else
-    echo "No changes"
-  endif
-endfunction
-command! -nargs=0 MyDiffLastSaved call s:MyDiffLastSaved()
 " }}}
 
 " Python-mode folding functions {{{
@@ -901,58 +1063,6 @@ fun! g:Pymodefoldingexpr(lnum) "{{{
 endfunction "}}}
 " }}}
 
-" Highlight Word {{{
-"
-" This mini-plugin provides a few mappings for highlighting words temporarily.
-"
-" Sometimes you're looking at a hairy piece of code and would like a certain
-" word or two to stand out temporarily.  You can search for it, but that only
-" gives you one color of highlighting.  Now you can use <leader>N where N is
-" a number from 1-6 to highlight the current word in a specific color.
-
-function! HiInterestingWord(n) " {{{
-    " Save our location.
-    normal! mz
-
-    " Yank the current word into the z register.
-    normal! "zyiw
-
-    " Calculate an arbitrary match ID.  Hopefully nothing else is using it.
-    let mid = 86750 + a:n
-
-    " Clear existing matches, but don't worry if they don't exist.
-    silent! call matchdelete(mid)
-
-    " Construct a literal pattern that has to match at boundaries.
-    let pat = '\V\<' . escape(@z, '\') . '\>'
-
-    " Actually match the words.
-    call matchadd("InterestingWord" . a:n, pat, 1, mid)
-
-    " Move back to our original location.
-    normal! `z
-endfunction " }}}
-
-" Mappings {{{
-
-nnoremap <silent> <leader>1 :call HiInterestingWord(1)<cr>
-nnoremap <silent> <leader>2 :call HiInterestingWord(2)<cr>
-nnoremap <silent> <leader>3 :call HiInterestingWord(3)<cr>
-nnoremap <silent> <leader>4 :call HiInterestingWord(4)<cr>
-nnoremap <silent> <leader>5 :call HiInterestingWord(5)<cr>
-nnoremap <silent> <leader>6 :call HiInterestingWord(6)<cr>
-
-" }}}
-" Default Highlights {{{
-
-hi def InterestingWord1 guifg=#000000 ctermfg=16 guibg=#ffa724 ctermbg=214
-hi def InterestingWord2 guifg=#000000 ctermfg=16 guibg=#aeee00 ctermbg=154
-hi def InterestingWord3 guifg=#000000 ctermfg=16 guibg=#8cffba ctermbg=121
-hi def InterestingWord4 guifg=#000000 ctermfg=16 guibg=#b88853 ctermbg=137
-hi def InterestingWord5 guifg=#000000 ctermfg=16 guibg=#ff9eb8 ctermbg=211
-hi def InterestingWord6 guifg=#000000 ctermfg=16 guibg=#ff2c4b ctermbg=195
-
-" }}}
 " Show context-preview {{{
 function! ShowContextPreview()
     let l:winview = winsaveview()
@@ -988,7 +1098,7 @@ function! ShowCurrentPreview(pos)
         setlocal bufhidden=wipe
         setlocal noswapfile
     endif
-    resize 5
+    " resize 5
     put =completions[0]['info']
     setlocal nomodifiable
     wincmd p
@@ -1008,12 +1118,85 @@ function! OnlineHelp()
     let l:keyword = input("Search for: ", expand("<cword>"))
     call system('/Users/ioacvl/.dotfiles/bin/ioadoc ' . b:source . ' ' . l:keyword)
 endfunc
-nnoremap <F12> :call OnlineHelp()<CR>
+" nnoremap <F12> :call OnlineHelp()<CR>
 " }}}
 
+" Toggle lists {{{
+function! GetBufferList()
+  redir =>buflist
+  silent! ls
+  redir END
+  return buflist
+endfunction
 
+function! ToggleList(bufname, pfx)
+  let buflist = GetBufferList()
+  for bufnum in map(filter(split(buflist, '\n'), 'v:val =~ "'.a:bufname.'"'), 'str2nr(matchstr(v:val, "\\d\\+"))')
+    if bufwinnr(bufnum) != -1
+      exec(a:pfx.'close')
+      return
+    endif
+  endfor
+  if a:pfx == 'l' && len(getloclist(0)) == 0
+      echohl ErrorMsg
+      echo "Location List is Empty."
+      return
+  endif
+  let winnr = winnr()
+  exec(a:pfx.'open')
+  if winnr() != winnr
+    wincmd p
+  endif
+endfunction
 
+nmap <silent> <leader>ll :call ToggleList("Location List", 'l')<CR>
+nmap <silent> <leader>lq :call ToggleList("Quickfix List", 'c')<CR>
 " }}}
+
+" Project directory {{{
+" set working directory to git project root
+" or directory of current file if not git project
+function! SetProjectRoot()
+  let current_file = expand('%:p')
+  " do not mess with 'fugitive://' etc
+  if current_file =~ '^\w\+:/' || &filetype =~ '^git'
+    return
+  endif
+  lcd %:p:h
+  let git_dir = system("git rev-parse --show-toplevel")
+  " See if the command output starts with 'fatal' (if it does, not in a git repo)
+  let is_not_git_dir = matchstr(git_dir, '^fatal:.*')
+  " if git project, change local directory to git project root
+  if (git_dir != "") && empty(is_not_git_dir)
+    lcd `=git_dir`
+  endif
+endfunction
+" follow symlinked file
+function! FollowSymlink()
+  let current_file = expand('%:p')
+  " do not mess with 'fugitive://' etc
+  if current_file =~ '^\w\+:/' || &filetype =~ '^git'
+    return
+  endif
+  if getftype(current_file) == 'link'
+    let actual_file = resolve(current_file)
+    silent! execute 'file ' . actual_file
+  end
+endfunction
+" }}}
+
+" DiffToggle {{{
+function! DiffToggle()
+  if &diff
+    diffoff
+  else
+    diffthis
+  endif
+endfunction
+
+nmap <silent> <f10> :call DiffToggle()<cr>
+" }}}
+
 
 " Environments (GUI/Console) ---------------------------------------------- {{{
 
